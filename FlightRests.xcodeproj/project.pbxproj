@@ -13,6 +13,9 @@
 		037F794725E6A3F3001A34B9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 037F794625E6A3F3001A34B9 /* Preview Assets.xcassets */; };
 		037F795225E6A3F4001A34B9 /* FlightRestsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 037F795125E6A3F4001A34B9 /* FlightRestsTests.swift */; };
 		037F795D25E6A3F4001A34B9 /* FlightRestsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 037F795C25E6A3F4001A34B9 /* FlightRestsUITests.swift */; };
+		037F796E25E6A441001A34B9 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 037F796D25E6A441001A34B9 /* DateExtension.swift */; };
+		037F797325E6A45A001A34B9 /* AssignedRestPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 037F797225E6A45A001A34B9 /* AssignedRestPeriod.swift */; };
+		037F797825E6A481001A34B9 /* RestCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 037F797725E6A481001A34B9 /* RestCalculator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +48,9 @@
 		037F795825E6A3F4001A34B9 /* FlightRestsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlightRestsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		037F795C25E6A3F4001A34B9 /* FlightRestsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightRestsUITests.swift; sourceTree = "<group>"; };
 		037F795E25E6A3F4001A34B9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		037F796D25E6A441001A34B9 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
+		037F797225E6A45A001A34B9 /* AssignedRestPeriod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignedRestPeriod.swift; sourceTree = "<group>"; };
+		037F797725E6A481001A34B9 /* RestCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestCalculator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +103,9 @@
 			children = (
 				037F793F25E6A3EA001A34B9 /* FlightRestsApp.swift */,
 				037F794125E6A3EA001A34B9 /* ContentView.swift */,
+				037F796D25E6A441001A34B9 /* DateExtension.swift */,
+				037F797225E6A45A001A34B9 /* AssignedRestPeriod.swift */,
+				037F797725E6A481001A34B9 /* RestCalculator.swift */,
 				037F794325E6A3F3001A34B9 /* Assets.xcassets */,
 				037F794825E6A3F3001A34B9 /* Info.plist */,
 				037F794525E6A3F3001A34B9 /* Preview Content */,
@@ -260,6 +269,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				037F794225E6A3EA001A34B9 /* ContentView.swift in Sources */,
+				037F796E25E6A441001A34B9 /* DateExtension.swift in Sources */,
+				037F797825E6A481001A34B9 /* RestCalculator.swift in Sources */,
+				037F797325E6A45A001A34B9 /* AssignedRestPeriod.swift in Sources */,
 				037F794025E6A3EA001A34B9 /* FlightRestsApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
