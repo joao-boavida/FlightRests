@@ -15,7 +15,7 @@ func roundRestInterval(beginDate: Date, endDate: Date, precision: TimeInterval) 
     DateInterval(start: beginDate.round(precision: precision, rule: .up), end: endDate.round(precision: precision, rule: .down))
 }
 
-func distributeRestPlanUnits(numberOfPilots: Int, numberOfPeriods: Int, minimumBreakUnits:Int, totalUnits: Int) -> [Int] {
+func distributeRestPlanUnits(numberOfPilots: Int, numberOfPeriods: Int, minimumBreakUnits: Int, totalUnits: Int) -> [Int] {
 
     let numberOfBreaks = numberOfPeriods - 1
 
@@ -30,7 +30,7 @@ func distributeRestPlanUnits(numberOfPilots: Int, numberOfPeriods: Int, minimumB
 
         let finalBreakPeriod = minimumBreakUnits + usableExtraUnitsForBreaks
 
-        return Array(repeating: 0, count: numberOfPeriods + numberOfBreaks).enumerated().map { (index, element) in
+        return Array(repeating: 0, count: numberOfPeriods + numberOfBreaks).enumerated().map { (index, _) in
             index % 2 == 0 ? finalRestPeriod : finalBreakPeriod
         }
 
@@ -58,15 +58,14 @@ func distributeRestPlanUnits(numberOfPilots: Int, numberOfPeriods: Int, minimumB
 
         // 3 periods: s-b-L-b-s; 5 periods s-b-L-b-s-b-L-b-s
 
-        return Array(repeating: 0, count: numberOfPeriods + numberOfBreaks).enumerated().map { (index, element) -> Int in
+        return Array(repeating: 0, count: numberOfPeriods + numberOfBreaks).enumerated().map { (index, _) -> Int in
             if index == 0 { // index is 0
                 return finalShortRestPeriod
             }
             if index % 2 == 0 { // index is even and non zero: 2, 4, 6, 8, 10
                 if index % 4 == 0 { // index is non zero and divisible by 4: 4, 8
                     return finalShortRestPeriod
-                }
-                else { // index is non zero, even and not divisible by 4: 2, 6, 10
+                } else { // index is non zero, even and not divisible by 4: 2, 6, 10
                     return finalLongRestPeriod
                 }
             } else {
@@ -84,11 +83,11 @@ func createRestPlanDates(restPlanUnits: [Int], roundedBeginDate: Date) -> [DateI
 
     var restPlanDateIntervals = [DateInterval]()
 
-    for i in 0 ..< restPlanTimeIntervals.count {
-        if i == 0 {
-            restPlanDateIntervals.append(DateInterval(start: roundedBeginDate, duration: restPlanTimeIntervals[i]))
+    for counter in 0 ..< restPlanTimeIntervals.count {
+        if counter == 0 {
+            restPlanDateIntervals.append(DateInterval(start: roundedBeginDate, duration: restPlanTimeIntervals[counter]))
         } else {
-            restPlanDateIntervals.append(DateInterval(start: restPlanDateIntervals[i-1].end, duration: restPlanTimeIntervals[i]))
+            restPlanDateIntervals.append(DateInterval(start: restPlanDateIntervals[counter-1].end, duration: restPlanTimeIntervals[counter]))
         }
     }
 
