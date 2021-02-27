@@ -13,6 +13,14 @@ enum InputType {
 
 struct InputView: View {
 
+    @State private var beginDate = Date()
+    @State private var endDate = Calendar.current.date(byAdding: .hour, value: 12, to: Date()) ?? .distantFuture
+    @State private var numberOfPilots = 2
+    @State private var numberOfRestPeriods = 2
+
+    let oneDayAgo = Calendar.current.date(byAdding: .hour, value: -24, to: Date()) ?? .distantPast
+    let inOneDay = Calendar.current.date(byAdding: .hour, value: 24, to: Date()) ?? .distantFuture
+
     let inputType: InputType
 
     var navBarTitle: String {
@@ -24,8 +32,35 @@ struct InputView: View {
 
     var body: some View {
         NavigationView {
-            Text("Hello World")
-                .navigationBarTitle(navBarTitle)
+            Form {
+                Section {
+                    Stepper("\(numberOfPilots) Pilots", value: $numberOfPilots, in: 2 ... 3)
+                    Stepper("\(numberOfRestPeriods) Rest Periods", value: $numberOfRestPeriods, in: 2 ... 5)
+                }
+
+                Section {
+                    VStack {
+                        DatePicker("Rest starts at", selection: $beginDate, in: oneDayAgo ... inOneDay, displayedComponents: .hourAndMinute)
+                            .accessibility(identifier: "beginDatePicker")
+
+                        DatePicker("Rest ends by", selection: $endDate, in: oneDayAgo ... inOneDay, displayedComponents: .hourAndMinute)
+                            .accessibility(identifier: "endDatePicker") // debug
+
+                    }
+                }
+
+                Section {
+                    Button("Calculate Rests") {
+                        // Calculate Rests
+                    }
+                }
+                #if DEBUG
+                Section(header: Text("DEBUG")) {
+                    Text("Rest Begins: \(beginDate.shortFormatDateTime)") // debug
+                    Text("Rest Ends: \(endDate.shortFormatDateTime))")
+                }
+                #endif
+            }.navigationBarTitle(navBarTitle)
         }
 
     }
