@@ -10,6 +10,7 @@
 		033E666725E9426F00C56F24 /* InputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033E666625E9426F00C56F24 /* InputView.swift */; };
 		033E666C25E975D300C56F24 /* RestPeriodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033E666B25E975D300C56F24 /* RestPeriodView.swift */; };
 		033E667825EA952E00C56F24 /* TimeIntervalExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033E667725EA952E00C56F24 /* TimeIntervalExtension.swift */; };
+		033E667D25EA976900C56F24 /* RestPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033E667C25EA976900C56F24 /* RestPlanView.swift */; };
 		037F794025E6A3EA001A34B9 /* FlightRestsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 037F793F25E6A3EA001A34B9 /* FlightRestsApp.swift */; };
 		037F794225E6A3EA001A34B9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 037F794125E6A3EA001A34B9 /* ContentView.swift */; };
 		037F794425E6A3F3001A34B9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 037F794325E6A3F3001A34B9 /* Assets.xcassets */; };
@@ -45,6 +46,7 @@
 		033E666625E9426F00C56F24 /* InputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputView.swift; sourceTree = "<group>"; };
 		033E666B25E975D300C56F24 /* RestPeriodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestPeriodView.swift; sourceTree = "<group>"; };
 		033E667725EA952E00C56F24 /* TimeIntervalExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeIntervalExtension.swift; sourceTree = "<group>"; };
+		033E667C25EA976900C56F24 /* RestPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestPlanView.swift; sourceTree = "<group>"; };
 		037F793C25E6A3EA001A34B9 /* FlightRests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlightRests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		037F793F25E6A3EA001A34B9 /* FlightRestsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightRestsApp.swift; sourceTree = "<group>"; };
 		037F794125E6A3EA001A34B9 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 				037F796D25E6A441001A34B9 /* DateExtension.swift */,
 				037F797225E6A45A001A34B9 /* AssignedRestPeriod.swift */,
 				033E666B25E975D300C56F24 /* RestPeriodView.swift */,
+				033E667C25EA976900C56F24 /* RestPlanView.swift */,
 				033E667725EA952E00C56F24 /* TimeIntervalExtension.swift */,
 				037F797725E6A481001A34B9 /* RestCalculator.swift */,
 				037F794325E6A3F3001A34B9 /* Assets.xcassets */,
@@ -413,6 +416,7 @@
 				037F797825E6A481001A34B9 /* RestCalculator.swift in Sources */,
 				033E666725E9426F00C56F24 /* InputView.swift in Sources */,
 				037F797325E6A45A001A34B9 /* AssignedRestPeriod.swift in Sources */,
+				033E667D25EA976900C56F24 /* RestPlanView.swift in Sources */,
 				037F794025E6A3EA001A34B9 /* FlightRestsApp.swift in Sources */,
 				033E667825EA952E00C56F24 /* TimeIntervalExtension.swift in Sources */,
 			);

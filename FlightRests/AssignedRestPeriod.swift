@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct AssignedRestPeriod {
+struct AssignedRestPeriod: Identifiable {
+    let id = UUID()
     let owner: String
     let period: DateInterval
 

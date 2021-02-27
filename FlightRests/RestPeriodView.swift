@@ -34,14 +34,15 @@ struct RestPeriodView: View {
                 Text(timeZoneAbb)
                     .font(.headline)
             }
-        }.padding()
+        }
+        .padding()
         .overlay(
             RoundedRectangle(cornerRadius: 16)
                 .stroke(Color.secondary, lineWidth: 4)
         )
+        .padding(.horizontal)
     }
 }
-
 
 struct RestPeriodView_Previews: PreviewProvider {
     static var previews: some View {
@@ -49,7 +50,7 @@ struct RestPeriodView_Previews: PreviewProvider {
             VStack {
                 RestPeriodView(restPeriod: .example1)
                 RestPeriodView(restPeriod: .example2)
-            }.padding()
+            }
 
         }.colorScheme(.light)
 
