@@ -78,28 +78,18 @@ struct RestCalculator {
 
             // 3 periods: s-b-L-b-s; 5 periods s-b-L-b-s-b-L-b-s
 
-            return Array(repeating: 0, count: numberOfPeriods + numberOfBreaks).enumerated().map { (index, _) -> Int in
-                if index == 0 { // index is 0
+            return (0 ... (numberOfPeriods + numberOfBreaks - 1)).map {
+                if $0 == 0 { // index is 0
                     return finalShortRestPeriod
                 }
-                if index % 4 == 0 { // index is non zero and divisible by 4: 4, 8
+                if $0 % 4 == 0 { // index is non zero and divisible by 4: 4, 8
                     return finalShortRestPeriod
                 }
-                if index % 2 == 0 { // index is non zero, even and not divisible by 4: 2, 6, 10
+                if $0 % 2 == 0 { // index is non zero, even and not divisible by 4: 2, 6, 10
                     return finalLongRestPeriod
                 } else {
                     return finalBreakperiod
                 }
-
-                /*if index % 2 == 0 { // index is even and non zero: 2, 4, 6, 8, 10
-                    if index % 4 == 0 { // index is non zero and divisible by 4: 4, 8
-                        return finalShortRestPeriod
-                    } else { // index is non zero, even and not divisible by 4: 2, 6, 10
-                        return finalLongRestPeriod
-                    }
-                } else {
-                    return finalBreakperiod
-                }*/
             }
         }
 
