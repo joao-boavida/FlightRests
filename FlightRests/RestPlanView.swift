@@ -13,9 +13,14 @@ struct RestPlanView: View {
 
     var body: some View {
         VStack {
-            ForEach(restPlan) { period in
-                RestPeriodView(restPeriod: period)
-            }.padding(.bottom)
+            if restPlan.isEmpty {
+                Text("No Data to Display")
+                    .font(.title)
+            } else {
+                ForEach(restPlan) { period in
+                    RestPeriodView(restPeriod: period)
+                }.padding(.bottom)
+            }
         }
         .navigationBarTitle("Rest Plan", displayMode: .inline)
 
@@ -25,7 +30,7 @@ struct RestPlanView: View {
 struct RestPlanView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            RestPlanView(restPlan: [.example1, .example2, .example1, .example2])
+            RestPlanView(restPlan: [])
         }
     }
 }

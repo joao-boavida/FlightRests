@@ -23,6 +23,10 @@ extension Date {
         return dateFormatter.string(from: self)
     }
 
+    var currentCalendarOneDayLater: Date? {
+        Calendar.autoupdatingCurrent.date(byAdding: .day, value: 1, to: self)
+    }
+
     func round(precision: TimeInterval, rule: FloatingPointRoundingRule) -> Date {
         let seconds = (self.timeIntervalSinceReferenceDate / precision).rounded(rule) *  precision
         return Date(timeIntervalSinceReferenceDate: seconds)

@@ -13,8 +13,8 @@ enum InputType {
 
 struct InputView: View {
 
-    @State private var beginDate = Date().round(precision: 300, rule: .up)
-    @State private var endDate = Calendar.current.date(byAdding: .hour, value: 12, to: Date())?.round(precision: 300, rule: .down) ?? .distantFuture
+    @State private var beginDate = Date() // will be set onAppear
+    @State private var endDate = Date() // will be set onAppear
     @State private var numberOfPilots = 2
     @State private var numberOfRestPeriods = 2
 
@@ -27,9 +27,7 @@ struct InputView: View {
 
     let inputType: InputType
 
-    var computedRestPlan: [AssignedRestPeriod] {
-        RestCalculator.calculateRests(from: RestRequest(beginDate: beginDate, endDate: endDate, numberOfUsers: numberOfPilots, numberOfPeriods: numberOfRestPeriods, minimumBreakUnits: minimumBreakSelection))
-    }
+    var computedRestPlan = AssignedRestPeriod.emptyArray // to be filled when user presses the calculation button
 
     var navBarTitle: String {
         switch inputType {
@@ -42,10 +40,16 @@ struct InputView: View {
         Double(300 * minimumBreakSelection)
     }
 
+    var refreshInputDates: (() -> Void) {
+        return {
+            beginDate = Date().round(precision: 300, rule: .up)
+            endDate = Calendar.current.date(byAdding: .hour, value: 12, to: Date())?.round(precision: 300, rule: .down) ?? .distantFuture
+        }
+    }
+
     var body: some View {
         NavigationView {
             Form {
-
                 Section {
                     VStack {
                         HStack {
@@ -58,13 +62,12 @@ struct InputView: View {
                         HStack {
                             Text("Rest ends by")
                             Spacer()
-                            DatePicker("Rest ends by", selection: $endDate, in: oneDayAgo ... inOneDay, displayedComponents: .hourAndMinute)
+                            DatePicker("Rest ends by", selection: $endDate, in: beginDate ... (beginDate.currentCalendarOneDayLater ?? .distantFuture), displayedComponents: .hourAndMinute)
                                 .datePickerStyle(GraphicalDatePickerStyle())
                                 .accessibility(identifier: "endDatePicker") // debug
                         }
-                    }
+                    }.onAppear(perform: refreshInputDates)
                 }
-
                 Section {
                     Stepper("\(numberOfPilots) Pilots", value: $numberOfPilots, in: 2 ... 3)
                     Stepper("\(numberOfRestPeriods) Rest Periods", value: $numberOfRestPeriods, in: 2 ... 5)
@@ -95,6 +98,8 @@ struct InputView: View {
                 }
                 #endif
             }.navigationBarTitle(navBarTitle)
+        }.onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+            refreshInputDates()
         }
 
     }
