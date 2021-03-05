@@ -18,6 +18,7 @@ struct RestPeriodView: View {
             VStack {
                 Text(restPeriod.period.start.shortFormatTime)
                     .font(.title)
+                    .foregroundColor(.accentColor)
                 Text(timeZoneAbb)
                     .font(.headline)
             }
@@ -31,6 +32,7 @@ struct RestPeriodView: View {
             VStack {
                 Text(restPeriod.period.end.shortFormatTime)
                     .font(.title)
+                    .foregroundColor(.accentColor)
                 Text(timeZoneAbb)
                     .font(.headline)
             }

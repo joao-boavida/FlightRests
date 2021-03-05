@@ -9,6 +9,18 @@ import Foundation
 
 struct RestCalculator {
 
+    public static func calculateRests(from request: RestRequest) -> [AssignedRestPeriod] {
+        let roundedRestInterval = Self.roundRestInterval(beginDate: request.beginDate, endDate: request.endDate, unitLength: request.unitLength)
+
+        let totalUnits = Self.calculateTotalUnits(in: roundedRestInterval, unitLength: request.unitLength)
+
+        let distributedUnits = Self.distributeRestPlanUnits(numberOfUsers: request.numberOfUsers, numberOfPeriods: request.numberOfPeriods, minimumBreakUnits: request.minimumBreakUnits, totalUnits: totalUnits)
+
+        let dates = Self.createRestPlanDates(restPlanUnits: distributedUnits, roundedRestInterval: roundedRestInterval)
+
+        return Self.assignPilotsRemoveBreaks(restPlanDates: dates, numberOfUsers: request.numberOfUsers)
+    }
+
     /// Splits a given interval into rest units of a given length.
     /// - Parameters:
     ///   - roundedRestInterval: interval to be divided; should be trimmed to be a multiple of the unitLength
@@ -24,8 +36,8 @@ struct RestCalculator {
     ///   - endDate: latest date for rest
     ///   - precision: precision, in seconds, of rounding.
     /// - Returns: a date interval with the begindate rounded up, and the enddate rounded down.
-    static func roundRestInterval(beginDate: Date, endDate: Date, precision: TimeInterval) -> DateInterval {
-        DateInterval(start: beginDate.round(precision: precision, rule: .up), end: endDate.round(precision: precision, rule: .down))
+    static func roundRestInterval(beginDate: Date, endDate: Date, unitLength: TimeInterval) -> DateInterval {
+        DateInterval(start: beginDate.round(precision: unitLength, rule: .up), end: endDate.round(precision: unitLength, rule: .down))
     }
 
     /// Distributes the given rest units
@@ -35,13 +47,13 @@ struct RestCalculator {
     ///   - minimumBreakUnits: minimum length of the break periods in units
     ///   - totalUnits: total units available
     /// - Returns: an array of Ints representing the rest and break periods. index 0 and evens are rest periods, odd indices are break periods
-    static func distributeRestPlanUnits(numberOfPilots: Int, numberOfPeriods: Int, minimumBreakUnits: Int, totalUnits: Int) -> [Int] {
+    static func distributeRestPlanUnits(numberOfUsers: Int, numberOfPeriods: Int, minimumBreakUnits: Int, totalUnits: Int) -> [Int] {
 
         let numberOfBreaks = numberOfPeriods - 1
 
         let maximumRestUnits = totalUnits - numberOfBreaks * minimumBreakUnits // max units allocated to rest periods, which may not be possible to do because of the number of periods
 
-        if numberOfPilots % numberOfPeriods == 0 {
+        if numberOfUsers % numberOfPeriods == 0 {
             let finalRestPeriod = maximumRestUnits / numberOfPeriods // number of units per rest period. division of Ints automatically rounds down.
 
             let remainingUnitsForBreaks = maximumRestUnits % numberOfPeriods // remaining units which can, if possible be allocated to increasing breaks
@@ -50,22 +62,27 @@ struct RestCalculator {
 
             let finalBreakPeriod = minimumBreakUnits + usableExtraUnitsForBreaks
 
+            return (0 ... (numberOfPeriods + numberOfBreaks - 1)).map {
+                $0 % 2 == 0 ? finalRestPeriod : finalBreakPeriod
+            }
+
+            /*
             return Array(repeating: 0, count: numberOfPeriods + numberOfBreaks).enumerated().map { (index, _) in
                 index % 2 == 0 ? finalRestPeriod : finalBreakPeriod
-            }
+            }*/
 
         } else {
 
             // for now assume 2 pilots for uneven periods. rests may be slightly different in total duration here.
 
-            guard numberOfPilots == 2 else { fatalError("only implemented uneven rest periods for 2 pilots") }
+            guard numberOfUsers == 2 else { fatalError("only implemented uneven rest periods for 2 pilots") }
 
-            let numberofLongPeriods = numberOfPeriods / numberOfPilots
+            let numberofLongPeriods = numberOfPeriods / numberOfUsers
             let numberofShortPeriods = numberofLongPeriods + 1
 
-            let restUnitsPerPilot = maximumRestUnits / numberOfPilots
+            let restUnitsPerPilot = maximumRestUnits / numberOfUsers
 
-            var remainingUnitsForBreaks = maximumRestUnits % numberOfPilots // will be incremented later
+            var remainingUnitsForBreaks = maximumRestUnits % numberOfUsers // will be incremented later
 
             let finalShortRestPeriod = restUnitsPerPilot / numberofShortPeriods
             let finalLongRestPeriod = restUnitsPerPilot / numberofLongPeriods
@@ -100,7 +117,8 @@ struct RestCalculator {
     ///   - restPlanUnits: the array of time periods in units
     ///   - roundedBeginDate: begin date rounded up to unit length
     /// - Returns: an array of date intervals beginning at the given begin date and respecting the given restPlanUnits array.
-    static func createRestPlanDates(restPlanUnits: [Int], roundedBeginDate: Date) -> [DateInterval] {
+    static func createRestPlanDates(restPlanUnits: [Int], roundedRestInterval: DateInterval) -> [DateInterval] {
+
         let restPlanTimeIntervals = restPlanUnits.map {
             TimeInterval(Double($0 * 300))
         }
@@ -109,7 +127,7 @@ struct RestCalculator {
 
         for counter in 0 ..< restPlanTimeIntervals.count {
             if counter == 0 {
-                restPlanDateIntervals.append(DateInterval(start: roundedBeginDate, duration: restPlanTimeIntervals[counter]))
+                restPlanDateIntervals.append(DateInterval(start: roundedRestInterval.start, duration: restPlanTimeIntervals[counter]))
             } else {
                 restPlanDateIntervals.append(DateInterval(start: restPlanDateIntervals[counter-1].end, duration: restPlanTimeIntervals[counter]))
             }
@@ -124,14 +142,14 @@ struct RestCalculator {
     ///   - restPlanDates: an array of date intervals with the rest and break periods
     ///   - numberOfPilots: number of pilots to rest
     /// - Returns: an array of AssignedRestPeriods with the rest periods correctly assigned to the pilots.
-    static func assignPilotsRemoveBreaks(restPlanDates: [DateInterval], numberOfPilots: Int) -> [AssignedRestPeriod] {
+    static func assignPilotsRemoveBreaks(restPlanDates: [DateInterval], numberOfUsers: Int) -> [AssignedRestPeriod] {
 
         let breaksRemoved = restPlanDates.enumerated().compactMap { (index, element) in
             index % 2 == 0 ? element : nil
         }
 
         return breaksRemoved.enumerated().map { (index, element) in
-            AssignedRestPeriod(owner: "Pilot #\(index % numberOfPilots + 1)", period: element)
+            AssignedRestPeriod(owner: index % numberOfUsers + 1, period: element)
         }
 
     }
