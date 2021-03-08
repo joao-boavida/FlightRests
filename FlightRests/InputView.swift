@@ -7,30 +7,40 @@
 
 import SwiftUI
 
-enum InputType {
+enum CrewFunction {
     case flightCrew, cabinCrew
 }
 
 struct InputView: View {
 
-    @State private var beginDate = Date() // will be set onAppear
-    @State private var endDate = Date() // will be set onAppear
+    @Environment(\.timeZone) var environmentTimeZone
+
+    @State private var beginDate = Date().round(precision: 300, rule: .up)
+    @State private var endDate = Calendar.current.date(byAdding: .hour, value: 3, to: Date())?.round(precision: 300, rule: .up) ?? .distantFuture
+
     @State private var numberOfPilots = 2
     @State private var numberOfRestPeriods = 2
 
     @State private var minimumBreakSelection = 2
+    @State private var useUtcTime = false
 
     let pickerLabels = ["None", "5 min", "10 min", "15 min"]
 
     let oneDayAgo = Calendar.current.date(byAdding: .hour, value: -24, to: Date()) ?? .distantPast
     let inOneDay = Calendar.current.date(byAdding: .hour, value: 24, to: Date()) ?? .distantFuture
 
-    let inputType: InputType
+    let crewFunction: CrewFunction // to choose between flight crew and cabin crew
 
-    var computedRestPlan = AssignedRestPeriod.emptyArray // to be filled when user presses the calculation button
+    var computedRestPlan: [AssignedRestPeriod] {
+        RestCalculator.calculateRests(from: RestRequest(beginDate: beginDate, endDate: endDate, numberOfUsers: numberOfPilots, numberOfPeriods: numberOfRestPeriods, minimumBreakUnits: minimumBreakSelection, crewFunction: crewFunction, timeZone: timeZone))
+    }
+
+    var restPlanView: some View {
+        RestPlanView(restPlan: computedRestPlan).environment(\.timeZone, timeZone)
+    }
 
     var navBarTitle: String {
-        switch inputType {
+        switch crewFunction {
         case .flightCrew: return "Flight Crew"
         case .cabinCrew: return "Cabin Crew"
         }
@@ -40,11 +50,19 @@ struct InputView: View {
         Double(300 * minimumBreakSelection)
     }
 
-    var refreshInputDates: (() -> Void) {
+    var resetInputDates: (() -> Void) {
         return {
             beginDate = Date().round(precision: 300, rule: .up)
-            endDate = Calendar.current.date(byAdding: .hour, value: 12, to: Date())?.round(precision: 300, rule: .down) ?? .distantFuture
+            endDate = Calendar.current.date(byAdding: .hour, value: 3, to: beginDate) ?? .distantFuture
         }
+    }
+
+    var correctedEndDate: Date {
+        endDate > beginDate ? endDate : Calendar.autoupdatingCurrent.date(byAdding: .hour, value: 24, to: endDate) ?? endDate
+    }
+
+    var timeZone: TimeZone {
+        useUtcTime ? TimeZone(secondsFromGMT: 0)! : environmentTimeZone
     }
 
     var body: some View {
@@ -55,18 +73,19 @@ struct InputView: View {
                         HStack {
                             Text("Rest starts at")
                             Spacer()
-                            DatePicker("Rest starts at", selection: $beginDate, in: oneDayAgo ... inOneDay, displayedComponents: .hourAndMinute)
+                            DatePicker("Rest starts at", selection: $beginDate, displayedComponents: [.hourAndMinute])
                                 .datePickerStyle(GraphicalDatePickerStyle())
                                 .accessibility(identifier: "beginDatePicker")
                         }
                         HStack {
                             Text("Rest ends by")
                             Spacer()
-                            DatePicker("Rest ends by", selection: $endDate, in: beginDate ... (beginDate.currentCalendarOneDayLater ?? .distantFuture), displayedComponents: .hourAndMinute)
+                            DatePicker("Rest ends by", selection: $endDate, displayedComponents: [.hourAndMinute])
                                 .datePickerStyle(GraphicalDatePickerStyle())
                                 .accessibility(identifier: "endDatePicker") // debug
                         }
-                    }.onAppear(perform: refreshInputDates)
+                        Toggle("Use UTC Time", isOn: $useUtcTime)
+                    }.environment(\.timeZone, timeZone)
                 }
                 Section {
                     Stepper("\(numberOfPilots) Pilots", value: $numberOfPilots, in: 2 ... 3)
@@ -83,43 +102,32 @@ struct InputView: View {
                 }
 
                 Section {
-                    NavigationLink(
-                        destination: RestPlanView(restPlan: computedRestPlan),
-                        label: {
-                            Text("Calculate Rests")
-                                .foregroundColor(.accentColor)
-                                .font(.headline)
-                        })
+                    NavigationLink(destination: restPlanView) {
+                        Text("Calculate rests")
+                            .font(.headline)
+                            .foregroundColor(.accentColor)
+                    }.disabled(computedRestPlan.isEmpty)
                 }
                 #if DEBUG
                 Section(header: Text("DEBUG")) {
-                    Text("Rest Begins: \(beginDate.shortFormatDateTime)") // debug
-                    Text("Rest Ends: \(endDate.shortFormatDateTime)")
+                    Text("beginDate: \(beginDate.shortFormatDateTime)") // debug
+                    Text("endDate: \(endDate.shortFormatDateTime)")
+                    Text("correctedEndDate: \(correctedEndDate.shortFormatDateTime)")
+                    Text("timeZone: \(timeZone.debugDescription)")
                 }
                 #endif
             }.navigationBarTitle(navBarTitle)
         }.onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-            refreshInputDates()
+            if beginDate < oneDayAgo {
+                resetInputDates()
+            }
         }
-
     }
 }
 
 struct InputView_Previews: PreviewProvider {
     static var previews: some View {
-        TabView {
-            InputView(inputType: .flightCrew)
-                .tabItem {
-                    Image(systemName: "paperplane")
-                    Text("Flight Crew")
-                }
-
-            InputView(inputType: .cabinCrew)
-                .tabItem {
-                    Image(systemName: "paperplane.fill")
-                    Text("Cabin Crew")
-                }
-        }
+        ContentView()
         .previewDevice("iPhone SE (2nd generation)")
     }
 }

@@ -9,9 +9,13 @@ import SwiftUI
 
 struct RestPeriodView: View {
 
+    @Environment(\.timeZone) var environmentTimeZone
+
     let restPeriod: AssignedRestPeriod
 
-    let timeZoneAbb = Calendar.autoupdatingCurrent.timeZone.abbreviation() ?? ""
+    var timeZoneAbb: String {
+        environmentTimeZone.abbreviation() ?? ""
+    }
 
     var body: some View {
         HStack {

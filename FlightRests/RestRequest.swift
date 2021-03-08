@@ -16,4 +16,6 @@ struct RestRequest {
     let minimumBreakUnits: Int
     let midFlightServiceUnits: Int = 0 // for cabin crew only
     let beforeLandingServiceUnits: Int = 0 // for cabin crew only
+    let crewFunction: CrewFunction
+    let timeZone: TimeZone
 }

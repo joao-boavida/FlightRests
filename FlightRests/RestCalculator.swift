@@ -10,11 +10,26 @@ import Foundation
 struct RestCalculator {
 
     public static func calculateRests(from request: RestRequest) -> [AssignedRestPeriod] {
+
+        // end date must not precede begin date
+        guard request.beginDate < request.endDate else { return [] }
+
         let roundedRestInterval = Self.roundRestInterval(beginDate: request.beginDate, endDate: request.endDate, unitLength: request.unitLength)
 
         let totalUnits = Self.calculateTotalUnits(in: roundedRestInterval, unitLength: request.unitLength)
 
+        // the number of units must be at least the breaks plus 1 per rest period.
+        guard totalUnits >= request.numberOfPeriods + request.minimumBreakUnits * (request.numberOfPeriods - 1) else { return []}
+
+        if request.numberOfUsers % request.numberOfPeriods != 0 {
+            guard request.numberOfUsers == 2 else { return [] }
+        }
+
         let distributedUnits = Self.distributeRestPlanUnits(numberOfUsers: request.numberOfUsers, numberOfPeriods: request.numberOfPeriods, minimumBreakUnits: request.minimumBreakUnits, totalUnits: totalUnits)
+
+        // confirm the distributer did not return an empty array
+
+        guard !distributedUnits.isEmpty else { return []}
 
         let dates = Self.createRestPlanDates(restPlanUnits: distributedUnits, roundedRestInterval: roundedRestInterval)
 
@@ -37,7 +52,13 @@ struct RestCalculator {
     ///   - precision: precision, in seconds, of rounding.
     /// - Returns: a date interval with the begindate rounded up, and the enddate rounded down.
     static func roundRestInterval(beginDate: Date, endDate: Date, unitLength: TimeInterval) -> DateInterval {
-        DateInterval(start: beginDate.round(precision: unitLength, rule: .up), end: endDate.round(precision: unitLength, rule: .down))
+        let roundedStartDate = beginDate.round(precision: unitLength, rule: .up)
+        let roundedEndDate = endDate.round(precision: unitLength, rule: .down)
+        if roundedStartDate < roundedEndDate {
+            return DateInterval(start: beginDate.round(precision: unitLength, rule: .up), end: endDate.round(precision: unitLength, rule: .down))
+        } else {
+            return DateInterval(start: beginDate, duration: 0) // this interval will then be deemed unusable for rests.
+        }
     }
 
     /// Distributes the given rest units
@@ -75,7 +96,7 @@ struct RestCalculator {
 
             // for now assume 2 pilots for uneven periods. rests may be slightly different in total duration here.
 
-            guard numberOfUsers == 2 else { fatalError("only implemented uneven rest periods for 2 pilots") }
+            guard numberOfUsers == 2 else { return [] }
 
             let numberofLongPeriods = numberOfPeriods / numberOfUsers
             let numberofShortPeriods = numberofLongPeriods + 1
