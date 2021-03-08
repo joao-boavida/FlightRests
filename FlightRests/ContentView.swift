@@ -10,16 +10,20 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         TabView {
-            InputView(inputType: .flightCrew)
+            InputView(crewFunction: .flightCrew)
                 .tabItem {
                     Image(systemName: "paperplane")
                     Text("Flight Crew")
                 }
-
-            InputView(inputType: .cabinCrew)
+            InputView(crewFunction: .cabinCrew)
                 .tabItem {
                     Image(systemName: "paperplane.fill")
                     Text("Cabin Crew")
+                }
+            Text("Recent Plans")
+                .tabItem {
+                    Image(systemName: "clock")
+                    Text("Recent Plans")
                 }
         }
     }
