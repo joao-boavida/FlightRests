@@ -23,6 +23,20 @@ extension Date {
         return dateFormatter.string(from: self)
     }
 
+    var shortFormatDate: String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        dateFormatter.timeStyle = .none
+        return dateFormatter.string(from: self)
+    }
+
+    var ddMMDate: String {
+        let formatter = DateFormatter()
+        formatter.locale = .current
+        formatter.setLocalizedDateFormatFromTemplate("dd/MM")
+        return formatter.string(from: self)
+    }
+
     var currentCalendarOneDayLater: Date? {
         Calendar.autoupdatingCurrent.date(byAdding: .day, value: 1, to: self)
     }

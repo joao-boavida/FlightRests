@@ -20,7 +20,12 @@ struct ContentView: View {
                     Image(systemName: "paperplane.fill")
                     Text("Cabin Crew")
                 }
-            Text("Recent Plans")
+            NavigationView {
+                VStack {
+                    RestRequestView(request: .exampleFc1)
+                    RestRequestView(request: .exampleFc2)
+                }
+            }
                 .tabItem {
                     Image(systemName: "clock")
                     Text("Recent Plans")

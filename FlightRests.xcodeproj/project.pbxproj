@@ -21,6 +21,7 @@
 		037F796E25E6A441001A34B9 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 037F796D25E6A441001A34B9 /* DateExtension.swift */; };
 		037F797325E6A45A001A34B9 /* AssignedRestPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 037F797225E6A45A001A34B9 /* AssignedRestPeriod.swift */; };
 		037F797825E6A481001A34B9 /* RestCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 037F797725E6A481001A34B9 /* RestCalculator.swift */; };
+		03CB03CA25F6A3FB0037DAE4 /* RestRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CB03C925F6A3FB0037DAE4 /* RestRequestView.swift */; };
 		32FBE40E2586499B506E8218 /* Pods_FlightRests_FlightRestsUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FD1492E4E25F34CAE5F8293 /* Pods_FlightRests_FlightRestsUITests.framework */; };
 		3D255A55C48DB2A18DB1F82C /* Pods_FlightRestsTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC1F2861CB79EB2FBF9495CA /* Pods_FlightRestsTests.framework */; };
 		4F036E3EE0C0A0AC6CEDCD36 /* Pods_FlightRests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7799D0F36705B58BD601B59F /* Pods_FlightRests.framework */; };
@@ -64,6 +65,7 @@
 		037F796D25E6A441001A34B9 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		037F797225E6A45A001A34B9 /* AssignedRestPeriod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignedRestPeriod.swift; sourceTree = "<group>"; };
 		037F797725E6A481001A34B9 /* RestCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestCalculator.swift; sourceTree = "<group>"; };
+		03CB03C925F6A3FB0037DAE4 /* RestRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestRequestView.swift; sourceTree = "<group>"; };
 		26377A16B43F715992BCA64E /* Pods-FlightRestsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlightRestsTests.debug.xcconfig"; path = "Target Support Files/Pods-FlightRestsTests/Pods-FlightRestsTests.debug.xcconfig"; sourceTree = "<group>"; };
 		32B05C255557E73880ED2AD8 /* Pods-FlightRests-FlightRestsUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlightRests-FlightRestsUITests.release.xcconfig"; path = "Target Support Files/Pods-FlightRests-FlightRestsUITests/Pods-FlightRests-FlightRestsUITests.release.xcconfig"; sourceTree = "<group>"; };
 		4CBF295E110C2FF4F07D1BF0 /* Pods-FlightRests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlightRests.release.xcconfig"; path = "Target Support Files/Pods-FlightRests/Pods-FlightRests.release.xcconfig"; sourceTree = "<group>"; };
@@ -132,6 +134,7 @@
 				037F794125E6A3EA001A34B9 /* ContentView.swift */,
 				037F797225E6A45A001A34B9 /* AssignedRestPeriod.swift */,
 				03146E6825EE896D00F4C8B3 /* RestRequest.swift */,
+				03CB03C925F6A3FB0037DAE4 /* RestRequestView.swift */,
 				037F793F25E6A3EA001A34B9 /* FlightRestsApp.swift */,
 				037F796D25E6A441001A34B9 /* DateExtension.swift */,
 				033E667725EA952E00C56F24 /* TimeIntervalExtension.swift */,
@@ -421,6 +424,7 @@
 				033E666725E9426F00C56F24 /* InputView.swift in Sources */,
 				037F797325E6A45A001A34B9 /* AssignedRestPeriod.swift in Sources */,
 				033E667D25EA976900C56F24 /* RestPlanView.swift in Sources */,
+				03CB03CA25F6A3FB0037DAE4 /* RestRequestView.swift in Sources */,
 				037F794025E6A3EA001A34B9 /* FlightRestsApp.swift in Sources */,
 				033E667825EA952E00C56F24 /* TimeIntervalExtension.swift in Sources */,
 			);
