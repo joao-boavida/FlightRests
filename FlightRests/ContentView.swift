@@ -21,7 +21,7 @@ struct ContentView: View {
                     Text("Cabin Crew")
                 }
             NavigationView {
-                VStack {
+                List {
                     RestRequestView(request: .exampleFc1)
                     RestRequestView(request: .exampleFc2)
                 }

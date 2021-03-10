@@ -50,7 +50,7 @@ struct RestRequestView: View {
 struct RestRequestView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            VStack {
+            List {
                 RestRequestView(request: .exampleFc1)
                 RestRequestView(request: .exampleFc2)
             }
