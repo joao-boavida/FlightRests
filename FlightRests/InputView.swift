@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum CrewFunction {
+enum CrewFunction: String, Codable {
     case flightCrew, cabinCrew
 }
 
