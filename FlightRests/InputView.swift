@@ -105,13 +105,7 @@ struct InputView: View {
                     NavigationButton(destination: restPlanView, title: "Calculate Rests") {
                         // save request here
                         print("save request") // debug
-                    }
-                    NavigationLink(destination: restPlanView) {
-                        Text("Calculate rests")
-                            .font(.headline)
-                            .foregroundColor(.accentColor)
                     }.disabled(computedRestPlan.isEmpty)
-                    
                 }
                 #if DEBUG
                 Section(header: Text("DEBUG")) {

@@ -49,7 +49,6 @@ struct RestRequestView: View {
             Spacer()
             Image(systemName: "chevron.forward")
         }.padding()
-        
         .border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/, width: 2)
     }
 }

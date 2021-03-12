@@ -20,7 +20,7 @@ struct RestPeriodView: View {
     var body: some View {
         HStack {
             VStack {
-                Text(restPeriod.period.start.shortFormatTime)
+                Text(restPeriod.period.start.shortFormatTime(in: environmentTimeZone))
                     .font(.title)
                     .foregroundColor(.accentColor)
                 Text(timeZoneAbb)
@@ -34,7 +34,7 @@ struct RestPeriodView: View {
             }
             Spacer()
             VStack {
-                Text(restPeriod.period.end.shortFormatTime)
+                Text(restPeriod.period.end.shortFormatTime(in: environmentTimeZone))
                     .font(.title)
                     .foregroundColor(.accentColor)
                 Text(timeZoneAbb)

@@ -22,7 +22,7 @@ struct RestPlanView: View {
                         .font(.title)
                 } else {
                     ForEach(restPlan) { period in
-                        RestPeriodView(restPeriod: period)
+                        RestPeriodView(restPeriod: period).environment(\.timeZone, environmentTimeZone)
                     }.padding(.bottom)
                 }
                 #if DEBUG

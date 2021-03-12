@@ -13,13 +13,23 @@ extension Date {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
         dateFormatter.timeStyle = .short
-        return dateFormatter.string(from: self)
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        return dateFormatter.string(from: self) + " UTC"
     }
 
     var shortFormatTime: String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .none
         dateFormatter.timeStyle = .short
+
+        return dateFormatter.string(from: self)
+    }
+
+    func shortFormatTime(in timeZone: TimeZone) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .none
+        dateFormatter.timeStyle = .short
+        dateFormatter.timeZone = timeZone
         return dateFormatter.string(from: self)
     }
 
