@@ -20,24 +20,31 @@ struct RestRequestView: View {
     var body: some View {
         HStack {
             Group {
-                //Text(request.beginDate.ddMMDate)
+                Text(request.beginDate.ddMMDate)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
                 Text(request.beginDate.shortFormatTime)
-                    .font(.title2)
+
                 Spacer()
                 Text(request.endDate.shortFormatTime)
-                    .font(.title2)
-            }
+
+            }.multilineTextAlignment(.center)
+            .font(.title2)
             Spacer()
             VStack {
                 Text(String(request.numberOfUsers))
                     .font(.title3)
                 Text(crewDesignator)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
             }
             Spacer()
             VStack {
                 Text(String(request.numberOfPeriods))
                     .font(.title3)
                 Text("Periods")
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
             }
             Spacer()
             Image(systemName: "chevron.forward")
