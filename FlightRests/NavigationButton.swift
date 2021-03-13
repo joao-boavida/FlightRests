@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+//bug: when the text is pressed the closure is triggered, otherwise it is not
+
 /// Looks like a navigation link but will perform an action before activating the link.
 struct NavigationButton<Destination: View>: View {
 
@@ -18,17 +20,15 @@ struct NavigationButton<Destination: View>: View {
 
     var body: some View {
         ZStack {
-            HStack {
-                Text(title)
-                    .font(.headline)
-                    .foregroundColor(.accentColor)
-                Spacer()
-            }.onTapGesture {
-                handler?()
-                navigationLinkActive = true
-            }
             NavigationLink(destination: destination, isActive: $navigationLinkActive) {
                 EmptyView()
+            }.allowsHitTesting(/*@START_MENU_TOKEN@*/false/*@END_MENU_TOKEN@*/)
+            HStack {
+                Button(title) {
+                    handler?()
+                    navigationLinkActive = true
+                }.font(.headline)
+                Spacer()
             }
         }
     }
