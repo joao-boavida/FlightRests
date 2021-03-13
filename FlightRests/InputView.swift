@@ -15,6 +15,9 @@ struct InputView: View {
 
     @Environment(\.timeZone) var environmentTimeZone
 
+    /// database of requests to be used in the RecentRequestsView
+    @ObservedObject var requestLog: RequestLog
+
     @State private var beginDate = Date().round(precision: 300, rule: .up)
     @State private var endDate = Calendar.current.date(byAdding: .hour, value: 3, to: Date())?.round(precision: 300, rule: .up) ?? .distantFuture
 
@@ -31,12 +34,12 @@ struct InputView: View {
 
     let crewFunction: CrewFunction // to choose between flight crew and cabin crew
 
-    var computedRestPlan: [AssignedRestPeriod] {
-        RestCalculator.calculateRests(from: RestRequest(beginDate: beginDate, endDate: endDate, numberOfUsers: numberOfPilots, numberOfPeriods: numberOfRestPeriods, minimumBreakUnits: minimumBreakSelection, crewFunction: crewFunction, timeZone: timeZone))
+    var restRequest: RestRequest {
+        RestRequest(beginDate: beginDate, endDate: correctedEndDate, numberOfUsers: numberOfPilots, numberOfPeriods: numberOfRestPeriods, minimumBreakUnits: minimumBreakSelection, crewFunction: crewFunction, timeZone: timeZone)
     }
 
-    var restPlanView: some View {
-        RestPlanView(restPlan: computedRestPlan).environment(\.timeZone, timeZone)
+    var computedRestPlan: [AssignedRestPeriod] {
+        RestCalculator.calculateRests(from: restRequest)
     }
 
     var navBarTitle: String {
@@ -102,19 +105,10 @@ struct InputView: View {
                 }
 
                 Section {
-                    NavigationButton(destination: restPlanView, title: "Calculate Rests") {
-                        // save request here
-                        print("save request") // debug
+                    NavigationButton(destination: RestPlanView(restPlan: computedRestPlan).environment(\.timeZone, timeZone), title: "Calculate Rests") {
+                        requestLog.addRequest(restRequest)
                     }.disabled(computedRestPlan.isEmpty)
                 }
-                #if DEBUG
-                Section(header: Text("DEBUG")) {
-                    Text("beginDate: \(beginDate.shortFormatDateTime)") // debug
-                    Text("endDate: \(endDate.shortFormatDateTime)")
-                    Text("correctedEndDate: \(correctedEndDate.shortFormatDateTime)")
-                    Text("timeZone: \(timeZone.debugDescription)")
-                }
-                #endif
             }.navigationBarTitle(navBarTitle)
         }.onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
             if beginDate < oneDayAgo {

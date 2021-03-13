@@ -8,24 +8,23 @@
 import SwiftUI
 
 struct ContentView: View {
+
+    /// Initialisation of the requests database
+    @StateObject var requestLog = RequestLog()
+
     var body: some View {
         TabView {
-            InputView(crewFunction: .flightCrew)
+            InputView(requestLog: requestLog, crewFunction: .flightCrew)
                 .tabItem {
                     Image(systemName: "paperplane")
                     Text("Flight Crew")
                 }
-            InputView(crewFunction: .cabinCrew)
+            InputView(requestLog: requestLog, crewFunction: .cabinCrew)
                 .tabItem {
                     Image(systemName: "paperplane.fill")
                     Text("Cabin Crew")
                 }
-            NavigationView {
-                List {
-                    RestRequestView(request: .exampleFc1)
-                    RestRequestView(request: .exampleFc2)
-                }
-            }
+            RecentRequestsView(requestLog: requestLog)
                 .tabItem {
                     Image(systemName: "clock")
                     Text("Recent Plans")
