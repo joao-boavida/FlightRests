@@ -94,7 +94,7 @@ struct InputView: View {
                     Stepper("\(numberOfPilots) Pilots", value: $numberOfPilots, in: 2 ... 3)
                     Stepper("\(numberOfRestPeriods) Rest Periods", value: $numberOfRestPeriods, in: 2 ... 5)
                 }
-
+                
                 Section {
                     Picker("Minimum Break", selection: $minimumBreakSelection) {
                         ForEach(0 ..< pickerLabels.count) {

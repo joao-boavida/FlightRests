@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		03146E6925EE896D00F4C8B3 /* RestRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03146E6825EE896D00F4C8B3 /* RestRequest.swift */; };
+		0329EF5C260F85F800D15BA3 /* Project Notepad.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0329EF5B260F85F800D15BA3 /* Project Notepad.rtf */; };
 		033E666725E9426F00C56F24 /* InputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033E666625E9426F00C56F24 /* InputView.swift */; };
 		033E666C25E975D300C56F24 /* RestPeriodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033E666B25E975D300C56F24 /* RestPeriodView.swift */; };
 		033E667825EA952E00C56F24 /* TimeIntervalExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033E667725EA952E00C56F24 /* TimeIntervalExtension.swift */; };
@@ -50,6 +51,7 @@
 
 /* Begin PBXFileReference section */
 		03146E6825EE896D00F4C8B3 /* RestRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestRequest.swift; sourceTree = "<group>"; };
+		0329EF5B260F85F800D15BA3 /* Project Notepad.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = "Project Notepad.rtf"; sourceTree = "<group>"; };
 		033E666625E9426F00C56F24 /* InputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputView.swift; sourceTree = "<group>"; };
 		033E666B25E975D300C56F24 /* RestPeriodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestPeriodView.swift; sourceTree = "<group>"; };
 		033E667725EA952E00C56F24 /* TimeIntervalExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeIntervalExtension.swift; sourceTree = "<group>"; };
@@ -156,6 +158,7 @@
 				03146E6825EE896D00F4C8B3 /* RestRequest.swift */,
 				03CB03C925F6A3FB0037DAE4 /* RestRequestView.swift */,
 				033E667725EA952E00C56F24 /* TimeIntervalExtension.swift */,
+				0329EF5B260F85F800D15BA3 /* Project Notepad.rtf */,
 			);
 			path = FlightRests;
 			sourceTree = "<group>";
@@ -316,6 +319,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0329EF5C260F85F800D15BA3 /* Project Notepad.rtf in Resources */,
 				037F794725E6A3F3001A34B9 /* Preview Assets.xcassets in Resources */,
 				037F794425E6A3F3001A34B9 /* Assets.xcassets in Resources */,
 			);
