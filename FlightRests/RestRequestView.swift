@@ -17,19 +17,27 @@ struct RestRequestView: View {
         }
     }
 
+    /// If the locale's time format includes AM/PM the time should be displayed in 2 lines; otherwise 1 line will do with the appropriate scaling. The testing is done by checking for a space character.
+    /// - Parameter timeString: the string to be analysed
+    /// - Returns: number of lines according to criterium above
+    private func timeLineLimit(_ timeString: String) -> Int {
+        timeString.contains(" ") ? 2 : 1
+    }
+
     var body: some View {
         HStack {
             Group {
                 Text(request.beginDate.ddMMDate)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.5)
                 Text(request.beginDate.shortFormatTime)
-
+                    .lineLimit(timeLineLimit(request.beginDate.shortFormatTime))
                 Spacer()
                 Text(request.endDate.shortFormatTime)
+                    .lineLimit(timeLineLimit(request.endDate.shortFormatTime))
 
             }.multilineTextAlignment(.center)
             .font(.title2)
+            .minimumScaleFactor(0.5)
             Spacer()
             VStack {
                 Text(String(request.numberOfUsers))
@@ -59,8 +67,8 @@ struct RestRequestView_Previews: PreviewProvider {
             List {
                 RestRequestView(request: .exampleFc1)
                 RestRequestView(request: .exampleFc2)
+                    .environment(\.locale, Locale(identifier: "en_PT"))
             }
         }
-
     }
 }
