@@ -14,11 +14,22 @@ struct RecentRequestsView: View {
 
     var body: some View {
         NavigationView {
-            List {
-                ForEach(requestLog.requests.sorted(), id: \.self) { request in
-                    RestRequestView(request: request)
-                }
-            }.navigationBarTitle("Recent Rests")
+            if requestLog.requests.isEmpty {
+                ZStack {
+                    Color.gray
+                        .opacity(0.3)
+                    Text("Previous rest calculations will be shown here.")
+                        .font(.title2)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                }.navigationBarTitle("Recent Rests")
+            } else {
+                List {
+                    ForEach(requestLog.requests.sorted().reversed(), id: \.self) { request in
+                        RestRequestView(request: request)
+                    }
+                }.navigationBarTitle("Recent Rests")
+            }
         }
     }
 }
