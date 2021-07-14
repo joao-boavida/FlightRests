@@ -9,9 +9,10 @@ import Foundation
 
 struct RestRequest: Codable, Hashable, Comparable {
     static func < (lhs: RestRequest, rhs: RestRequest) -> Bool {
-        lhs.beginDate < rhs.beginDate
+        lhs.creationDate < rhs.creationDate
     }
 
+    var creationDate: Date = Date()
     let beginDate: Date
     let endDate: Date
     var unitLength: TimeInterval = 300  // minimum rest period division in seconds, usually 300s = 5 min
