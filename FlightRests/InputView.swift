@@ -25,7 +25,9 @@ struct InputView: View {
     @State private var numberOfRestPeriods = 2
 
     @State private var minimumBreakSelection = 2
-    @State private var useUtcTime = false
+    @State private var useLocalTime = false
+
+    @State private var currentDate = Date()
 
     let pickerLabels = ["None", "5 min", "10 min", "15 min"]
 
@@ -65,12 +67,36 @@ struct InputView: View {
     }
 
     var timeZone: TimeZone {
-        useUtcTime ? TimeZone(secondsFromGMT: 0)! : environmentTimeZone
+        useLocalTime ? environmentTimeZone : TimeZone(secondsFromGMT: 0)!
+    }
+
+    let timer = Timer.TimerPublisher(interval: 0.5, runLoop: .main, mode: .common).autoconnect()
+
+    var currentTimeString: String {
+        if timeZone.secondsFromGMT() == 0 {
+            // utc time, fixed format and no label
+            let dateFormatter = DateFormatter()
+            dateFormatter.timeZone = timeZone
+            dateFormatter.locale = .autoupdatingCurrent
+            dateFormatter.dateFormat = "HH:mm:ss"
+            return dateFormatter.string(from: currentDate)
+        } else {
+            let longTime = currentDate.longFormatTime(in: timeZone)
+            return longTime.replacingOccurrences(of: "GMT", with: "UTC")
+        }
     }
 
     var body: some View {
         NavigationView {
             Form {
+                Section {
+                    VStack {
+                        Text(currentTimeString)
+                            .font(.largeTitle)
+                            .padding()
+                        Toggle("Use Local Time", isOn: $useLocalTime)
+                    }
+                }
                 Section {
                     VStack {
                         HStack {
@@ -87,7 +113,7 @@ struct InputView: View {
                                 .datePickerStyle(GraphicalDatePickerStyle())
                                 .accessibility(identifier: "endDatePicker") // debug
                         }
-                        Toggle("Use UTC Time", isOn: $useUtcTime)
+
                     }.environment(\.timeZone, timeZone)
                 }
                 Section {
@@ -113,6 +139,9 @@ struct InputView: View {
             if beginDate < oneDayAgo {
                 resetInputDates()
             }
+        }
+        .onReceive(timer) { input in
+            currentDate = input
         }
     }
 }
