@@ -27,7 +27,7 @@ struct ContentView: View {
             RecentRequestsView(requestLog: requestLog)
                 .tabItem {
                     Image(systemName: "clock")
-                    Text("Recent Plans")
+                    Text("Recent")
                 }
         }
     }
