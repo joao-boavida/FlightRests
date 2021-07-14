@@ -33,6 +33,14 @@ extension Date {
         return dateFormatter.string(from: self)
     }
 
+    func longFormatTime(in timeZone: TimeZone) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .none
+        dateFormatter.timeStyle = .long
+        dateFormatter.timeZone = timeZone
+        return dateFormatter.string(from: self)
+    }
+
     var shortFormatDate: String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
