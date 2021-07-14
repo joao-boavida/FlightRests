@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// A view which shows recently created rest requests
 struct RecentRequestsView: View {
 
     /// database of requests to be used in the RecentRequestsView
@@ -28,9 +29,20 @@ struct RecentRequestsView: View {
                     ForEach(requestLog.requests.sorted().reversed(), id: \.self) { request in
                         RestRequestView(request: request)
                     }
+                    .onDelete(perform: delete)
                 }.navigationBarTitle("Recent Rests")
             }
         }
+    }
+
+    /// Function called by the delete gesture which triggers the deletion of the specified rest request.
+    /// - Parameter offsets: offsets sent by the swipe to delete gesture
+    func delete(at offsets: IndexSet) {
+        let elementToRemove = offsets.map { requestLog.requests.sorted().reversed()[$0]}.first
+
+        guard let elementToRemove = elementToRemove else { return }
+
+        requestLog.removeRequest(elementToRemove)
     }
 }
 
