@@ -18,6 +18,18 @@ struct RestRequestView: View {
         }
     }
 
+    func dateLabel(for date: Date, in timeZone: TimeZone = .autoupdatingCurrent) -> String {
+        let relativeFormatter = RelativeDateTimeFormatter()
+        relativeFormatter.dateTimeStyle = .named
+        if Calendar.autoupdatingCurrent.isDateInToday(date) {
+            return "Today"
+        } else if Calendar.autoupdatingCurrent.isDateInYesterday(date) {
+            return "Yesterday"
+        } else {
+            return date.ddMMDate(in: timeZone)
+        }
+    }
+
     /// If the locale's time format includes AM/PM the time should be displayed in 2 lines; otherwise 1 line will do with the appropriate scaling. The testing is done by checking for a space character.
     /// - Parameter timeString: the string to be analysed
     /// - Returns: number of lines according to criterium above
@@ -29,26 +41,31 @@ struct RestRequestView: View {
         NavigationLink( destination: RestPlanView(restPlan: RestCalculator.calculateRests(from: request)).environment(\.timeZone, request.timeZone)) {
             HStack {
                 Group {
-                    Text(request.beginDate.ddMMDate(in: request.timeZone))
+                    Text(dateLabel(for: request.beginDate, in: request.timeZone))
                         .lineLimit(1)
-                    Text(request.beginDate.shortFormatTime(in: request.timeZone))
-                        .lineLimit(timeLineLimit(request.beginDate.shortFormatTime(in: request.timeZone)))
-                    Spacer()
-                    Text(request.endDate.shortFormatTime(in: request.timeZone))
-                        .lineLimit(timeLineLimit(request.endDate.shortFormatTime(in: request.timeZone)))
+                    VStack {
+                        HStack {
+                            Text(request.beginDate.shortFormatTime(in: request.timeZone))
+                                .lineLimit(timeLineLimit(request.beginDate.shortFormatTime(in: request.timeZone)))
+                            Spacer()
+                            Text(request.endDate.shortFormatTime(in: request.timeZone))
+                                .lineLimit(timeLineLimit(request.endDate.shortFormatTime(in: request.timeZone)))
+                        }
+                        Text(request.timeZone.abbreviation() ?? "?").font(.callout)
+                    }.padding(.horizontal)
 
                 }.multilineTextAlignment(.center)
                 .font(.title2)
                 .minimumScaleFactor(0.5)
                 Spacer()
-                VStack {
+                /*VStack {
                     Text(String(request.numberOfUsers))
                         .font(.title3)
                     Text(crewDesignator)
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
                 }
-                Spacer()
+                Spacer()*/
                 VStack {
                     Text(String(request.numberOfPeriods))
                         .font(.title3)
