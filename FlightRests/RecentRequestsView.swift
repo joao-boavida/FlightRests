@@ -18,19 +18,21 @@ struct RecentRequestsView: View {
             if requestLog.requests.isEmpty {
                 ZStack {
                     Color.gray
-                        .opacity(0.3)
+                        .opacity(0.1)
                     Text("Previous rest calculations will be shown here.")
                         .font(.title2)
                         .multilineTextAlignment(.center)
                         .padding()
-                }.navigationBarTitle("Recent Rests")
+                        .opacity(0.5)
+                }.navigationBarTitle("Recent Rests", displayMode: .inline)
             } else {
                 List {
                     ForEach(requestLog.requests.sorted().reversed(), id: \.self) { request in
                         RestRequestView(request: request)
                     }
                     .onDelete(perform: delete)
-                }.navigationBarTitle("Recent Rests")
+                }.navigationBarTitle("Recent Rests", displayMode: .inline)
+
             }
         }
     }
