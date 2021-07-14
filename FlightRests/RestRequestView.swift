@@ -5,6 +5,7 @@
 //  Created by Joao Boavida on 08/03/2021.
 //
 
+
 import SwiftUI
 
 struct RestRequestView: View {
@@ -25,42 +26,38 @@ struct RestRequestView: View {
     }
 
     var body: some View {
-        HStack {
-            Group {
-                Text(request.beginDate.ddMMDate)
-                    .lineLimit(1)
-                Text(request.beginDate.shortFormatTime)
-                    .lineLimit(timeLineLimit(request.beginDate.shortFormatTime))
-                Spacer()
-                Text(request.endDate.shortFormatTime)
-                    .lineLimit(timeLineLimit(request.endDate.shortFormatTime))
+        NavigationLink( destination: RestPlanView(restPlan: RestCalculator.calculateRests(from: request)).environment(\.timeZone, request.timeZone)) {
+            HStack {
+                Group {
+                    Text(request.beginDate.ddMMDate(in: request.timeZone))
+                        .lineLimit(1)
+                    Text(request.beginDate.shortFormatTime(in: request.timeZone))
+                        .lineLimit(timeLineLimit(request.beginDate.shortFormatTime(in: request.timeZone)))
+                    Spacer()
+                    Text(request.endDate.shortFormatTime(in: request.timeZone))
+                        .lineLimit(timeLineLimit(request.endDate.shortFormatTime(in: request.timeZone)))
 
-            }.multilineTextAlignment(.center)
-            .font(.title2)
-            .minimumScaleFactor(0.5)
-            Spacer()
-            VStack {
-                Text(String(request.numberOfUsers))
-                    .font(.title3)
-                Text(crewDesignator)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.5)
-            }
-            Spacer()
-            VStack {
-                Text(String(request.numberOfPeriods))
-                    .font(.title3)
-                Text("Periods")
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.5)
-            }
-            Spacer()
-            Image(systemName: "chevron.forward")
-        }.padding()
-        .overlay(
-            RoundedRectangle(cornerRadius: 10)
-                .stroke(Color.black, lineWidth: 2)
-        )
+                }.multilineTextAlignment(.center)
+                .font(.title2)
+                .minimumScaleFactor(0.5)
+                Spacer()
+                VStack {
+                    Text(String(request.numberOfUsers))
+                        .font(.title3)
+                    Text(crewDesignator)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                }
+                Spacer()
+                VStack {
+                    Text(String(request.numberOfPeriods))
+                        .font(.title3)
+                    Text("Periods")
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                }
+            }.padding()
+        }
     }
 }
 
@@ -70,7 +67,7 @@ struct RestRequestView_Previews: PreviewProvider {
             List {
                 RestRequestView(request: .exampleFc1)
                 RestRequestView(request: .exampleFc2)
-                    .environment(\.locale, Locale(identifier: "en_PT"))
+
             }
         }
     }
