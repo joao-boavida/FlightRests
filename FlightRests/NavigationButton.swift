@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-//bug: when the text is pressed the closure is triggered, otherwise it is not
-
 /// Looks like a navigation link but will perform an action before activating the link.
 struct NavigationButton<Destination: View>: View {
 

@@ -51,14 +51,14 @@ struct RestPeriodView: View {
 }
 
 struct RestPeriodView_Previews: PreviewProvider {
+
     static var previews: some View {
         NavigationView {
             VStack {
                 RestPeriodView(restPeriod: .example1)
                 RestPeriodView(restPeriod: .example2)
+                Text("Locale: \(Locale.autoupdatingCurrent.debugDescription)").font(.title2)
             }
-
         }.colorScheme(.light)
-
     }
 }
