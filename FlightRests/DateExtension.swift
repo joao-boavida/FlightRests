@@ -40,9 +40,10 @@ extension Date {
         return dateFormatter.string(from: self)
     }
 
-    var ddMMDate: String {
+    func ddMMDate(in timeZone: TimeZone = .autoupdatingCurrent) -> String {
         let formatter = DateFormatter()
         formatter.locale = .current
+        formatter.timeZone = timeZone
         formatter.setLocalizedDateFormatFromTemplate("dd/MM")
         return formatter.string(from: self)
     }
