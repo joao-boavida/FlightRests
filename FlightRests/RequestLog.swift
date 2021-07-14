@@ -26,6 +26,7 @@ final class RequestLog: ObservableObject {
         }
     }
 
+    /// saves the requests array to the documents folder
     private func save() {
         do {
             try FileManager.writeToDocumentsFolder(data: requests, fileName: Self.saveKey)
@@ -34,8 +35,17 @@ final class RequestLog: ObservableObject {
         }
     }
 
+    /// Adds an element to the requests array, then saves
+    /// - Parameter request: element to add
     func addRequest(_ request: RestRequest) {
         requests.insert(request)
+        save()
+    }
+
+    /// Removes an element from the requests array, then saves
+    /// - Parameter element: element to remove
+    func removeRequest(_ element: RestRequest) {
+        requests.remove(element)
         save()
     }
 }
