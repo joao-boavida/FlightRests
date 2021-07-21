@@ -21,6 +21,7 @@ struct RestCalculator {
         // the number of units must be at least the breaks plus 1 per rest period.
         guard totalUnits >= request.numberOfPeriods + request.minimumBreakUnits * (request.numberOfPeriods - 1) else { return []}
 
+        // uneven rest periods only implemented for 2 users
         if request.numberOfUsers % request.numberOfPeriods != 0 {
             guard request.numberOfUsers == 2 else { return [] }
         }
@@ -74,7 +75,7 @@ struct RestCalculator {
 
         let maximumRestUnits = totalUnits - numberOfBreaks * minimumBreakUnits // max units allocated to rest periods, which may not be possible to do because of the number of periods
 
-        if numberOfUsers % numberOfPeriods == 0 {
+        if numberOfPeriods % numberOfUsers == 0 {
             let finalRestPeriod = maximumRestUnits / numberOfPeriods // number of units per rest period. division of Ints automatically rounds down.
 
             let remainingUnitsForBreaks = maximumRestUnits % numberOfPeriods // remaining units which can, if possible be allocated to increasing breaks
