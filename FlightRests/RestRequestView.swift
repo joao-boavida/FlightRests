@@ -5,7 +5,6 @@
 //  Created by Joao Boavida on 08/03/2021.
 //
 
-
 import SwiftUI
 
 struct RestRequestView: View {

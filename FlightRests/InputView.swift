@@ -29,6 +29,8 @@ struct InputView: View {
 
     @State private var currentDate = Date()
 
+    @State private var computedRestPlan: [AssignedRestPeriod] = []
+
     let pickerLabels = ["None", "5 min", "10 min", "15 min"]
 
     let oneDayAgo = Calendar.current.date(byAdding: .hour, value: -24, to: Date()) ?? .distantPast
@@ -38,10 +40,6 @@ struct InputView: View {
 
     var restRequest: RestRequest {
         RestRequest(beginDate: beginDate, endDate: correctedEndDate, numberOfUsers: numberOfPilots, numberOfPeriods: numberOfRestPeriods, minimumBreakUnits: minimumBreakSelection, crewFunction: crewFunction, timeZone: timeZone)
-    }
-
-    var computedRestPlan: [AssignedRestPeriod] {
-        RestCalculator.calculateRests(from: restRequest)
     }
 
     var navBarTitle: String {
@@ -119,7 +117,7 @@ struct InputView: View {
                 Section {
                     Stepper("\(numberOfPilots) Pilots", value: $numberOfPilots, in: 2 ... 3)
                     Stepper("\(numberOfRestPeriods) Rest Periods", value: $numberOfRestPeriods, in: 2 ... 5)
-                }            
+                }
                 Section {
                     Picker("Minimum Break", selection: $minimumBreakSelection) {
                         ForEach(0 ..< pickerLabels.count) {
@@ -131,8 +129,9 @@ struct InputView: View {
 
                 Section {
                     NavigationButton(destination: RestPlanView(restPlan: computedRestPlan).environment(\.timeZone, timeZone), title: "Calculate Rests") {
+                        computedRestPlan = RestCalculator.calculateRests(from: restRequest)
                         requestLog.addRequest(restRequest)
-                    }.disabled(computedRestPlan.isEmpty)
+                    }.disabled(!RestCalculator.validateInputs(from: restRequest))
                 }
             }.navigationBarTitle(navBarTitle)
         }.onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
