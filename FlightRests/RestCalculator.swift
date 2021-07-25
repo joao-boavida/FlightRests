@@ -9,22 +9,32 @@ import Foundation
 
 struct RestCalculator {
 
-    public static func calculateRests(from request: RestRequest) -> [AssignedRestPeriod] {
-
-        // end date must not precede begin date
-        guard request.beginDate < request.endDate else { return [] }
-
+    public static func validateInputs(from request: RestRequest) -> Bool {
         let roundedRestInterval = Self.roundRestInterval(beginDate: request.beginDate, endDate: request.endDate, unitLength: request.unitLength)
 
         let totalUnits = Self.calculateTotalUnits(in: roundedRestInterval, unitLength: request.unitLength)
 
+        // end date must not precede begin date
+        guard request.beginDate < request.endDate else { return false }
+
         // the number of units must be at least the breaks plus 1 per rest period.
-        guard totalUnits >= request.numberOfPeriods + request.minimumBreakUnits * (request.numberOfPeriods - 1) else { return []}
+        guard totalUnits >= request.numberOfPeriods + request.minimumBreakUnits * (request.numberOfPeriods - 1) else { return false }
 
         // uneven rest periods only implemented for 2 users
         if request.numberOfUsers % request.numberOfPeriods != 0 {
-            guard request.numberOfUsers == 2 else { return [] }
+            guard request.numberOfUsers == 2 else { return false }
         }
+
+        return true
+    }
+
+    public static func calculateRests(from request: RestRequest) -> [AssignedRestPeriod] {
+
+        guard Self.validateInputs(from: request) else { return [] }
+
+        let roundedRestInterval = Self.roundRestInterval(beginDate: request.beginDate, endDate: request.endDate, unitLength: request.unitLength)
+
+        let totalUnits = Self.calculateTotalUnits(in: roundedRestInterval, unitLength: request.unitLength)
 
         let distributedUnits = Self.distributeRestPlanUnits(numberOfUsers: request.numberOfUsers, numberOfPeriods: request.numberOfPeriods, minimumBreakUnits: request.minimumBreakUnits, totalUnits: totalUnits)
 
