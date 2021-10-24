@@ -68,7 +68,6 @@ struct RestRequestView: View {
                         .minimumScaleFactor(0.5)
                 }
             }.padding()
-            
         }
     }
 }
