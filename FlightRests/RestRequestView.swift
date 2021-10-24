@@ -42,6 +42,8 @@ struct RestRequestView: View {
                 Group {
                     Text(dateLabel(for: request.beginDate, in: request.timeZone))
                         .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+
                     VStack {
                         HStack {
                             Text(request.beginDate.shortFormatTime(in: request.timeZone))
@@ -56,15 +58,8 @@ struct RestRequestView: View {
                 }.multilineTextAlignment(.center)
                 .font(.title2)
                 .minimumScaleFactor(0.5)
+
                 Spacer()
-                /*VStack {
-                    Text(String(request.numberOfUsers))
-                        .font(.title3)
-                    Text(crewDesignator)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.5)
-                }
-                Spacer()*/
                 VStack {
                     Text(String(request.numberOfPeriods))
                         .font(.title3)
@@ -73,6 +68,7 @@ struct RestRequestView: View {
                         .minimumScaleFactor(0.5)
                 }
             }.padding()
+            
         }
     }
 }
@@ -81,9 +77,10 @@ struct RestRequestView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             List {
+                RestRequestView(request: .exampleToday)
+                RestRequestView(request: .exampleYesterday)
                 RestRequestView(request: .exampleFc1)
                 RestRequestView(request: .exampleFc2)
-
             }
         }
     }

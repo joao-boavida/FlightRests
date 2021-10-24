@@ -97,21 +97,10 @@ struct InputView: View {
                 }
                 Section {
                     VStack {
-                        HStack {
-                            Text("Rest starts at")
-                            Spacer()
-                            DatePicker("Rest starts at", selection: $beginDate, displayedComponents: [.hourAndMinute])
-                                .datePickerStyle(GraphicalDatePickerStyle())
-                                .accessibility(identifier: "beginDatePicker")
-                        }
-                        HStack {
-                            Text("Rest ends by")
-                            Spacer()
-                            DatePicker("Rest ends by", selection: $endDate, displayedComponents: [.hourAndMinute])
-                                .datePickerStyle(GraphicalDatePickerStyle())
-                                .accessibility(identifier: "endDatePicker") // debug
-                        }
-
+                        DatePicker("Rest starts at", selection: $beginDate, displayedComponents: [.hourAndMinute])
+                            .accessibility(identifier: "beginDatePicker")
+                        DatePicker("Rest ends by", selection: $endDate, displayedComponents: [.hourAndMinute])
+                            .accessibility(identifier: "endDatePicker")
                     }.environment(\.timeZone, timeZone)
                 }
                 Section {
