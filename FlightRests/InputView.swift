@@ -65,13 +65,9 @@ struct InputView: View {
     /// The computed rest plan which will be sent to the viewer, as an array of assigned rest periods
     @State private var computedRestPlan: [AssignedRestPeriod] = []
 
-    /// A computed variable which builds the rest request from the appropriate data
+    /// A computed variable which builds the rest request from the appropriate data; if the view is being used for pilots, the number of users gets set to the nnumber of users parameter, otherwise it is set to the number of periods as the previous parameter is unused.
     var restRequest: RestRequest {
-        // for cabin crew the number of users is considered the same as the number of users
-        if crewFunction == .cabinCrew {
-            numberOfUsers = numberOfRestPeriods
-        }
-        return RestRequest(beginDate: beginDate, endDate: correctedEndDate, numberOfUsers: numberOfUsers, numberOfPeriods: numberOfRestPeriods, minimumBreakUnits: minimumBreakSelection, crewFunction: crewFunction, timeZone: timeZone)
+        RestRequest(beginDate: beginDate, endDate: correctedEndDate, numberOfUsers: crewFunction == .flightCrew ? numberOfUsers : numberOfRestPeriods, numberOfPeriods: numberOfRestPeriods, minimumBreakUnits: minimumBreakSelection, crewFunction: crewFunction, timeZone: timeZone)
     }
 
     /// The navigation bar title, either flight crew or cabin crew.
@@ -176,7 +172,7 @@ struct InputView: View {
                     case .flightCrew:
                         Stepper("**\(numberOfUsers)** Pilots", value: $numberOfUsers, in: 2 ... 3)
                     case .cabinCrew:
-                        //Stepper("**\(numberOfUsers)** Groups", value: $numberOfUsers, in: 2 ... 3)
+                        // Stepper("**\(numberOfUsers)** Groups", value: $numberOfUsers, in: 2 ... 3)
                         Stepper("**\(serviceLabels[serviceSelection])** for Service", value: $serviceSelection, in: 0 ... serviceLabels.count - 1)
                     }
                 }
