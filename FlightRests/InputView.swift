@@ -67,7 +67,11 @@ struct InputView: View {
 
     /// A computed variable which builds the rest request from the appropriate data
     var restRequest: RestRequest {
-        RestRequest(beginDate: beginDate, endDate: correctedEndDate, numberOfUsers: numberOfUsers, numberOfPeriods: numberOfRestPeriods, minimumBreakUnits: minimumBreakSelection, crewFunction: crewFunction, timeZone: timeZone)
+        // for cabin crew the number of users is considered the same as the number of users
+        if crewFunction == .cabinCrew {
+            numberOfUsers = numberOfRestPeriods
+        }
+        return RestRequest(beginDate: beginDate, endDate: correctedEndDate, numberOfUsers: numberOfUsers, numberOfPeriods: numberOfRestPeriods, minimumBreakUnits: minimumBreakSelection, crewFunction: crewFunction, timeZone: timeZone)
     }
 
     /// The navigation bar title, either flight crew or cabin crew.
@@ -172,7 +176,7 @@ struct InputView: View {
                     case .flightCrew:
                         Stepper("**\(numberOfUsers)** Pilots", value: $numberOfUsers, in: 2 ... 3)
                     case .cabinCrew:
-                        Stepper("**\(numberOfUsers)** Groups", value: $numberOfUsers, in: 2 ... 3)
+                        //Stepper("**\(numberOfUsers)** Groups", value: $numberOfUsers, in: 2 ... 3)
                         Stepper("**\(serviceLabels[serviceSelection])** for Service", value: $serviceSelection, in: 0 ... serviceLabels.count - 1)
                     }
                 }
