@@ -12,6 +12,10 @@ struct RestRequest: Codable, Hashable, Comparable {
         lhs.creationDate < rhs.creationDate
     }
 
+    func isTrueDuplicateOf (_ element: RestRequest) -> Bool {
+        self.beginDate == element.beginDate && self.endDate == element.endDate && self.unitLength == element.unitLength && self.numberOfUsers == element.numberOfUsers && self.numberOfPeriods == element.numberOfPeriods && self.minimumBreakUnits == element.minimumBreakUnits && self.midFlightServiceUnits == element.midFlightServiceUnits && self.beforeLandingServiceUnits == element.beforeLandingServiceUnits && self.crewFunction == element.crewFunction && self.timeZone == element.timeZone
+    }
+
     var creationDate: Date = Date()
     let beginDate: Date
     let endDate: Date
