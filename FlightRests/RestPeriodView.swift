@@ -14,7 +14,8 @@ struct RestPeriodView: View {
     let restPeriod: AssignedRestPeriod
 
     var timeZoneAbb: String {
-        environmentTimeZone.abbreviation() ?? ""
+        let abbreviation = environmentTimeZone.abbreviation() ?? ""
+        return abbreviation.replacingOccurrences(of: "GMT", with: "UTC")
     }
 
     var body: some View {
