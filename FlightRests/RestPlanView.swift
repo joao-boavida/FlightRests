@@ -12,7 +12,6 @@ struct RestPlanView: View {
     var restPlan: [AssignedRestPeriod]
 
     @Environment(\.timeZone) var environmentTimeZone
-    
     let timeColors = [Color.blue, Color.red, Color.green]
 
     var body: some View {
