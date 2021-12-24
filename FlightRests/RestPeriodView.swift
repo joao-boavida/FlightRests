@@ -12,6 +12,7 @@ struct RestPeriodView: View {
     @Environment(\.timeZone) var environmentTimeZone
 
     let restPeriod: AssignedRestPeriod
+    let timeColour: Color
 
     var timeZoneAbb: String {
         let abbreviation = environmentTimeZone.abbreviation() ?? ""
@@ -23,7 +24,7 @@ struct RestPeriodView: View {
             VStack {
                 Text(restPeriod.period.start.shortFormatTime(in: environmentTimeZone))
                     .font(.title)
-                    .foregroundColor(.accentColor)
+                    .foregroundColor(timeColour)
                 Text(timeZoneAbb)
                     .font(.headline)
             }
@@ -37,7 +38,7 @@ struct RestPeriodView: View {
             VStack {
                 Text(restPeriod.period.end.shortFormatTime(in: environmentTimeZone))
                     .font(.title)
-                    .foregroundColor(.accentColor)
+                    .foregroundColor(timeColour)
                 Text(timeZoneAbb)
                     .font(.headline)
             }
@@ -56,8 +57,8 @@ struct RestPeriodView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             VStack {
-                RestPeriodView(restPeriod: .example1)
-                RestPeriodView(restPeriod: .example2)
+                RestPeriodView(restPeriod: .example1, timeColour: .blue)
+                RestPeriodView(restPeriod: .example2, timeColour: .green)
                 Text("Locale: \(Locale.autoupdatingCurrent.debugDescription)").font(.title2)
             }
         }.colorScheme(.light)

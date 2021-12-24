@@ -12,6 +12,8 @@ struct RestPlanView: View {
     var restPlan: [AssignedRestPeriod]
 
     @Environment(\.timeZone) var environmentTimeZone
+    
+    let timeColors = [Color.blue, Color.red, Color.green]
 
     var body: some View {
         ScrollView {
@@ -21,7 +23,7 @@ struct RestPlanView: View {
                         .font(.title)
                 } else {
                     ForEach(restPlan) { period in
-                        RestPeriodView(restPeriod: period).environment(\.timeZone, environmentTimeZone)
+                        RestPeriodView(restPeriod: period, timeColour: timeColors[period.owner - 1]).environment(\.timeZone, environmentTimeZone)
                     }.padding(.vertical)
                 }
                 Spacer()
