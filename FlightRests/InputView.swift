@@ -56,8 +56,8 @@ struct InputView: View {
     /// A cached value of the present date, used for the on screen clock
     @State private var currentDate = Date()
 
-    /// One day before the present date, used to correct the outputs from the datepickers
-    let oneDayAgo = Calendar.current.date(byAdding: .hour, value: -24, to: Date()) ?? .distantPast
+    /// Used to correct the outputs from the datepickers if a long time has passed since the app was opened
+    let inputResetThreshold = Calendar.current.date(byAdding: .hour, value: -3, to: Date()) ?? .distantPast
 
     /// One day after the present date, used to correct the outputs from the datepickers
     let inOneDay = Calendar.current.date(byAdding: .hour, value: 24, to: Date()) ?? .distantFuture
@@ -195,7 +195,7 @@ struct InputView: View {
             }.navigationBarTitle(navBarTitle)
         } // if the app was on the background for more than one day then reset the inputs to the current time
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-            if beginDate < oneDayAgo {
+            if beginDate < inputResetThreshold {
                 resetInputDates()
             }
         } // updating the on screen clock
