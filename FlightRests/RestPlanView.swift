@@ -14,8 +14,7 @@ struct RestPlanView: View {
     @Environment(\.timeZone) var environmentTimeZone
 
     var body: some View {
-        ZStack {
-            // Color.accentColor.opacity(0.2)
+        ScrollView {
             VStack {
                 if restPlan.isEmpty {
                     Text("No Data to Display")
@@ -23,14 +22,12 @@ struct RestPlanView: View {
                 } else {
                     ForEach(restPlan) { period in
                         RestPeriodView(restPeriod: period).environment(\.timeZone, environmentTimeZone)
-                    }.padding(.bottom)
+                    }.padding(.vertical)
                 }
-                #if DEBUG
-                Text(environmentTimeZone.debugDescription)
-                #endif
+                Spacer()
             }
         }
-        .navigationBarTitle("Rest Plan", displayMode: .inline)
+        .navigationBarTitle("Rest Plan")
     }
 }
 
