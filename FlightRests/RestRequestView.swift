@@ -22,11 +22,13 @@ struct RestRequestView: View {
         relativeFormatter.dateTimeStyle = .named
         if Calendar.autoupdatingCurrent.isDateInToday(date) {
             return "Today"
-        } else if Calendar.autoupdatingCurrent.isDateInYesterday(date) {
-            return "Yesterday"
         } else {
             return date.ddMMDate(in: timeZone)
         }
+    }
+
+    private func timeLabel(for date: Date, in timeZone: TimeZone) -> String {
+        date.shortFormatTime(in: timeZone).replacingOccurrences(of: " ", with: "\n")
     }
 
     /// If the locale's time format includes AM/PM the time should be displayed in 2 lines; otherwise 1 line will do with the appropriate scaling. The testing is done by checking for a space character.
@@ -46,10 +48,10 @@ struct RestRequestView: View {
 
                     VStack {
                         HStack {
-                            Text(request.beginDate.shortFormatTime(in: request.timeZone))
+                            Text(timeLabel(for: request.beginDate, in: request.timeZone))
                                 .lineLimit(timeLineLimit(request.beginDate.shortFormatTime(in: request.timeZone)))
                             Spacer()
-                            Text(request.endDate.shortFormatTime(in: request.timeZone))
+                            Text(timeLabel(for: request.endDate, in: request.timeZone))
                                 .lineLimit(timeLineLimit(request.endDate.shortFormatTime(in: request.timeZone)))
                         }
                         Text(request.timeZone.abbreviation() ?? "?").font(.callout)
