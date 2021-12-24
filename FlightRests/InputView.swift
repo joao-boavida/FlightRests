@@ -33,7 +33,7 @@ struct InputView: View {
     @State private var landingDate = Calendar.current.date(byAdding: .hour, value: 6, to: Date())?.round(precision: 300, rule: .up) ?? .distantFuture
 
     /// Selection in the `serviceSelection` array
-    @State private var serviceSelection = 3
+    @State private var serviceSelection = 4
 
     /// Selectable options for service duration
     let serviceLabels = ["No Time", "1h00", "1h15", "1h30", "1h45", "2h00", "2h15", "2h30", "2h45", "3h00"]
