@@ -12,7 +12,7 @@ struct RestPlanView: View {
     var restPlan: [AssignedRestPeriod]
 
     @Environment(\.timeZone) var environmentTimeZone
-    let timeColors = [Color.blue, Color.red, Color.green]
+    let timeColors = [Color.blue, Color.red, Color.green, Color.purple, Color.orange]
 
     var body: some View {
         ScrollView {
@@ -21,8 +21,9 @@ struct RestPlanView: View {
                     Text("No Data to Display")
                         .font(.title)
                 } else {
+                    // ternary operator added here as a safeguard to prevent crash due to index out of range; the color black should never be used.
                     ForEach(restPlan) { period in
-                        RestPeriodView(restPeriod: period, timeColour: timeColors[period.owner - 1]).environment(\.timeZone, environmentTimeZone)
+                        RestPeriodView(restPeriod: period, timeColour: period.owner <= timeColors.count ? timeColors[period.owner - 1] : Color.black).environment(\.timeZone, environmentTimeZone)
                     }.padding(.vertical)
                 }
                 Spacer()
