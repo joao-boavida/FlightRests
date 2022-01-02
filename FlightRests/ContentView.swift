@@ -21,7 +21,7 @@ struct ContentView: View {
                 }
             InputView(requestLog: requestLog, crewFunction: .cabinCrew)
                 .tabItem {
-                    Image(systemName: "paperplane.fill")
+                    Image(systemName: "person.3.fill")
                     Text("Cabin Crew")
                 }
             RecentRequestsView(requestLog: requestLog)
