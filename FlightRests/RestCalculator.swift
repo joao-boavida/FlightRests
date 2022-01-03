@@ -17,8 +17,15 @@ struct RestCalculator {
         // end date must not precede begin date
         guard request.beginDate < request.endDate else { return false }
 
-        // the number of units must be at least the breaks plus 1 per rest period.
-        guard totalUnits >= request.numberOfPeriods + request.minimumBreakUnits * (request.numberOfPeriods - 1) else { return false }
+        if request.numberOfPeriods % 2 == 0 {
+            // for an even number of rest periods the number of units must be at least the breaks plus 1 per rest period.
+            guard totalUnits >= request.numberOfPeriods + request.minimumBreakUnits * (request.numberOfPeriods - 1) else { return false }
+        } else {
+            // for an odd number of rest periods the number of units must be the breaks plus twice the number of long periods times number of short periods
+            let longPeriods = request.numberOfPeriods / 2
+            let shortPeriods = longPeriods + 1
+            guard totalUnits >= longPeriods * shortPeriods * 2 + request.minimumBreakUnits * (request.numberOfPeriods - 1) else { return false }
+        }
 
         // uneven rest periods only implemented for 2 users
         if request.numberOfUsers % request.numberOfPeriods != 0 {
