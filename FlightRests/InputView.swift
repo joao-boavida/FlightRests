@@ -65,7 +65,10 @@ struct InputView: View {
     /// The computed rest plan which will be sent to the viewer, as an array of assigned rest periods
     @State private var computedRestPlan: [AssignedRestPeriod] = []
 
-    /// A computed variable which builds the rest request from the appropriate data; if the view is being used for pilots, the number of users gets set to the nnumber of users parameter, otherwise it is set to the number of periods as the previous parameter is unused.
+    /// The number of rest periods will be updated automatically only the first time the number of users is increased before touching the number of rest periods; this variable controls that behaviour.
+    @State private var restPeriodsReadyForAutoUpdate = true
+
+    /// A computed variable which builds the rest request from the appropriate data; if the view is being used for pilots, the number of users gets set to the number of users parameter, otherwise it is set to the number of periods as the previous parameter is unused.
     var restRequest: RestRequest {
         RestRequest(beginDate: beginDate, endDate: correctedEndDate, numberOfUsers: crewFunction == .flightCrew ? numberOfUsers : numberOfRestPeriods, numberOfPeriods: numberOfRestPeriods, minimumBreakUnits: minimumBreakSelection, crewFunction: crewFunction, timeZone: timeZone)
     }
@@ -167,14 +170,24 @@ struct InputView: View {
 
                 // Number of users and Groups
                 Section {
-                    Stepper("**\(numberOfRestPeriods)** Rest Periods", value: $numberOfRestPeriods, in: 2 ... 5)
                     switch crewFunction {
                     case .flightCrew:
                         Stepper("**\(numberOfUsers)** Pilots", value: $numberOfUsers, in: 2 ... 3)
+                            .onChange(of: numberOfUsers) { _ in
+                                if restPeriodsReadyForAutoUpdate {
+                                    if numberOfUsers == 3 && numberOfRestPeriods == 2 {
+                                        numberOfRestPeriods = 3
+                                        restPeriodsReadyForAutoUpdate = false
+                                    }
+                                }
+                            }
                     case .cabinCrew:
-                        // Stepper("**\(numberOfUsers)** Groups", value: $numberOfUsers, in: 2 ... 3)
                         Stepper("**\(serviceLabels[serviceSelection])** for Service", value: $serviceSelection, in: 0 ... serviceLabels.count - 1)
                     }
+                    Stepper("**\(numberOfRestPeriods)** Rest Periods", value: $numberOfRestPeriods, in: 2 ... 5)
+                        .onChange(of: numberOfRestPeriods) { _ in
+                            restPeriodsReadyForAutoUpdate = false
+                        }
                 }
                 // Minimum Break
                 Section {
@@ -207,7 +220,7 @@ struct InputView: View {
 
 struct InputView_Previews: PreviewProvider {
     static var previews: some View {
-        InputView(requestLog: RequestLog(), crewFunction: .cabinCrew)
+        InputView(requestLog: RequestLog(), crewFunction: .flightCrew)
         .previewDevice("iPhone SE (2nd generation)")
     }
 }
