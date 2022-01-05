@@ -78,4 +78,27 @@ class FlightRestsTests: XCTestCase {
 
     }
 
+    func testRequestLogCleanUP() {
+
+        let requestLog = RequestLog(testLog: true)
+
+        // testing the removal of old entries
+
+        let oldDate = DateComponents(calendar: .autoupdatingCurrent, timeZone: .autoupdatingCurrent, year: 2000, month: 11, day: 19).date!
+        let oldRequest = RestRequest(creationDate: oldDate, beginDate: oldDate, endDate: oldDate, numberOfUsers: 2, numberOfPeriods: 2, minimumBreakUnits: 10, crewFunction: .flightCrew, timeZone: TimeZone(abbreviation: "GMT")!)
+
+        requestLog.addRequest(oldRequest)
+
+        XCTAssertTrue(requestLog.requests.isEmpty)
+
+        // testing the size trimming function
+        for _ in 0 ... requestLog.maxEntries + 10 {
+            let advance = Double(Int.random(in: -1000 ... 1000))
+            let sampleRequest = RestRequest(beginDate: Date(timeIntervalSinceNow: advance), endDate: Date(timeIntervalSinceNow: advance + 3600), numberOfUsers: 2, numberOfPeriods: 2, minimumBreakUnits: 2, crewFunction: .flightCrew, timeZone: TimeZone(abbreviation: "GMT")!)
+            requestLog.addRequest(sampleRequest)
+        }
+
+        XCTAssertEqual(requestLog.requests.count, requestLog.maxEntries)
+    }
+
 }
