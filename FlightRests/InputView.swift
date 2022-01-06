@@ -22,7 +22,7 @@ struct InputView: View {
 
     /// A variable controlling whether the screen is in cabin crew or flight crew mode
     let crewFunction: CrewFunction // to choose between flight crew and cabin crew modes
-    
+
     @State private var firstAppear = true
 
     /// The date at which rests should begin
@@ -69,7 +69,7 @@ struct InputView: View {
 
     /// The number of rest periods will be updated automatically only the first time the number of users is increased before touching the number of rest periods; this variable controls that behaviour.
     @State private var restPeriodsReadyForAutoUpdate = true
-    
+
     /// A binding to the tabSelection variable on the Tab View host to enable programmatic tab changes, which are triggered as part of the input view refresh.
     @Binding var tabSelection: CrewFunction
 
