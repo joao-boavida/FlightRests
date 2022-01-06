@@ -12,18 +12,22 @@ struct ContentView: View {
     /// Initialisation of the requests database
     @StateObject var requestLog = RequestLog()
 
+    @State private var tabSelection = CrewFunction.flightCrew
+
     var body: some View {
-        TabView {
-            InputView(requestLog: requestLog, crewFunction: .flightCrew)
+        TabView(selection: $tabSelection) {
+            InputView(requestLog: requestLog, crewFunction: .flightCrew, tabSelection: $tabSelection)
                 .tabItem {
                     Image(systemName: "paperplane")
                     Text("Flight Crew")
                 }
-            InputView(requestLog: requestLog, crewFunction: .cabinCrew)
+                .tag(CrewFunction.flightCrew)
+            InputView(requestLog: requestLog, crewFunction: .cabinCrew, tabSelection: $tabSelection)
                 .tabItem {
                     Image(systemName: "person.3.fill")
                     Text("Cabin Crew")
                 }
+                .tag(CrewFunction.cabinCrew)
             RecentRequestsView(requestLog: requestLog)
                 .tabItem {
                     Image(systemName: "clock")
