@@ -86,11 +86,12 @@ struct InputView: View {
         Double(300 * minimumBreakSelection)
     }
 
-    /// A closure that resets input dates when called
-    var resetInputDates: (() -> Void) {
+    /// A closure that resets the input view when called due to idle time
+    var resetInputView: (() -> Void) {
         return {
             beginDate = Date().round(precision: 300, rule: .up)
             endDate = Calendar.current.date(byAdding: .hour, value: 3, to: beginDate) ?? .distantFuture
+            restPeriodsReadyForAutoUpdate = true
         }
     }
 
@@ -209,7 +210,7 @@ struct InputView: View {
         } // if the app was on the background for more than one day then reset the inputs to the current time
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
             if beginDate < inputResetThreshold {
-                resetInputDates()
+                resetInputView()
             }
         } // updating the on screen clock
         .onReceive(timer) { input in
