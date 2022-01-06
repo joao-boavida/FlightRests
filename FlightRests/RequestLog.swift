@@ -35,20 +35,6 @@ final class RequestLog: ObservableObject {
         }
     }
 
-    /// cleans up and saves the requests array to the documents folder
-    private func save() {
-
-        cleanUp()
-
-        guard mockSaves == true else { return }
-
-        do {
-            try FileManager.writeToDocumentsFolder(data: requests, fileName: Self.saveKey)
-        } catch {
-            print("error writing to docs directory")
-        }
-    }
-
     /// Adds an element to the requests array, then saves
     /// - Parameter request: element to add
     func addRequest(_ request: RestRequest) {
@@ -71,6 +57,25 @@ final class RequestLog: ObservableObject {
             requests.remove(at: index)
         }
         save()
+    }
+
+    /// Returns the crew function of the most recent entry in the log, and defaults to flight crew if the log is empty
+    func mostRecentFunction() -> CrewFunction {
+        requests.sorted().last?.crewFunction ?? .flightCrew
+    }
+
+    /// cleans up and saves the requests array to the documents folder
+    private func save() {
+
+        cleanUp()
+
+        guard mockSaves == true else { return }
+
+        do {
+            try FileManager.writeToDocumentsFolder(data: requests, fileName: Self.saveKey)
+        } catch {
+            print("error writing to docs directory")
+        }
     }
 
     /// Performs maintenance of the requests array by deleting requests older than 6 months and the oldest requests when there are more than 50 entries.
