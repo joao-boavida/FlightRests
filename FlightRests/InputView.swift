@@ -22,6 +22,8 @@ struct InputView: View {
 
     /// A variable controlling whether the screen is in cabin crew or flight crew mode
     let crewFunction: CrewFunction // to choose between flight crew and cabin crew modes
+    
+    @State private var firstAppear = true
 
     /// The date at which rests should begin
     @State private var beginDate = Date().round(precision: 300, rule: .up)
@@ -67,6 +69,9 @@ struct InputView: View {
 
     /// The number of rest periods will be updated automatically only the first time the number of users is increased before touching the number of rest periods; this variable controls that behaviour.
     @State private var restPeriodsReadyForAutoUpdate = true
+    
+    /// A binding to the tabSelection variable on the Tab View host to enable programmatic tab changes, which are triggered as part of the input view refresh.
+    @Binding var tabSelection: CrewFunction
 
     /// A computed variable which builds the rest request from the appropriate data; if the view is being used for pilots, the number of users gets set to the number of users parameter, otherwise it is set to the number of periods as the previous parameter is unused.
     var restRequest: RestRequest {
@@ -92,6 +97,7 @@ struct InputView: View {
             beginDate = Date().round(precision: 300, rule: .up)
             endDate = Calendar.current.date(byAdding: .hour, value: 3, to: beginDate) ?? .distantFuture
             restPeriodsReadyForAutoUpdate = true
+            tabSelection = requestLog.mostRecentFunction()
         }
     }
 
@@ -207,7 +213,7 @@ struct InputView: View {
                     }.disabled(!RestCalculator.validateInputs(from: restRequest))
                 }
             }.navigationBarTitle(navBarTitle)
-        } // if the app was on the background for more than one day then reset the inputs to the current time
+        } // if the app was on the background for more than one day then reset the input view
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
             if beginDate < inputResetThreshold {
                 resetInputView()
@@ -216,12 +222,18 @@ struct InputView: View {
         .onReceive(timer) { input in
             currentDate = input
         }
+        .onAppear {
+            if firstAppear {
+                tabSelection = requestLog.mostRecentFunction()
+                firstAppear = false
+            }
+        }
     }
 }
 
 struct InputView_Previews: PreviewProvider {
     static var previews: some View {
-        InputView(requestLog: RequestLog(), crewFunction: .flightCrew)
+        InputView(requestLog: RequestLog(), crewFunction: .flightCrew, tabSelection: .constant(.flightCrew))
         .previewDevice("iPhone SE (2nd generation)")
     }
 }
