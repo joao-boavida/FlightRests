@@ -7,37 +7,41 @@
 
 import Foundation
 
+enum InputStatus: String {
+    case valid, negativeInterval, tooSmallInterval, unsupportedCombination
+}
+
 struct RestCalculator {
 
-    public static func validateInputs(from request: RestRequest) -> Bool {
+    public static func validateInputs(from request: RestRequest) -> InputStatus {
         let roundedRestInterval = Self.roundRestInterval(beginDate: request.beginDate, endDate: request.endDate, unitLength: request.unitLength)
 
         let totalUnits = Self.calculateTotalUnits(in: roundedRestInterval, unitLength: request.unitLength)
 
         // end date must not precede begin date
-        guard request.beginDate < request.endDate else { return false }
+        guard request.beginDate < request.endDate else { return .negativeInterval }
 
         if request.numberOfPeriods % 2 == 0 {
             // for an even number of rest periods the number of units must be at least the breaks plus 1 per rest period.
-            guard totalUnits >= request.numberOfPeriods + request.minimumBreakUnits * (request.numberOfPeriods - 1) else { return false }
+            guard totalUnits >= request.numberOfPeriods + request.minimumBreakUnits * (request.numberOfPeriods - 1) else { return .tooSmallInterval }
         } else {
             // for an odd number of rest periods the number of units must be the breaks plus twice the number of long periods times number of short periods
             let longPeriods = request.numberOfPeriods / 2
             let shortPeriods = longPeriods + 1
-            guard totalUnits >= longPeriods * shortPeriods * 2 + request.minimumBreakUnits * (request.numberOfPeriods - 1) else { return false }
+            guard totalUnits >= longPeriods * shortPeriods * 2 + request.minimumBreakUnits * (request.numberOfPeriods - 1) else { return .tooSmallInterval }
         }
 
         // uneven rest periods only implemented for 2 users
         if request.numberOfUsers % request.numberOfPeriods != 0 {
-            guard request.numberOfUsers == 2 else { return false }
+            guard request.numberOfUsers == 2 else { return .unsupportedCombination }
         }
 
-        return true
+        return .valid
     }
 
     public static func calculateRests(from request: RestRequest) -> [AssignedRestPeriod] {
 
-        guard Self.validateInputs(from: request) else { return [] }
+        guard Self.validateInputs(from: request) == .valid else { return [] }
 
         let roundedRestInterval = Self.roundRestInterval(beginDate: request.beginDate, endDate: request.endDate, unitLength: request.unitLength)
 

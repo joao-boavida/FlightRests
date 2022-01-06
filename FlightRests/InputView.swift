@@ -86,6 +86,19 @@ struct InputView: View {
         }
     }
 
+    var calculateButtonFooterString: String {
+        switch RestCalculator.validateInputs(from: restRequest) {
+        case .valid:
+            return ""
+        case .negativeInterval:
+            return "The time at which rest begins must not be later than that at which rest ends."
+        case .tooSmallInterval:
+            return "There is not enough time in the selected interval to calculate a rest plan. Either start earlier, end later, reduce breaks or reduce the number of rest periods."
+        case .unsupportedCombination:
+            return "Please change the combination of number of pilots and number of rest periods as the current one is not supported."
+        }
+    }
+
     /// Minimum break duration as a time interval, built from the user's selection
     var minimumBreakDuration: TimeInterval {
         Double(300 * minimumBreakSelection)
@@ -206,11 +219,11 @@ struct InputView: View {
                     .accessibility(identifier: "breakDurationPicker")
                 }
                 // Calculate button, disabled if the inputs are not valid
-                Section {
+                Section(footer: Text(calculateButtonFooterString).animation(.default)) {
                     NavigationButton(destination: RestPlanView(restPlan: computedRestPlan).environment(\.timeZone, timeZone), title: "Calculate Rests") {
                         computedRestPlan = RestCalculator.calculateRests(from: restRequest)
                         requestLog.addRequest(restRequest)
-                    }.disabled(!RestCalculator.validateInputs(from: restRequest))
+                    }.disabled(RestCalculator.validateInputs(from: restRequest) != .valid)
                 }
             }.navigationBarTitle(navBarTitle)
         } // if the app was on the background for more than one day then reset the input view
