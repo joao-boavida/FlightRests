@@ -69,7 +69,7 @@ final class RequestLog: ObservableObject {
 
         cleanUp()
 
-        guard mockSaves == true else { return }
+        guard mockSaves == false else { return }
 
         do {
             try FileManager.writeToDocumentsFolder(data: requests, fileName: Self.saveKey)
