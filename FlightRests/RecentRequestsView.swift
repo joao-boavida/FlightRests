@@ -12,6 +12,20 @@ struct RecentRequestsView: View {
 
     /// database of requests to be used in the RecentRequestsView
     @ObservedObject var requestLog: RequestLog
+    
+    /// clears the request log
+    func clearLog() {
+        requestLog.clearLog()
+    }
+    
+    /// triggers the deletion confirmation alert
+    func showAlert() {
+        showingClearAlert = true
+    }
+
+    @State private var showingClearAlert = false
+
+    let alertString = "Do you wish to delete all entries in this list?"
 
     var body: some View {
         NavigationView {
@@ -31,8 +45,21 @@ struct RecentRequestsView: View {
                         RestRequestView(request: request)
                     }
                     .onDelete(perform: delete)
+                    .transition(.slide)
                 }.navigationBarTitle("Recent Rests", displayMode: .inline)
-
+                    .toolbar {
+                        Button(action: showAlert) {
+                            Image(systemName: "trash")
+                        }
+                    }
+                    .alert(alertString, isPresented: $showingClearAlert) {
+                        Button("Cancel", role: .cancel) {
+                            showingClearAlert = false
+                        }
+                        Button("Delete All", role: .destructive) {
+                            clearLog()
+                        }
+                    }
             }
         }
     }

@@ -101,4 +101,18 @@ class FlightRestsTests: XCTestCase {
         XCTAssertEqual(requestLog.requests.count, requestLog.maxEntries)
     }
 
+    func testLogClearing() {
+
+        let requestLog = RequestLog(testLog: true)
+        // testing the size trimming function
+        for _ in 0 ... 10 {
+            let advance = Double(Int.random(in: -1000 ... 1000))
+            let sampleRequest = RestRequest(beginDate: Date(timeIntervalSinceNow: advance), endDate: Date(timeIntervalSinceNow: advance + 3600), numberOfUsers: 2, numberOfPeriods: 2, minimumBreakUnits: 2, crewFunction: .flightCrew, timeZone: TimeZone(abbreviation: "GMT")!)
+            requestLog.addRequest(sampleRequest)
+        }
+        XCTAssertFalse(requestLog.requests.isEmpty)
+        requestLog.clearLog()
+        XCTAssertTrue(requestLog.requests.isEmpty)
+    }
+
 }

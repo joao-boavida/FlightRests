@@ -64,6 +64,12 @@ final class RequestLog: ObservableObject {
         requests.sorted().last?.crewFunction ?? .flightCrew
     }
 
+    /// Clears the requests log
+    func clearLog() {
+        requests.removeAll()
+        save()
+    }
+
     /// cleans up and saves the requests array to the documents folder
     private func save() {
 
