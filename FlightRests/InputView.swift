@@ -34,6 +34,12 @@ struct InputView: View {
     /// The date of the expected landing, for cabin crew, as it is used with the service to calculate the date for the end of the rests
     @State private var landingDate = Calendar.current.date(byAdding: .hour, value: 6, to: Date())?.round(precision: 300, rule: .up) ?? .distantFuture
 
+    /// Selection in the `beforeServiceLabels` array
+    @State private var beforeServiceSelection = 2
+
+    /// selectable options for before service interval
+    let beforeServiceLabels = ["No time", "5min", "10min", "15min", "20min"]
+
     /// Selection in the `serviceSelection` array
     @State private var serviceSelection = 4
 
@@ -50,7 +56,7 @@ struct InputView: View {
     @State private var minimumBreakSelection = 2
 
     /// Selectable durations for breaks
-    let breakPickerLabels = ["None", "5 min", "10 min", "15 min"]
+    let breakPickerLabels = ["None", "5 min", "10 min", "15 min", "20 min"]
 
     /// Option to use local time; when false, UTC is used
     @State private var useLocalTime = false
@@ -121,6 +127,7 @@ struct InputView: View {
             return endDate > beginDate ? endDate : Calendar.autoupdatingCurrent.date(byAdding: .hour, value: 24, to: endDate) ?? endDate
         case .cabinCrew:
             var correctedDate = landingDate > beginDate ? landingDate : Calendar.autoupdatingCurrent.date(byAdding: .hour, value: 24, to: landingDate) ?? landingDate
+            let beforeServiceAdjustment = beforeServiceSelection * 300 // in seconds
             let serviceAdjustment = serviceLabels[serviceSelection].components(separatedBy: "h") // hours and minutes in strings
                 .map {Int($0) ?? 0} // strings should be numbers only so this conversion should be straightforward
                 .enumerated() // tuples with the indexes
@@ -131,7 +138,8 @@ struct InputView: View {
                         return accumulate + current.1 * 60 // minutes
                     }
                 }
-            correctedDate.addTimeInterval(Double(-1 * serviceAdjustment)) // the adjustment must be negative as the end of the rests is before the beginning of the service
+
+            correctedDate.addTimeInterval(Double(-1 * (beforeServiceAdjustment + serviceAdjustment))) // the adjustment must be negative as the end of the rests is before the beginning of the service
             return correctedDate
         }
     }
@@ -202,6 +210,7 @@ struct InputView: View {
                                 }
                             }
                     case .cabinCrew:
+                        Stepper("**\(beforeServiceLabels[beforeServiceSelection])** before service", value: $beforeServiceSelection, in: 0 ... beforeServiceLabels.count - 1)
                         Stepper("**\(serviceLabels[serviceSelection])** for Service", value: $serviceSelection, in: 0 ... serviceLabels.count - 1)
                     }
                     Stepper("**\(numberOfRestPeriods)** Rest Periods", value: $numberOfRestPeriods, in: 2 ... 5)
@@ -246,7 +255,7 @@ struct InputView: View {
 
 struct InputView_Previews: PreviewProvider {
     static var previews: some View {
-        InputView(requestLog: RequestLog(), crewFunction: .flightCrew, tabSelection: .constant(.flightCrew))
+        InputView(requestLog: RequestLog(), crewFunction: .cabinCrew, tabSelection: .constant(.cabinCrew))
         .previewDevice("iPhone SE (2nd generation)")
     }
 }
