@@ -12,12 +12,12 @@ struct RecentRequestsView: View {
 
     /// database of requests to be used in the RecentRequestsView
     @ObservedObject var requestLog: RequestLog
-    
+
     /// clears the request log
     func clearLog() {
         requestLog.clearLog()
     }
-    
+
     /// triggers the deletion confirmation alert
     func showAlert() {
         showingClearAlert = true
