@@ -1,37 +1,21 @@
-## Welcome to GitHub Pages
+## Privacy Policy
 
-You can use the [editor on GitHub](https://github.com/joao-boavida/FlightRests/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+Updated: 12 January 2022
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+This privacy policy describes what information the developer of FlightRests collects from you and how that information is used.
 
-### Markdown
+### What information do we collect?
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+**FlightRests does not collect any personal identifiable information or any user data.**
 
-```markdown
-Syntax highlighted code block
+**Deleting the app deletes all the information that has been entered in it.**
 
-# Header 1
-## Header 2
-### Header 3
+Manual deletion of all previous entries is also possible through a dedicated in-app button.
 
-- Bulleted
-- List
+### Changes to this privacy policy
 
-1. Numbered
-2. List
+All changes to this privacy policy will be published on this page with the effectivity date shown in the header.
 
-**Bold** and _Italic_ and `Code` text
+### Contact Information
 
-[Link](url) and ![Image](src)
-```
-
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/joao-boavida/FlightRests/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+In case any questions arise the developer may be reached at [his Twitter page](https://twitter.com/jmboavida) or by e-mail at j.m.boavida@gmail.com.
