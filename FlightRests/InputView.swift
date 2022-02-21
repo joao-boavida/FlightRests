@@ -109,6 +109,20 @@ struct InputView: View {
     var minimumBreakDuration: TimeInterval {
         Double(300 * minimumBreakSelection)
     }
+    var serviceTimeSeconds: Int {
+        let serviceAdjustment = serviceLabels[serviceSelection].components(separatedBy: "h") // hours and minutes in strings
+            .map {Int($0) ?? 0} // strings should be numbers only so this conversion should be straightforward
+            .enumerated() // tuples with the indexes
+            .reduce(0) { (accumulate, current) in // converted to seconds and added
+                if current.0 == 0 {
+                    return current.1 * 3600 // hours
+                } else {
+                    return accumulate + current.1 * 60 // minutes
+                }
+            }
+        let beforeServiceAdjustment = beforeServiceSelection * 300 // in seconds
+        return serviceAdjustment + beforeServiceAdjustment
+    }
 
     /// A closure that resets the input view when called due to idle time
     var resetInputView: (() -> Void) {
@@ -119,39 +133,13 @@ struct InputView: View {
             tabSelection = requestLog.mostRecentFunction()
         }
     }
-    
     var beginDate: Date {
-        if rawBeginDate.timeIntervalSinceNow / 3600 < -6 { // in hours
-            return Calendar.autoupdatingCurrent.date(byAdding: DateComponents(day: 1), to: rawBeginDate) ?? rawBeginDate
-        } else if rawBeginDate.timeIntervalSinceNow / 3600 > 12 { // in hours
-            return Calendar.autoupdatingCurrent.date(byAdding: DateComponents(day: -1), to: rawBeginDate) ?? rawBeginDate
-        } else {
-            return rawBeginDate
-        }
+        DateAdjuster.adjustedBeginDate(rawBeginDate)
     }
 
     /// The end date value which will be processed by the rest calculator; it handles correction of the appropriate datepicker value as well as consideration of the service time for cabin crew
     var endDate: Date {
-        switch crewFunction {
-        case .flightCrew:
-            return rawEndDate > beginDate ? rawEndDate : Calendar.autoupdatingCurrent.date(byAdding: DateComponents(day: 1), to: rawEndDate) ?? rawEndDate
-        case .cabinCrew:
-            var correctedDate = rawLandingDate > beginDate ? rawLandingDate : Calendar.autoupdatingCurrent.date(byAdding: DateComponents(day: 1), to: rawLandingDate) ?? rawLandingDate
-            let beforeServiceAdjustment = beforeServiceSelection * 300 // in seconds
-            let serviceAdjustment = serviceLabels[serviceSelection].components(separatedBy: "h") // hours and minutes in strings
-                .map {Int($0) ?? 0} // strings should be numbers only so this conversion should be straightforward
-                .enumerated() // tuples with the indexes
-                .reduce(0) { (accumulate, current) in // converted to seconds and added
-                    if current.0 == 0 {
-                        return current.1 * 3600 // hours
-                    } else {
-                        return accumulate + current.1 * 60 // minutes
-                    }
-                }
-
-            correctedDate.addTimeInterval(Double(-1 * (beforeServiceAdjustment + serviceAdjustment))) // the adjustment must be negative as the end of the rests is before the beginning of the service
-            return correctedDate
-        }
+        DateAdjuster.adjustedEndDate(beginDate, rawEndDate, rawLandingDate, serviceTimeSeconds, crewFunction)
     }
 
     /// the timezone to be used, which will be either UTC or the environment time zone according to user selection
@@ -237,9 +225,17 @@ struct InputView: View {
                     }
                     .accessibility(identifier: "breakDurationPicker")
                 }
-                
+                // Calculate button, disabled if the inputs are not valid
+                Section(footer: Text(calculateButtonFooterString).animation(.default)) {
+                    NavigationButton(destination: RestPlanView(restPlan: computedRestPlan).environment(\.timeZone, timeZone), title: "Calculate Rests") {
+                        computedRestPlan = RestCalculator.calculateRests(from: restRequest)
+                        requestLog.addRequest(restRequest)
+                    }.disabled(RestCalculator.validateInputs(from: restRequest) != .valid)
+                }
+
+                // Debug Section
                 #if DEBUG
-                Section {
+                Section(header: Text("Debug")) {
                     Text("rawBeginDate: \(rawBeginDate.debugDescription)")
                     Text("deltaNow: \(rawBeginDate.timeIntervalSinceNow/3600)")
                     Text("beginDate: \(beginDate.debugDescription)")
@@ -249,13 +245,6 @@ struct InputView: View {
                     Text("rawLandingDate: \(rawLandingDate.debugDescription)")
                 }
                 #endif
-                // Calculate button, disabled if the inputs are not valid
-                Section(footer: Text(calculateButtonFooterString).animation(.default)) {
-                    NavigationButton(destination: RestPlanView(restPlan: computedRestPlan).environment(\.timeZone, timeZone), title: "Calculate Rests") {
-                        computedRestPlan = RestCalculator.calculateRests(from: restRequest)
-                        requestLog.addRequest(restRequest)
-                    }.disabled(RestCalculator.validateInputs(from: restRequest) != .valid)
-                }
             }.navigationBarTitle(navBarTitle)
         } // if the app was on the background for more than one day then reset the input view
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
