@@ -42,7 +42,7 @@ struct RestRequestView: View {
         NavigationLink( destination: RestPlanView(restPlan: RestCalculator.calculateRests(from: request)).environment(\.timeZone, request.timeZone)) {
             HStack {
                 Group {
-                    Text(dateLabel(for: request.beginDate, in: request.timeZone))
+                    Text(dateLabel(for: request.creationDate, in: TimeZone.autoupdatingCurrent))
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
 
