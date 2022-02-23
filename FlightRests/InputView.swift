@@ -25,14 +25,14 @@ struct InputView: View {
 
     @State private var firstAppear = true
 
-    /// The date at which rests should begin
-    @State private var beginDate = Date().round(precision: 300, rule: .up)
+    /// The date picked by the Rest Begins Date Picker.
+    @State private var rawBeginDate = Date().round(precision: 300, rule: .up)
 
-    /// The date by which rests should end for flight crew
-    @State private var endDate = Calendar.current.date(byAdding: .hour, value: 3, to: Date())?.round(precision: 300, rule: .up) ?? .distantFuture
+    /// The date picked by the Rest Ends Date Picker
+    @State private var rawEndDate = Calendar.current.date(byAdding: .hour, value: 3, to: Date())?.round(precision: 300, rule: .up) ?? .distantFuture
 
     /// The date of the expected landing, for cabin crew, as it is used with the service to calculate the date for the end of the rests
-    @State private var landingDate = Calendar.current.date(byAdding: .hour, value: 6, to: Date())?.round(precision: 300, rule: .up) ?? .distantFuture
+    @State private var rawLandingDate = Calendar.current.date(byAdding: .hour, value: 6, to: Date())?.round(precision: 300, rule: .up) ?? .distantFuture
 
     /// Selection in the `beforeServiceLabels` array
     @State private var beforeServiceSelection = 2
@@ -44,7 +44,7 @@ struct InputView: View {
     @State private var serviceSelection = 4
 
     /// Selectable options for service duration
-    let serviceLabels = ["No Time", "1h00", "1h15", "1h30", "1h45", "2h00", "2h15", "2h30", "2h45", "3h00"]
+    let serviceLabels = ["No time", "1h00", "1h15", "1h30", "1h45", "2h00", "2h15", "2h30", "2h45", "3h00"]
 
     /// Number of pilots or groups
     @State private var numberOfUsers = 2
@@ -76,12 +76,14 @@ struct InputView: View {
     /// The number of rest periods will be updated automatically only the first time the number of users is increased before touching the number of rest periods; this variable controls that behaviour.
     @State private var restPeriodsReadyForAutoUpdate = true
 
+    @State private var versionNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+
     /// A binding to the tabSelection variable on the Tab View host to enable programmatic tab changes, which are triggered as part of the input view refresh.
     @Binding var tabSelection: CrewFunction
 
     /// A computed variable which builds the rest request from the appropriate data; if the view is being used for pilots, the number of users gets set to the number of users parameter, otherwise it is set to the number of periods as the previous parameter is unused.
     var restRequest: RestRequest {
-        RestRequest(beginDate: beginDate, endDate: correctedEndDate, numberOfUsers: crewFunction == .flightCrew ? numberOfUsers : numberOfRestPeriods, numberOfPeriods: numberOfRestPeriods, minimumBreakUnits: minimumBreakSelection, crewFunction: crewFunction, timeZone: timeZone)
+        RestRequest(beginDate: beginDate, endDate: endDate, numberOfUsers: crewFunction == .flightCrew ? numberOfUsers : numberOfRestPeriods, numberOfPeriods: numberOfRestPeriods, minimumBreakUnits: minimumBreakSelection, crewFunction: crewFunction, timeZone: timeZone)
     }
 
     /// The navigation bar title, either flight crew or cabin crew.
@@ -97,7 +99,12 @@ struct InputView: View {
         case .valid:
             return ""
         case .negativeInterval:
-            return "The time at which rest begins must not be later than that at which rest ends."
+            switch crewFunction {
+            case .flightCrew:
+                return "The time at which rest begins must not be later than that at which rest ends."
+            case .cabinCrew:
+                return "The time at which rest begins must not be later than that at which rest ends and must include time for the selected duration of service."
+            }
         case .tooSmallInterval:
             return "There is not enough time in the selected interval to calculate a rest plan. Either start earlier, end later, reduce breaks or reduce the number of rest periods."
         case .unsupportedCombination:
@@ -109,39 +116,37 @@ struct InputView: View {
     var minimumBreakDuration: TimeInterval {
         Double(300 * minimumBreakSelection)
     }
+    var serviceTimeSeconds: Int {
+        let serviceAdjustment = serviceLabels[serviceSelection].components(separatedBy: "h") // hours and minutes in strings
+            .map {Int($0) ?? 0} // strings should be numbers only so this conversion should be straightforward
+            .enumerated() // tuples with the indexes
+            .reduce(0) { (accumulate, current) in // converted to seconds and added
+                if current.0 == 0 {
+                    return current.1 * 3600 // hours
+                } else {
+                    return accumulate + current.1 * 60 // minutes
+                }
+            }
+        let beforeServiceAdjustment = beforeServiceSelection * 300 // in seconds
+        return serviceAdjustment + beforeServiceAdjustment
+    }
 
     /// A closure that resets the input view when called due to idle time
     var resetInputView: (() -> Void) {
         return {
-            beginDate = Date().round(precision: 300, rule: .up)
-            endDate = Calendar.current.date(byAdding: .hour, value: 3, to: beginDate) ?? .distantFuture
+            rawBeginDate = Date().round(precision: 300, rule: .up)
+            rawEndDate = Calendar.current.date(byAdding: .hour, value: 3, to: rawBeginDate) ?? .distantFuture
             restPeriodsReadyForAutoUpdate = true
             tabSelection = requestLog.mostRecentFunction()
         }
     }
+    var beginDate: Date {
+        DateAdjuster.adjustedBeginDate(rawBeginDate)
+    }
 
     /// The end date value which will be processed by the rest calculator; it handles correction of the appropriate datepicker value as well as consideration of the service time for cabin crew
-    var correctedEndDate: Date {
-        switch crewFunction {
-        case .flightCrew:
-            return endDate > beginDate ? endDate : Calendar.autoupdatingCurrent.date(byAdding: .hour, value: 24, to: endDate) ?? endDate
-        case .cabinCrew:
-            var correctedDate = landingDate > beginDate ? landingDate : Calendar.autoupdatingCurrent.date(byAdding: .hour, value: 24, to: landingDate) ?? landingDate
-            let beforeServiceAdjustment = beforeServiceSelection * 300 // in seconds
-            let serviceAdjustment = serviceLabels[serviceSelection].components(separatedBy: "h") // hours and minutes in strings
-                .map {Int($0) ?? 0} // strings should be numbers only so this conversion should be straightforward
-                .enumerated() // tuples with the indexes
-                .reduce(0) { (accumulate, current) in // converted to seconds and added
-                    if current.0 == 0 {
-                        return current.1 * 3600 // hours
-                    } else {
-                        return accumulate + current.1 * 60 // minutes
-                    }
-                }
-
-            correctedDate.addTimeInterval(Double(-1 * (beforeServiceAdjustment + serviceAdjustment))) // the adjustment must be negative as the end of the rests is before the beginning of the service
-            return correctedDate
-        }
+    var endDate: Date {
+        DateAdjuster.adjustedEndDate(beginDate, rawEndDate, rawLandingDate, serviceTimeSeconds, crewFunction)
     }
 
     /// the timezone to be used, which will be either UTC or the environment time zone according to user selection
@@ -182,14 +187,14 @@ struct InputView: View {
                 // Beginning and End Times
                 Section {
                     VStack {
-                        DatePicker("Rest Begins", selection: $beginDate, displayedComponents: [.hourAndMinute])
+                        DatePicker("Rest Begins", selection: $rawBeginDate, displayedComponents: [.hourAndMinute])
                             .accessibility(identifier: "beginDatePicker")
                         switch crewFunction {
                         case .flightCrew:
-                            DatePicker("Rest Ends", selection: $endDate, displayedComponents: [.hourAndMinute])
+                            DatePicker("Rest Ends", selection: $rawEndDate, displayedComponents: [.hourAndMinute])
                                 .accessibility(identifier: "endDatePicker")
                         case .cabinCrew:
-                            DatePicker("Landing Time", selection: $landingDate, displayedComponents: [.hourAndMinute])
+                            DatePicker("Landing Time", selection: $rawLandingDate, displayedComponents: [.hourAndMinute])
                                 .accessibility(identifier: "landingTimePicker")
                         }
                     }.environment(\.timeZone, timeZone)
@@ -210,7 +215,11 @@ struct InputView: View {
                                 }
                             }
                     case .cabinCrew:
-                        Stepper("**\(beforeServiceLabels[beforeServiceSelection])** before service", value: $beforeServiceSelection, in: 0 ... beforeServiceLabels.count - 1)
+                        if serviceSelection == 0 {
+                            Stepper("**\(beforeServiceLabels[beforeServiceSelection])** before Landing", value: $beforeServiceSelection, in: 0 ... beforeServiceLabels.count - 1)
+                        } else {
+                            Stepper("**\(beforeServiceLabels[beforeServiceSelection])** before Service", value: $beforeServiceSelection, in: 0 ... beforeServiceLabels.count - 1)
+                        }
                         Stepper("**\(serviceLabels[serviceSelection])** for Service", value: $serviceSelection, in: 0 ... serviceLabels.count - 1)
                     }
                     Stepper("**\(numberOfRestPeriods)** Rest Periods", value: $numberOfRestPeriods, in: 2 ... 5)
@@ -234,10 +243,24 @@ struct InputView: View {
                         requestLog.addRequest(restRequest)
                     }.disabled(RestCalculator.validateInputs(from: restRequest) != .valid)
                 }
+
+                // Debug Section
+                #if DEBUG
+                Section(header: Text("Debug")) {
+                    Text("rawBeginDate: \(rawBeginDate.debugDescription)")
+                    Text("deltaNow: \(rawBeginDate.timeIntervalSinceNow/3600)")
+                    Text("beginDate: \(beginDate.debugDescription)")
+                    Text("rawEndDate: \(rawEndDate.debugDescription)")
+                    Text("deltaBeginDate: \(rawEndDate.timeIntervalSince(beginDate)/3600)")
+                    Text("endDate: \(endDate.debugDescription)")
+                    Text("rawLandingDate: \(rawLandingDate.debugDescription)")
+                    Text("versionNumber: \(versionNumber ?? "nil version")")
+                }
+                #endif
             }.navigationBarTitle(navBarTitle)
         } // if the app was on the background for more than one day then reset the input view
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-            if beginDate < inputResetThreshold {
+            if rawBeginDate < inputResetThreshold {
                 resetInputView()
             }
         } // updating the on screen clock
@@ -255,7 +278,9 @@ struct InputView: View {
 
 struct InputView_Previews: PreviewProvider {
     static var previews: some View {
-        InputView(requestLog: RequestLog(), crewFunction: .cabinCrew, tabSelection: .constant(.cabinCrew))
-        .previewDevice("iPhone SE (2nd generation)")
+        Group {
+            InputView(requestLog: RequestLog(), crewFunction: .cabinCrew, tabSelection: .constant(.cabinCrew))
+                .previewDevice("iPhone SE (2nd generation)")
+        }
     }
 }

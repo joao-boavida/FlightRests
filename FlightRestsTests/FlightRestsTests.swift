@@ -58,7 +58,7 @@ class FlightRestsTests: XCTestCase {
     }
 
     /// Tests if the distribution of rest units is being fair and optimised for several user/period cases.
-    func testDistributeRestUnits() throws {
+    func testDistributeRestUnits() {
         let minimumBreakUnits = 1
         let totalUnits = 30
 
@@ -113,6 +113,44 @@ class FlightRestsTests: XCTestCase {
         XCTAssertFalse(requestLog.requests.isEmpty)
         requestLog.clearLog()
         XCTAssertTrue(requestLog.requests.isEmpty)
+    }
+
+    // Tests for the DateAdjuster struct
+
+    func testAdjustedBeginDate() {
+
+        // test the function adjusts the day when the selected value lies in the past.
+        let presentMoment1 = Calendar.current.date(from: DateComponents(year: 2022, month: 2, day: 21, hour: 23, minute: 00))!
+        let mockRawBeginDate1 = Calendar.current.date(from: DateComponents(year: 2022, month: 2, day: 21, hour: 1, minute: 00))!
+        let mockCorrectBeginDate1 = Calendar.current.date(from: DateComponents(year: 2022, month: 2, day: 22, hour: 1, minute: 00))!
+
+        XCTAssertEqual(DateAdjuster.adjustedBeginDate(mockRawBeginDate1, referenceNow: presentMoment1), mockCorrectBeginDate1)
+
+        // test the function adjusts the day when the selected value lies in the future
+        let presentMoment2 = Calendar.current.date(from: DateComponents(year: 2022, month: 2, day: 22, hour: 1, minute: 00))!
+        let mockRawBeginDate2 = Calendar.current.date(from: DateComponents(year: 2022, month: 2, day: 22, hour: 23, minute: 00))!
+        let mockCorrectBeginDate2 = Calendar.current.date(from: DateComponents(year: 2022, month: 2, day: 21, hour: 23, minute: 00))!
+
+        XCTAssertEqual(DateAdjuster.adjustedBeginDate(mockRawBeginDate2, referenceNow: presentMoment2), mockCorrectBeginDate2)
+    }
+
+    func testAdjustedEndDate() {
+        let presentMoment1 = Calendar.current.date(from: DateComponents(year: 2022, month: 2, day: 21, hour: 23, minute: 00))!
+        let mockBeginDate1 = Calendar.current.date(from: DateComponents(year: 2022, month: 2, day: 22, hour: 1, minute: 00))!
+        let mockRawEndDate1 = Calendar.current.date(from: DateComponents(year: 2022, month: 2, day: 21, hour: 5, minute: 00))!
+        let mockRawLandingDate1 = Calendar.current.date(from: DateComponents(year: 2022, month: 2, day: 21, hour: 7, minute: 00))!
+        let mockServiceTime1 = 5400
+        let mockCorrectEndDate1 = Calendar.current.date(from: DateComponents(year: 2022, month: 2, day: 22, hour: 5, minute: 00))!
+
+        // check the system correctly changes the day of the date for flight crew
+
+        XCTAssertEqual(DateAdjuster.adjustedEndDate(mockBeginDate1, mockRawEndDate1, mockRawLandingDate1, mockServiceTime1, CrewFunction.flightCrew, referenceNow: presentMoment1), mockCorrectEndDate1)
+
+        let mockCorrectEndDate2 = Calendar.current.date(from: DateComponents(year: 2022, month: 2, day: 22, hour: 5, minute: 30))!
+
+        // check the system correctly changes the day of the date for cabin crew and also adjusts for service.
+
+        XCTAssertEqual(DateAdjuster.adjustedEndDate(mockBeginDate1, mockRawEndDate1, mockRawLandingDate1, mockServiceTime1, CrewFunction.cabinCrew, referenceNow: presentMoment1), mockCorrectEndDate2)
     }
 
 }
