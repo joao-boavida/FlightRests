@@ -44,7 +44,7 @@ struct InputView: View {
     @State private var serviceSelection = 4
 
     /// Selectable options for service duration
-    let serviceLabels = ["No Time", "1h00", "1h15", "1h30", "1h45", "2h00", "2h15", "2h30", "2h45", "3h00"]
+    let serviceLabels = ["No time", "1h00", "1h15", "1h30", "1h45", "2h00", "2h15", "2h30", "2h45", "3h00"]
 
     /// Number of pilots or groups
     @State private var numberOfUsers = 2
@@ -76,6 +76,8 @@ struct InputView: View {
     /// The number of rest periods will be updated automatically only the first time the number of users is increased before touching the number of rest periods; this variable controls that behaviour.
     @State private var restPeriodsReadyForAutoUpdate = true
 
+    @State private var versionNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+
     /// A binding to the tabSelection variable on the Tab View host to enable programmatic tab changes, which are triggered as part of the input view refresh.
     @Binding var tabSelection: CrewFunction
 
@@ -97,7 +99,12 @@ struct InputView: View {
         case .valid:
             return ""
         case .negativeInterval:
-            return "The time at which rest begins must not be later than that at which rest ends."
+            switch crewFunction {
+            case .flightCrew:
+                return "The time at which rest begins must not be later than that at which rest ends."
+            case .cabinCrew:
+                return "The time at which rest begins must not be later than that at which rest ends and must include time for the selected duration of service."
+            }
         case .tooSmallInterval:
             return "There is not enough time in the selected interval to calculate a rest plan. Either start earlier, end later, reduce breaks or reduce the number of rest periods."
         case .unsupportedCombination:
@@ -208,7 +215,11 @@ struct InputView: View {
                                 }
                             }
                     case .cabinCrew:
-                        Stepper("**\(beforeServiceLabels[beforeServiceSelection])** before service", value: $beforeServiceSelection, in: 0 ... beforeServiceLabels.count - 1)
+                        if serviceSelection == 0 {
+                            Stepper("**\(beforeServiceLabels[beforeServiceSelection])** before Landing", value: $beforeServiceSelection, in: 0 ... beforeServiceLabels.count - 1)
+                        } else {
+                            Stepper("**\(beforeServiceLabels[beforeServiceSelection])** before Service", value: $beforeServiceSelection, in: 0 ... beforeServiceLabels.count - 1)
+                        }
                         Stepper("**\(serviceLabels[serviceSelection])** for Service", value: $serviceSelection, in: 0 ... serviceLabels.count - 1)
                     }
                     Stepper("**\(numberOfRestPeriods)** Rest Periods", value: $numberOfRestPeriods, in: 2 ... 5)
@@ -243,6 +254,7 @@ struct InputView: View {
                     Text("deltaBeginDate: \(rawEndDate.timeIntervalSince(beginDate)/3600)")
                     Text("endDate: \(endDate.debugDescription)")
                     Text("rawLandingDate: \(rawLandingDate.debugDescription)")
+                    Text("versionNumber: \(versionNumber ?? "nil version")")
                 }
                 #endif
             }.navigationBarTitle(navBarTitle)
@@ -266,7 +278,9 @@ struct InputView: View {
 
 struct InputView_Previews: PreviewProvider {
     static var previews: some View {
-        InputView(requestLog: RequestLog(), crewFunction: .cabinCrew, tabSelection: .constant(.cabinCrew))
-        .previewDevice("iPhone SE (2nd generation)")
+        Group {
+            InputView(requestLog: RequestLog(), crewFunction: .cabinCrew, tabSelection: .constant(.cabinCrew))
+                .previewDevice("iPhone SE (2nd generation)")
+        }
     }
 }
