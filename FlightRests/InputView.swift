@@ -230,7 +230,7 @@ struct InputView: View {
                 // Minimum Break
                 Section {
                     Picker("Minimum Break", selection: $minimumBreakSelection) {
-                        ForEach(0 ..< breakPickerLabels.count) {
+                        ForEach(0 ..< breakPickerLabels.count, id: \.self) {
                             Text("\(breakPickerLabels[$0])")
                         }
                     }
@@ -247,17 +247,12 @@ struct InputView: View {
                 // Debug Section
                 #if DEBUG
                 Section(header: Text("Debug")) {
-                    Text("rawBeginDate: \(rawBeginDate.debugDescription)")
-                    Text("deltaNow: \(rawBeginDate.timeIntervalSinceNow/3600)")
-                    Text("beginDate: \(beginDate.debugDescription)")
-                    Text("rawEndDate: \(rawEndDate.debugDescription)")
-                    Text("deltaBeginDate: \(rawEndDate.timeIntervalSince(beginDate)/3600)")
-                    Text("endDate: \(endDate.debugDescription)")
-                    Text("rawLandingDate: \(rawLandingDate.debugDescription)")
                     Text("versionNumber: \(versionNumber ?? "nil version")")
                 }
                 #endif
-            }.navigationBarTitle(navBarTitle)
+            }.navigationTitle(navBarTitle)
+            WelcomeView()
+
         } // if the app was on the background for more than one day then reset the input view
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
             if rawBeginDate < inputResetThreshold {
@@ -280,7 +275,9 @@ struct InputView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             InputView(requestLog: RequestLog(), crewFunction: .cabinCrew, tabSelection: .constant(.cabinCrew))
-                .previewDevice("iPhone SE (2nd generation)")
+            InputView(requestLog: RequestLog(), crewFunction: .cabinCrew, tabSelection: .constant(.cabinCrew))
+                .previewDevice("iPad Pro (12.9-inch) (5th generation)")
+
         }
     }
 }
