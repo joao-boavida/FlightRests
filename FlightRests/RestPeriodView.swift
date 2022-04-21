@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RestPeriodView: View {
 
+    @Environment(\.horizontalSizeClass) var sizeClass
     @Environment(\.timeZone) var environmentTimeZone
 
     let restPeriod: AssignedRestPeriod
@@ -49,18 +50,25 @@ struct RestPeriodView: View {
                 .stroke(Color.secondary, lineWidth: 4)
         )
         .padding(.horizontal)
+        .frame(maxWidth: 500)
     }
 }
 
 struct RestPeriodView_Previews: PreviewProvider {
 
     static var previews: some View {
-        NavigationView {
+        Group {
             VStack {
                 RestPeriodView(restPeriod: .example1, timeColour: .blue)
                 RestPeriodView(restPeriod: .example2, timeColour: .green)
                 Text("Locale: \(Locale.autoupdatingCurrent.debugDescription)").font(.title2)
             }
-        }.colorScheme(.light)
+            VStack {
+                RestPeriodView(restPeriod: .example1, timeColour: .blue)
+                RestPeriodView(restPeriod: .example2, timeColour: .green)
+                Text("Locale: \(Locale.autoupdatingCurrent.debugDescription)").font(.title2)
+            }
+            .previewDevice("iPhone SE (3rd generation)")
+        }
     }
 }
