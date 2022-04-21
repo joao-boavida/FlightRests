@@ -26,7 +26,6 @@ struct RestPlanView: View {
                         RestPeriodView(restPeriod: period, timeColour: period.owner <= timeColors.count ? timeColors[period.owner - 1] : Color.black).environment(\.timeZone, environmentTimeZone)
                     }.padding(.vertical)
                 }
-                Spacer()
             }
         }
         .navigationBarTitle("Rest Plan")
@@ -36,6 +35,7 @@ struct RestPlanView: View {
 struct RestPlanView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
+            RestPlanView(restPlan: [.example1, .example2, .example1, .example2])
             RestPlanView(restPlan: [.example1, .example2, .example1, .example2])
         }
     }
