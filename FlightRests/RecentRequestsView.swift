@@ -61,7 +61,7 @@ struct RecentRequestsView: View {
                         }
                     }
             }
-            RestPlanView(restPlan: [])
+            WelcomeView(viewType: .recentRequests)
         }
     }
 
