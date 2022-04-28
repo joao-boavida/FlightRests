@@ -109,11 +109,6 @@ struct RestCalculator {
                 $0 % 2 == 0 ? finalRestPeriod : finalBreakPeriod
             }
 
-            /*
-            return Array(repeating: 0, count: numberOfPeriods + numberOfBreaks).enumerated().map { (index, _) in
-                index % 2 == 0 ? finalRestPeriod : finalBreakPeriod
-            }*/
-
         } else {
 
             // for now assume 2 pilots for uneven periods. rests may be slightly different in total duration here.
