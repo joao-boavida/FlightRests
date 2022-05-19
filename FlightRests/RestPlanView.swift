@@ -11,6 +11,20 @@ struct RestPlanView: View {
 
     var restPlan: [AssignedRestPeriod]
 
+    var titleString: String {
+        if restPlan.isEmpty {
+            return "Rest Plan"
+        } else {
+            switch restPlan.first!.crewFunction {
+
+            case .flightCrew:
+                return "Flight Crew Rests"
+            case .cabinCrew:
+                return "Cabin Crew Rests"
+            }
+        }
+    }
+
     @Environment(\.timeZone) var environmentTimeZone
     let timeColors = [Color.blue, Color.red, Color.green, Color.purple, Color.orange]
 
@@ -28,7 +42,7 @@ struct RestPlanView: View {
                 }
             }
         }
-        .navigationBarTitle("Rest Plan")
+        .navigationBarTitle(titleString)
     }
 }
 

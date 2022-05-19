@@ -55,7 +55,7 @@ struct RestCalculator {
 
         let dates = Self.createRestPlanDates(restPlanUnits: distributedUnits, roundedRestInterval: roundedRestInterval)
 
-        return Self.assignPilotsRemoveBreaks(restPlanDates: dates, numberOfUsers: request.numberOfUsers)
+        return Self.assignPilotsRemoveBreaks(crewFunction: request.crewFunction, restPlanDates: dates, numberOfUsers: request.numberOfUsers)
     }
 
     /// Splits a given interval into rest units of a given length.
@@ -180,14 +180,14 @@ struct RestCalculator {
     ///   - restPlanDates: an array of date intervals with the rest and break periods
     ///   - numberOfPilots: number of pilots to rest
     /// - Returns: an array of AssignedRestPeriods with the rest periods correctly assigned to the pilots.
-    static func assignPilotsRemoveBreaks(restPlanDates: [DateInterval], numberOfUsers: Int) -> [AssignedRestPeriod] {
+    static func assignPilotsRemoveBreaks(crewFunction: CrewFunction, restPlanDates: [DateInterval], numberOfUsers: Int) -> [AssignedRestPeriod] {
 
         let breaksRemoved = restPlanDates.enumerated().compactMap { (index, element) in
             index % 2 == 0 ? element : nil
         }
 
         return breaksRemoved.enumerated().map { (index, element) in
-            AssignedRestPeriod(owner: index % numberOfUsers + 1, period: element)
+            AssignedRestPeriod(crewFunction: crewFunction, owner: index % numberOfUsers + 1, period: element)
         }
 
     }
