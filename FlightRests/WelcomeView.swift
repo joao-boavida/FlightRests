@@ -14,6 +14,7 @@ enum WelcomeViewType: String, Codable {
 
 struct WelcomeView: View {
 
+    /// Describes a simplified screen orientation. It is initialised to the current orientation, then changed only when a change to portrait or landscape is detected in order to hide or show the tip.
     @State private var orientation = UIDevice.current.orientation
 
     let viewType: WelcomeViewType
@@ -53,7 +54,12 @@ struct WelcomeView: View {
             orientation = UIDevice.current.orientation
         }
         .onRotate { newOrientation in
-            orientation = newOrientation
+            switch newOrientation {
+            case .portrait, .portraitUpsideDown, .landscapeRight, .landscapeLeft:
+                orientation = newOrientation
+            default: // in all other orientations (including faceUp/Down the layout is not changed, so that change does not get passed into the view.
+                return
+            }
         }
     }
 }
