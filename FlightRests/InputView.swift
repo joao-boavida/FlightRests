@@ -81,8 +81,6 @@ struct InputView: View {
 
     @State private var versionNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
 
-    @State private var shouldShowDetailView = false
-
     /// A binding to the tabSelection variable on the Tab View host to enable programmatic tab changes, which are triggered as part of the input view refresh.
     @Binding var tabSelection: CrewFunction
 
@@ -277,14 +275,13 @@ struct InputView: View {
                 }
                 // Calculate button, disabled if the inputs are not valid
                 Section(footer: Text(calculateButtonFooterString).animation(.default)) {
-                    NavigationButton(destination: RestPlanView(restPlan: computedRestPlan).environment(\.timeZone, timeZone), title: "Calculate Rests", navigationLinkActive: $shouldShowDetailView) {
+                    NavigationButton(destination: RestPlanView(restPlan: computedRestPlan).environment(\.timeZone, timeZone), title: "Calculate Rests") {
                         computedRestPlan = RestCalculator.calculateRests(from: restRequest)
                         requestLog.addRequest(restRequest)
                     }.disabled(RestCalculator.validateInputs(from: restRequest) != .valid)
                     Button("Reset Selections", role: .destructive) {
                         resetInputView()
                         resetUserSelections()
-                        shouldShowDetailView = false
                     }.disabled(areUserOptionsSameAsDefault)
 
                 }
