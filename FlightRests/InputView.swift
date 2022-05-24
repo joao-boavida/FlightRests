@@ -55,6 +55,9 @@ struct InputView: View {
     /// Selection in the `breakPickerLabels` array
     @State private var minimumBreakSelection = 2
 
+    /// Option that, if true, will make the calculator optimise breaks
+    @State private var optimiseBreaks = false
+
     /// Selectable durations for breaks
     let breakPickerLabels = ["None", "5 min", "10 min", "15 min", "20 min"]
 
@@ -83,7 +86,7 @@ struct InputView: View {
 
     /// A computed variable which builds the rest request from the appropriate data; if the view is being used for pilots, the number of users gets set to the number of users parameter, otherwise it is set to the number of periods as the previous parameter is unused.
     var restRequest: RestRequest {
-        RestRequest(beginDate: beginDate, endDate: endDate, numberOfUsers: crewFunction == .flightCrew ? numberOfUsers : numberOfRestPeriods, numberOfPeriods: numberOfRestPeriods, minimumBreakUnits: minimumBreakSelection, crewFunction: crewFunction, timeZone: timeZone)
+        RestRequest(beginDate: beginDate, endDate: endDate, numberOfUsers: crewFunction == .flightCrew ? numberOfUsers : numberOfRestPeriods, numberOfPeriods: numberOfRestPeriods, minimumBreakUnits: minimumBreakSelection, crewFunction: crewFunction, timeZone: timeZone, optimiseBreaks: optimiseBreaks)
     }
 
     /// The navigation bar title, either flight crew or cabin crew.
@@ -172,6 +175,15 @@ struct InputView: View {
         }
     }
 
+    /// The footer that describes the optimize breaks option when it is selected on
+    var breaksSectionFooterString: String {
+        if optimiseBreaks {
+            return "If possible, breaks will be increased without reducing rest time."
+        } else {
+            return ""
+        }
+    }
+
     var body: some View {
         NavigationView {
             Form {
@@ -228,13 +240,15 @@ struct InputView: View {
                         }
                 }
                 // Minimum Break
-                Section {
+                Section(footer: Text(breaksSectionFooterString).animation(.default)) {
                     Picker("Minimum Break", selection: $minimumBreakSelection) {
                         ForEach(0 ..< breakPickerLabels.count, id: \.self) {
                             Text("\(breakPickerLabels[$0])")
                         }
                     }
                     .accessibility(identifier: "breakDurationPicker")
+                    Toggle("Optimise Breaks", isOn: $optimiseBreaks)
+                        .accessibilityIdentifier("optimizeBreaksToggle")
                 }
                 // Calculate button, disabled if the inputs are not valid
                 Section(footer: Text(calculateButtonFooterString).animation(.default)) {
@@ -242,6 +256,7 @@ struct InputView: View {
                         computedRestPlan = RestCalculator.calculateRests(from: restRequest)
                         requestLog.addRequest(restRequest)
                     }.disabled(RestCalculator.validateInputs(from: restRequest) != .valid)
+                    
                 }
 
                 // Debug Section
@@ -274,9 +289,10 @@ struct InputView: View {
 struct InputView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            InputView(requestLog: RequestLog(), crewFunction: .cabinCrew, tabSelection: .constant(.cabinCrew))
-            InputView(requestLog: RequestLog(), crewFunction: .cabinCrew, tabSelection: .constant(.cabinCrew))
+            InputView(requestLog: RequestLog(), crewFunction: .flightCrew, tabSelection: .constant(.cabinCrew))
+            InputView(requestLog: RequestLog(), crewFunction: .flightCrew, tabSelection: .constant(.cabinCrew))
                 .previewDevice("iPad Pro (12.9-inch) (5th generation)")
+                .previewInterfaceOrientation(.landscapeLeft)
 
         }
     }

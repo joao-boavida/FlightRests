@@ -64,18 +64,40 @@ class FlightRestsTests: XCTestCase {
 
         var numberOfUsers = 2
 
+        let optimiseBreaks = true
+
         for numberOfPeriods in 2 ... 4 {
-            let result = RestCalculator.distributeRestPlanUnits(numberOfUsers: numberOfUsers, numberOfPeriods: numberOfPeriods, minimumBreakUnits: minimumBreakUnits, totalUnits: totalUnits)
+            let result = RestCalculator.distributeRestPlanUnits(numberOfUsers: numberOfUsers, numberOfPeriods: numberOfPeriods, minimumBreakUnits: minimumBreakUnits, totalUnits: totalUnits, optimiseBreaks: optimiseBreaks)
 
             checkDistributedRestUnits(result, numberOfPeriods, totalUnits, numberOfUsers)
         }
 
         numberOfUsers = 3
 
-        let result = RestCalculator.distributeRestPlanUnits(numberOfUsers: numberOfUsers, numberOfPeriods: 3, minimumBreakUnits: minimumBreakUnits, totalUnits: totalUnits)
+        let result = RestCalculator.distributeRestPlanUnits(numberOfUsers: numberOfUsers, numberOfPeriods: 3, minimumBreakUnits: minimumBreakUnits, totalUnits: totalUnits, optimiseBreaks: optimiseBreaks)
 
         checkDistributedRestUnits(result, 3, totalUnits, numberOfUsers)
 
+    }
+
+    /// Test if the optimise breaks option is working properly
+    func testOptimiseBreaksOption() {
+        let minimumBreakUnits = 1
+        let totalUnits = 22
+        let numberOfUsers = 3
+        let numberOfPeriods = 3
+
+        var optimiseBreaks = false
+
+        let result1 = RestCalculator.distributeRestPlanUnits(numberOfUsers: numberOfUsers, numberOfPeriods: numberOfPeriods, minimumBreakUnits: minimumBreakUnits, totalUnits: totalUnits, optimiseBreaks: optimiseBreaks)
+
+        XCTAssertEqual(result1[1], 1)
+
+        optimiseBreaks = true
+
+        let result2 = RestCalculator.distributeRestPlanUnits(numberOfUsers: numberOfUsers, numberOfPeriods: numberOfPeriods, minimumBreakUnits: minimumBreakUnits, totalUnits: totalUnits, optimiseBreaks: optimiseBreaks)
+
+        XCTAssertEqual(result2[1], 2)
     }
 
     func testRequestLogCleanUP() {
@@ -85,7 +107,7 @@ class FlightRestsTests: XCTestCase {
         // testing the removal of old entries
 
         let oldDate = DateComponents(calendar: .autoupdatingCurrent, timeZone: .autoupdatingCurrent, year: 2000, month: 11, day: 19).date!
-        let oldRequest = RestRequest(creationDate: oldDate, beginDate: oldDate, endDate: oldDate, numberOfUsers: 2, numberOfPeriods: 2, minimumBreakUnits: 10, crewFunction: .flightCrew, timeZone: TimeZone(abbreviation: "GMT")!)
+        let oldRequest = RestRequest(creationDate: oldDate, beginDate: oldDate, endDate: oldDate, numberOfUsers: 2, numberOfPeriods: 2, minimumBreakUnits: 10, crewFunction: .flightCrew, timeZone: TimeZone(abbreviation: "GMT")!, optimiseBreaks: true)
 
         requestLog.addRequest(oldRequest)
 
@@ -94,7 +116,7 @@ class FlightRestsTests: XCTestCase {
         // testing the size trimming function
         for _ in 0 ... requestLog.maxEntries + 10 {
             let advance = Double(Int.random(in: -1000 ... 1000))
-            let sampleRequest = RestRequest(beginDate: Date(timeIntervalSinceNow: advance), endDate: Date(timeIntervalSinceNow: advance + 3600), numberOfUsers: 2, numberOfPeriods: 2, minimumBreakUnits: 2, crewFunction: .flightCrew, timeZone: TimeZone(abbreviation: "GMT")!)
+            let sampleRequest = RestRequest(beginDate: Date(timeIntervalSinceNow: advance), endDate: Date(timeIntervalSinceNow: advance + 3600), numberOfUsers: 2, numberOfPeriods: 2, minimumBreakUnits: 2, crewFunction: .flightCrew, timeZone: TimeZone(abbreviation: "GMT")!, optimiseBreaks: false)
             requestLog.addRequest(sampleRequest)
         }
 
@@ -107,7 +129,7 @@ class FlightRestsTests: XCTestCase {
         // testing the size trimming function
         for _ in 0 ... 10 {
             let advance = Double(Int.random(in: -1000 ... 1000))
-            let sampleRequest = RestRequest(beginDate: Date(timeIntervalSinceNow: advance), endDate: Date(timeIntervalSinceNow: advance + 3600), numberOfUsers: 2, numberOfPeriods: 2, minimumBreakUnits: 2, crewFunction: .flightCrew, timeZone: TimeZone(abbreviation: "GMT")!)
+            let sampleRequest = RestRequest(beginDate: Date(timeIntervalSinceNow: advance), endDate: Date(timeIntervalSinceNow: advance + 3600), numberOfUsers: 2, numberOfPeriods: 2, minimumBreakUnits: 2, crewFunction: .flightCrew, timeZone: TimeZone(abbreviation: "GMT")!, optimiseBreaks: true)
             requestLog.addRequest(sampleRequest)
         }
         XCTAssertFalse(requestLog.requests.isEmpty)
