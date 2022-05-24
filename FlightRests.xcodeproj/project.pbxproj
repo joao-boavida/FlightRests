@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0312C7CB283D201700F27DA1 /* DefaultValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0312C7CA283D201700F27DA1 /* DefaultValues.swift */; };
 		03146E6925EE896D00F4C8B3 /* RestRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03146E6825EE896D00F4C8B3 /* RestRequest.swift */; };
 		0329EF5C260F85F800D15BA3 /* Project Notepad.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0329EF5B260F85F800D15BA3 /* Project Notepad.rtf */; };
 		033E666725E9426F00C56F24 /* InputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033E666625E9426F00C56F24 /* InputView.swift */; };
@@ -53,6 +54,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0312C7CA283D201700F27DA1 /* DefaultValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultValues.swift; sourceTree = "<group>"; };
 		03146E6825EE896D00F4C8B3 /* RestRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestRequest.swift; sourceTree = "<group>"; };
 		0329EF5B260F85F800D15BA3 /* Project Notepad.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = "Project Notepad.rtf"; sourceTree = "<group>"; };
 		033E666625E9426F00C56F24 /* InputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputView.swift; sourceTree = "<group>"; };
@@ -156,6 +158,7 @@
 				037F793F25E6A3EA001A34B9 /* FlightRestsApp.swift */,
 				037F794825E6A3F3001A34B9 /* Info.plist */,
 				033E666625E9426F00C56F24 /* InputView.swift */,
+				0312C7CA283D201700F27DA1 /* DefaultValues.swift */,
 				03CB03D525F9149D0037DAE4 /* NavigationButton.swift */,
 				037F794525E6A3F3001A34B9 /* Preview Content */,
 				0329EF5B260F85F800D15BA3 /* Project Notepad.rtf */,
@@ -458,6 +461,7 @@
 				037F794025E6A3EA001A34B9 /* FlightRestsApp.swift in Sources */,
 				0391D6CC27C004D300802596 /* DateAdjuster.swift in Sources */,
 				03AE5C9025FBC07500EEBC79 /* RequestLog.swift in Sources */,
+				0312C7CB283D201700F27DA1 /* DefaultValues.swift in Sources */,
 				033E667825EA952E00C56F24 /* TimeIntervalExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
