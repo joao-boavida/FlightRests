@@ -35,28 +35,28 @@ struct InputView: View {
     @State private var rawLandingDate = Calendar.current.date(byAdding: .hour, value: 6, to: Date())?.round(precision: 300, rule: .up) ?? .distantFuture
 
     /// Selection in the `beforeServiceLabels` array
-    @State private var beforeServiceSelection = 2
+    @State private var beforeServiceSelection = DefaultValues.beforeServiceSelection
 
     /// selectable options for before service interval
     let beforeServiceLabels = ["No time", "5min", "10min", "15min", "20min"]
 
     /// Selection in the `serviceSelection` array
-    @State private var serviceSelection = 4
+    @State private var serviceSelection = DefaultValues.serviceSelection
 
     /// Selectable options for service duration
     let serviceLabels = ["No time", "1h00", "1h15", "1h30", "1h45", "2h00", "2h15", "2h30", "2h45", "3h00"]
 
     /// Number of pilots or groups
-    @State private var numberOfUsers = 2
+    @State private var numberOfUsers = DefaultValues.users
 
     /// Number of rest periods
-    @State private var numberOfRestPeriods = 2
+    @State private var numberOfRestPeriods = DefaultValues.restPeriods
 
     /// Selection in the `breakPickerLabels` array
-    @State private var minimumBreakSelection = 2
+    @State private var minimumBreakSelection = DefaultValues.minimumBreakSelection
 
     /// Option that, if true, will make the calculator optimise breaks
-    @State private var optimiseBreaks = false
+    @State private var optimiseBreaks = DefaultValues.optimiseBreaks
 
     /// Selectable durations for breaks
     let breakPickerLabels = ["None", "5 min", "10 min", "15 min", "20 min"]
@@ -80,6 +80,8 @@ struct InputView: View {
     @State private var restPeriodsReadyForAutoUpdate = true
 
     @State private var versionNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+
+    @State private var shouldShowDetailView = false
 
     /// A binding to the tabSelection variable on the Tab View host to enable programmatic tab changes, which are triggered as part of the input view refresh.
     @Binding var tabSelection: CrewFunction
@@ -143,6 +145,29 @@ struct InputView: View {
             tabSelection = requestLog.mostRecentFunction()
         }
     }
+
+    /// A closure that resets the user selectable options to their default values
+    var resetUserSelections: (() -> Void) {
+        return {
+            beforeServiceSelection = DefaultValues.beforeServiceSelection
+            serviceSelection = DefaultValues.serviceSelection
+            numberOfUsers = DefaultValues.users
+            numberOfRestPeriods = DefaultValues.restPeriods
+            minimumBreakSelection = DefaultValues.minimumBreakSelection
+            optimiseBreaks = DefaultValues.optimiseBreaks
+        }
+    }
+
+    /// A boolean that checks if user options have been changed.
+    var areUserOptionsSameAsDefault: Bool {
+        beforeServiceSelection == DefaultValues.beforeServiceSelection &&
+        serviceSelection == DefaultValues.serviceSelection &&
+        numberOfUsers == DefaultValues.users &&
+        numberOfRestPeriods == DefaultValues.restPeriods &&
+        minimumBreakSelection == DefaultValues.minimumBreakSelection &&
+        optimiseBreaks == DefaultValues.optimiseBreaks
+    }
+
     var beginDate: Date {
         DateAdjuster.adjustedBeginDate(rawBeginDate)
     }
@@ -252,11 +277,16 @@ struct InputView: View {
                 }
                 // Calculate button, disabled if the inputs are not valid
                 Section(footer: Text(calculateButtonFooterString).animation(.default)) {
-                    NavigationButton(destination: RestPlanView(restPlan: computedRestPlan).environment(\.timeZone, timeZone), title: "Calculate Rests") {
+                    NavigationButton(destination: RestPlanView(restPlan: computedRestPlan).environment(\.timeZone, timeZone), title: "Calculate Rests", navigationLinkActive: $shouldShowDetailView) {
                         computedRestPlan = RestCalculator.calculateRests(from: restRequest)
                         requestLog.addRequest(restRequest)
                     }.disabled(RestCalculator.validateInputs(from: restRequest) != .valid)
-                    
+                    Button("Reset Selections", role: .destructive) {
+                        resetInputView()
+                        resetUserSelections()
+                        shouldShowDetailView = false
+                    }.disabled(areUserOptionsSameAsDefault)
+
                 }
 
                 // Debug Section
