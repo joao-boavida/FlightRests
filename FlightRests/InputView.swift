@@ -201,7 +201,7 @@ struct InputView: View {
     /// The footer that describes the optimize breaks option when it is selected on
     var breaksSectionFooterString: String {
         if optimiseBreaks {
-            return "If possible, breaks will be increased without reducing rest time."
+            return "If possible, breaks will be increased without reducing rest periods."
         } else {
             return ""
         }
@@ -262,8 +262,8 @@ struct InputView: View {
                             restPeriodsReadyForAutoUpdate = false
                         }
                 }
-                // Minimum Break
-                Section(footer: Text(breaksSectionFooterString).animation(.default)) {
+                // Minimum Break and break optimisation
+                Section(footer: Text(breaksSectionFooterString).fixedSize(horizontal: false, vertical: true).animation(.default)) {
                     Picker("Minimum Break", selection: $minimumBreakSelection) {
                         ForEach(0 ..< breakPickerLabels.count, id: \.self) {
                             Text("\(breakPickerLabels[$0])")
@@ -293,6 +293,7 @@ struct InputView: View {
                 }
                 #endif
             }.navigationTitle(navBarTitle)
+            // Default Detail View
             WelcomeView(viewType: .calculator)
 
         } // if the app was on the background for more than one day then reset the input view
