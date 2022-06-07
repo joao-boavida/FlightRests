@@ -15,4 +15,8 @@ struct DefaultValues {
     static let optimiseBreaks = false
     static let beforeServiceSelection = 2
     static let serviceSelection = 4
+
+    static let flightCrewIcon = "paperplane"
+    static let cabinCrewIcon = "person.3.fill"
+    static let recentsIcon = "clock"
 }
