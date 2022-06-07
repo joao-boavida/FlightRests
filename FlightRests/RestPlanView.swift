@@ -9,70 +9,100 @@ import SwiftUI
 
 struct RestPlanView: View {
 
+    /* The dismiss does not work on iPad; create a local copy of the rest plan that can be emptied when the clear button is pushed; change the logic and implement a self centering scroll view using the code in the article in the safari reading list. Move the clear to the nav bar */
+
     var restPlan: [AssignedRestPeriod]
 
-    var titleString: String {
-        if restPlan.isEmpty {
-            return "Rest Plan"
+    var role: CrewFunction? {
+        if displayedRestPlan.isEmpty {
+            return nil
         } else {
-            switch restPlan.first!.crewFunction {
-
-            case .flightCrew:
-                return "Flight Crew Rests"
-            case .cabinCrew:
-                return "Cabin Crew Rests"
-            }
+            return displayedRestPlan.first!.crewFunction
         }
     }
 
+    var titleString: String {
+        switch role {
+        case .flightCrew:
+            return "Flight Crew Rests"
+        case .cabinCrew:
+            return "Cabin Crew Rests"
+        case nil:
+            return "Empty Plan"
+        }
+    }
+
+    var icon: Image? {
+        switch role {
+        case .flightCrew:
+            return Image(systemName: DefaultValues.flightCrewIcon)
+        case .cabinCrew:
+            return Image(systemName: DefaultValues.cabinCrewIcon)
+        case nil:
+            return nil
+        }
+    }
+
+    @State private var displayedRestPlan: [AssignedRestPeriod] = []
+
     @Environment(\.timeZone) var environmentTimeZone
     @Environment(\.verticalSizeClass) var verticalSizeClass
+    @Environment(\.presentationMode) var presentationMode
 
     let timeColors = [Color.blue, Color.red, Color.green, Color.purple, Color.orange]
 
     var body: some View {
-        if restPlan.isEmpty {
-            Text("No Data to Display")
-                .font(.title)
-                .navigationBarTitle(titleString)
-        } else {
-            if verticalSizeClass == .compact {
-                ScrollView {
+        Group {
+            if displayedRestPlan.isEmpty {
+                WelcomeView(viewType: .calculator)
+            } else {
+                ScrollView(.vertical, showsIndicators: false) {
                     VStack {
+                        Text(titleString)
+                            .font(.largeTitle)
+                            .padding()
+                        icon?
+                            .scaleEffect(1.5)
+                            .padding()
+                        Spacer()
+                            .frame(maxHeight: 20)
                         // ternary operator added here as a safeguard to prevent crash due to index out of range; the color black should never be used.
-                        ForEach(restPlan) { period in
+                        ForEach(displayedRestPlan) { period in
                             RestPeriodView(restPeriod: period, timeColour: period.owner <= timeColors.count ? timeColors[period.owner - 1] : Color.black).environment(\.timeZone, environmentTimeZone)
                         }.padding(.vertical)
-                    }.navigationBarTitle(titleString)
-
+                        Text("🛩 🌙 🛩")
+                            .font(.largeTitle)
+                            .padding()
+                        Button("Clear", role: .destructive) {
+                            displayedRestPlan.removeAll()
+                            presentationMode.wrappedValue.dismiss()
+                        }.font(.title)
+                            .padding()
+                    }
                 }
-            } else {
-                VStack {
-                    Text(titleString)
-                        .font(.largeTitle)
-                    Spacer()
-                        .frame(maxHeight: 50)
-                    // ternary operator added here as a safeguard to prevent crash due to index out of range; the color black should never be used.
-                    ForEach(restPlan) { period in
-                        RestPeriodView(restPeriod: period, timeColour: period.owner <= timeColors.count ? timeColors[period.owner - 1] : Color.black).environment(\.timeZone, environmentTimeZone)
-                    }.padding(.vertical)
-                    Spacer()
-                        .frame(maxHeight: 50)
-                    Text("🛩 🌙 🛩")
-                        .font(.largeTitle)
-                }
-
             }
+        }.onAppear {
+            displayedRestPlan = restPlan
         }
-
     }
 }
 
 struct RestPlanView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
-            RestPlanView(restPlan: [.example1, .example2, .example1, .example2])
-            RestPlanView(restPlan: [.example1, .example2, .example1, .example2])
+        Group {
+            NavigationView {
+                RestPlanView(restPlan: [])
+                RestPlanView(restPlan: [])
+            }
+            NavigationView {
+                RestPlanView(restPlan: [.example1, .example2, .example1, .example2])
+                RestPlanView(restPlan: [.example1, .example2, .example1, .example2])
+            }
+            NavigationView {
+                RestPlanView(restPlan: [.example1, .example2, .example1, .example2])
+                RestPlanView(restPlan: [.example1, .example2])
+            }
+
         }
     }
 }
