@@ -9,7 +9,7 @@ import SwiftUI
 
 struct RestPlanView: View {
 
-    /* The dismiss does not work on iPad; create a local copy of the rest plan that can be emptied when the clear button is pushed; change the logic and implement a self centering scroll view using the code in the article in the safari reading list. Move the clear to the nav bar */
+    /* View not updating properly when calculate button is pressed again on an ipad landscape because the onAppear method is not triggered; consider turning restPlan into an observed object, but that may not work either. ?? */
 
     var restPlan: [AssignedRestPeriod]
 
@@ -47,7 +47,7 @@ struct RestPlanView: View {
 
     @Environment(\.timeZone) var environmentTimeZone
     @Environment(\.verticalSizeClass) var verticalSizeClass
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) var dismiss
 
     let timeColors = [Color.blue, Color.red, Color.green, Color.purple, Color.orange]
 
@@ -75,13 +75,14 @@ struct RestPlanView: View {
                             .padding()
                         Button("Clear", role: .destructive) {
                             displayedRestPlan.removeAll()
-                            presentationMode.wrappedValue.dismiss()
+                            dismiss()
                         }.font(.title)
                             .padding()
                     }
                 }
             }
         }.onAppear {
+            print("onappear triggered on restplanview")
             displayedRestPlan = restPlan
         }
     }
