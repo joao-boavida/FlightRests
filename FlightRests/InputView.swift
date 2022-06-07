@@ -263,7 +263,7 @@ struct InputView: View {
                         }
                 }
                 // Minimum Break and break optimisation
-                Section(footer: Text(breaksSectionFooterString).fixedSize(horizontal: false, vertical: true).animation(.default)) {
+                Section(footer: Text(breaksSectionFooterString).fixedSize(horizontal: false, vertical: true).animation(Animation.default, value: optimiseBreaks)) {
                     Picker("Minimum Break", selection: $minimumBreakSelection) {
                         ForEach(0 ..< breakPickerLabels.count, id: \.self) {
                             Text("\(breakPickerLabels[$0])")
