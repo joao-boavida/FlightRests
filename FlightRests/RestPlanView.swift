@@ -53,6 +53,7 @@ struct RestPlanView: View {
 
     @Environment(\.timeZone) var environmentTimeZone
     @Environment(\.verticalSizeClass) var verticalSizeClass
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.dismiss) var dismiss
 
     let timeColors = [Color.blue, Color.green, Color.red, Color.purple, Color.orange]
@@ -79,13 +80,18 @@ struct RestPlanView: View {
                         Text("🛩 🌙 🛩")
                             .font(.largeTitle)
                             .padding()
-                        Button("Clear Results", role: .destructive) {
-                            dismiss()
+                        if horizontalSizeClass == .regular {
+                            Button("Clear Results", role: .destructive) {
+                                dismiss()
 
-                            // if due to the strange behaviour on ipad landscape the view does not dismiss this boolean will force the welcome view to be shown
-                            clearPushed = true
-                        }.font(.title)
-                            .padding()
+                                // if due to the strange behaviour on ipad landscape the view does not dismiss this boolean will force the welcome view to be shown
+                                withAnimation {
+                                    clearPushed = true
+                                }
+                            }.font(.title2)
+                                .padding()
+                        }
+
                     }
                 }
             }
