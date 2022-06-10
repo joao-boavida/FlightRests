@@ -9,8 +9,10 @@ import SwiftUI
 
 struct RestPlanView: View {
 
+    /// The rest plan to be displayed
     var restPlan: [AssignedRestPeriod]
 
+    /// The role in which the view is being used
     var role: CrewFunction? {
         if restPlan.isEmpty {
             return nil
@@ -19,6 +21,7 @@ struct RestPlanView: View {
         }
     }
 
+    /// The view title string
     var titleString: String {
         switch role {
         case .flightCrew:
@@ -30,6 +33,7 @@ struct RestPlanView: View {
         }
     }
 
+    /// The icon to be disolayed below the title
     var icon: Image? {
         switch role {
         case .flightCrew:
@@ -41,15 +45,17 @@ struct RestPlanView: View {
         }
     }
 
+    /// Variable to store the token from the observer so that it can later be dismissed
     @State private var observerToken: NSObjectProtocol?
 
+    /// Boolean to detect whether or not the clear button has been pushed; when this occurs the view should force the welcome screen.
     @State private var clearPushed = false
 
     @Environment(\.timeZone) var environmentTimeZone
     @Environment(\.verticalSizeClass) var verticalSizeClass
     @Environment(\.dismiss) var dismiss
 
-    let timeColors = [Color.blue, Color.red, Color.green, Color.purple, Color.orange]
+    let timeColors = [Color.blue, Color.green, Color.red, Color.purple, Color.orange]
 
     var body: some View {
         Group {
@@ -73,10 +79,10 @@ struct RestPlanView: View {
                         Text("🛩 🌙 🛩")
                             .font(.largeTitle)
                             .padding()
-                        Button("Clear", role: .destructive) {
+                        Button("Clear Results", role: .destructive) {
                             dismiss()
 
-                            // will only be reached if due to the strange behaviour on ipad landscape the view does not dismiss; in this case, this boolean will force the welcome view to be shown
+                            // if due to the strange behaviour on ipad landscape the view does not dismiss this boolean will force the welcome view to be shown
                             clearPushed = true
                         }.font(.title)
                             .padding()
@@ -84,11 +90,13 @@ struct RestPlanView: View {
                 }
             }
         }.onAppear {
+            // adds an observer so that when this notification is received the view should prepare for updating
             observerToken = NotificationManager.observeRefreshNotification {
                 clearPushed = false
             }
         }
         .onDisappear {
+            // removes the observer when the view is dismissed
             guard let observerToken = observerToken else { return }
             NotificationManager.removeRefreshObserver(token: observerToken)
         }
