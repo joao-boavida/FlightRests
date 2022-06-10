@@ -52,7 +52,6 @@ struct RestPlanView: View {
     @State private var clearPushed = false
 
     @Environment(\.timeZone) var environmentTimeZone
-    @Environment(\.verticalSizeClass) var verticalSizeClass
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.dismiss) var dismiss
 
