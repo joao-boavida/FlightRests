@@ -9,15 +9,13 @@ import SwiftUI
 
 struct RestPlanView: View {
 
-    /* View not updating properly when calculate button is pressed again on an ipad landscape because the onAppear method is not triggered; consider turning restPlan into an observed object, but that may not work either. ?? */
-
     var restPlan: [AssignedRestPeriod]
 
     var role: CrewFunction? {
-        if displayedRestPlan.isEmpty {
+        if restPlan.isEmpty {
             return nil
         } else {
-            return displayedRestPlan.first!.crewFunction
+            return restPlan.first!.crewFunction
         }
     }
 
@@ -43,7 +41,9 @@ struct RestPlanView: View {
         }
     }
 
-    @State private var displayedRestPlan: [AssignedRestPeriod] = []
+    @State private var observerToken: NSObjectProtocol?
+
+    @State private var clearPushed = false
 
     @Environment(\.timeZone) var environmentTimeZone
     @Environment(\.verticalSizeClass) var verticalSizeClass
@@ -53,7 +53,7 @@ struct RestPlanView: View {
 
     var body: some View {
         Group {
-            if displayedRestPlan.isEmpty {
+            if restPlan.isEmpty || clearPushed {
                 WelcomeView(viewType: .calculator)
             } else {
                 ScrollView(.vertical, showsIndicators: false) {
@@ -67,23 +67,30 @@ struct RestPlanView: View {
                         Spacer()
                             .frame(maxHeight: 20)
                         // ternary operator added here as a safeguard to prevent crash due to index out of range; the color black should never be used.
-                        ForEach(displayedRestPlan) { period in
+                        ForEach(restPlan) { period in
                             RestPeriodView(restPeriod: period, timeColour: period.owner <= timeColors.count ? timeColors[period.owner - 1] : Color.black).environment(\.timeZone, environmentTimeZone)
                         }.padding(.vertical)
                         Text("🛩 🌙 🛩")
                             .font(.largeTitle)
                             .padding()
                         Button("Clear", role: .destructive) {
-                            displayedRestPlan.removeAll()
                             dismiss()
+
+                            // will only be reached if due to the strange behaviour on ipad landscape the view does not dismiss; in this case, this boolean will force the welcome view to be shown
+                            clearPushed = true
                         }.font(.title)
                             .padding()
                     }
                 }
             }
         }.onAppear {
-            print("onappear triggered on restplanview")
-            displayedRestPlan = restPlan
+            observerToken = NotificationManager.observeRefreshNotification {
+                clearPushed = false
+            }
+        }
+        .onDisappear {
+            guard let observerToken = observerToken else { return }
+            NotificationManager.removeRefreshObserver(token: observerToken)
         }
     }
 }

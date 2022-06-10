@@ -276,7 +276,14 @@ struct InputView: View {
                 // Calculate button, disabled if the inputs are not valid
                 Section(footer: Text(calculateButtonFooterString).animation(.default)) {
                     NavigationButton(destination: RestPlanView(restPlan: computedRestPlan).environment(\.timeZone, timeZone), title: "Calculate Rests") {
+
+                        // calculate the rest plan
                         computedRestPlan = RestCalculator.calculateRests(from: restRequest)
+
+                        // inform the restplanview, if visible, that it should refresh, to prevent bugs on largescreen ipads
+                        NotificationManager.postRefreshNotification()
+
+                        // add the request to the request log for future reference
                         requestLog.addRequest(restRequest)
                     }.disabled(RestCalculator.validateInputs(from: restRequest) != .valid)
                     Button("Reset Selections", role: .destructive) {
