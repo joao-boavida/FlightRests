@@ -301,7 +301,7 @@ struct InputView: View {
                 #endif
             }.navigationTitle(navBarTitle)
             // Default Detail View
-            WelcomeView(viewType: .calculator)
+            WelcomeView(crewFunction: crewFunction)
 
         } // if the app was on the background for more than one day then reset the input view
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in

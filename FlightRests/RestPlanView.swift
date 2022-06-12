@@ -13,7 +13,7 @@ struct RestPlanView: View {
     var restPlan: [AssignedRestPeriod]
 
     /// The role in which the view is being used
-    var role: CrewFunction? {
+    var crewFunction: CrewFunction? {
         if restPlan.isEmpty {
             return nil
         } else {
@@ -23,7 +23,7 @@ struct RestPlanView: View {
 
     /// The view title string
     var titleString: String {
-        switch role {
+        switch crewFunction {
         case .flightCrew:
             return "Flight Crew Rests"
         case .cabinCrew:
@@ -34,8 +34,8 @@ struct RestPlanView: View {
     }
 
     /// The icon to be disolayed below the title
-    var icon: Image? {
-        switch role {
+    var crewIcon: Image? {
+        switch crewFunction {
         case .flightCrew:
             return Image(systemName: DefaultValues.flightCrewIcon)
         case .cabinCrew:
@@ -60,14 +60,18 @@ struct RestPlanView: View {
     var body: some View {
         Group {
             if restPlan.isEmpty || clearPushed {
-                WelcomeView(viewType: .calculator)
+                if let crewFunction = crewFunction {
+                    WelcomeView(crewFunction: crewFunction)
+                } else {
+                    WelcomeView(viewType: .unknown)
+                }
             } else {
                 ScrollView(.vertical, showsIndicators: false) {
                     VStack {
                         Text(titleString)
                             .font(.largeTitle)
                             .padding()
-                        icon?
+                        crewIcon?
                             .scaleEffect(1.5)
                             .padding()
                         Spacer()
