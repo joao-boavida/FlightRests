@@ -33,7 +33,7 @@ struct RecentRequestsView: View {
                 ZStack {
                     Color.gray
                         .opacity(0.1)
-                    Text("Previous rest calculations will be shown here.")
+                    Text("Recent rest calculations will be shown here.")
                         .font(.title2)
                         .multilineTextAlignment(.center)
                         .padding()
