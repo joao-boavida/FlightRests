@@ -12,6 +12,8 @@ struct RestPlanView: View {
     /// The rest plan to be displayed
     var restPlan: [AssignedRestPeriod]
 
+    var showClearButton = true
+
     /// The role in which the view is being used
     var crewFunction: CrewFunction? {
         if restPlan.isEmpty {
@@ -39,17 +41,21 @@ struct RestPlanView: View {
         case .flightCrew:
             return Image(systemName: DefaultValues.flightCrewIcon)
         case .cabinCrew:
-            return Image(systemName: DefaultValues.cabinCrewIcon)
+            return Image(systemName: DefaultValues.cabinCrewIconOption)
         case nil:
             return nil
         }
     }
 
     /// Variable to store the token from the observer so that it can later be dismissed
-    @State private var observerToken: NSObjectProtocol?
+    @State private var refreshToken: NSObjectProtocol?
+
+    @State private var clearAllToken: NSObjectProtocol?
 
     /// Boolean to detect whether or not the clear button has been pushed; when this occurs the view should force the welcome screen.
     @State private var clearPushed = false
+
+    @State private var forceRecentsWelcomeView = false
 
     @Environment(\.timeZone) var environmentTimeZone
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
@@ -59,55 +65,68 @@ struct RestPlanView: View {
 
     var body: some View {
         Group {
-            if restPlan.isEmpty || clearPushed {
-                if let crewFunction = crewFunction {
-                    WelcomeView(crewFunction: crewFunction)
-                } else {
-                    WelcomeView(viewType: .unknown)
-                }
+            if forceRecentsWelcomeView {
+                WelcomeView(viewType: .recentRequests)
             } else {
-                ScrollView(.vertical, showsIndicators: false) {
-                    VStack {
-                        Text(titleString)
-                            .font(.largeTitle)
-                            .padding()
-                        crewIcon?
-                            .scaleEffect(1.5)
-                            .padding()
-                        Spacer()
-                            .frame(maxHeight: 20)
-                        // ternary operator added here as a safeguard to prevent crash due to index out of range; the color black should never be used.
-                        ForEach(restPlan) { period in
-                            RestPeriodView(restPeriod: period, timeColour: period.owner <= timeColors.count ? timeColors[period.owner - 1] : Color.black).environment(\.timeZone, environmentTimeZone)
-                        }.padding(.vertical)
-                        Text("🛩 🌙 🛩")
-                            .font(.largeTitle)
-                            .padding()
-                        if horizontalSizeClass == .regular {
-                            Button("Clear Results", role: .destructive) {
-                                dismiss()
-
-                                // if due to the strange behaviour on ipad landscape the view does not dismiss this boolean will force the welcome view to be shown
-                                withAnimation {
-                                    clearPushed = true
-                                }
-                            }.font(.title2)
+                if restPlan.isEmpty || clearPushed {
+                    if let crewFunction = crewFunction {
+                        WelcomeView(crewFunction: crewFunction)
+                    } else {
+                        WelcomeView(viewType: .unknown)
+                    }
+                } else {
+                    ScrollView(.vertical, showsIndicators: false) {
+                        VStack {
+                            Text(titleString)
+                                .font(.largeTitle)
                                 .padding()
-                        }
+                            crewIcon?
+                                .scaleEffect(1.5)
+                                .padding()
+                            Spacer()
+                                .frame(maxHeight: 20)
+                            // ternary operator added here as a safeguard to prevent crash due to index out of range; the color black should never be used.
+                            ForEach(restPlan) { period in
+                                RestPeriodView(restPeriod: period, timeColour: period.owner <= timeColors.count ? timeColors[period.owner - 1] : Color.black).environment(\.timeZone, environmentTimeZone)
+                            }.padding(.vertical)
+                            Text("🛩 🌙 🛩")
+                                .font(.largeTitle)
+                                .padding()
+                            if horizontalSizeClass == .regular && showClearButton {
+                                Button("Clear Results", role: .destructive) {
+                                    dismiss()
 
+                                    // if due to the strange behaviour on ipad landscape the view does not dismiss this boolean will force the welcome view to be shown
+                                    withAnimation {
+                                        clearPushed = true
+                                    }
+                                }.font(.title2)
+                                    .padding()
+                            }
+
+                        }
                     }
                 }
             }
         }.onAppear {
             // adds an observer so that when this notification is received the view should prepare for updating
-            observerToken = NotificationManager.observeRefreshNotification {
+            refreshToken = NotificationManager.observeRefreshNotification {
                 clearPushed = false
+                forceRecentsWelcomeView = false
+            }
+            clearAllToken = NotificationManager.observeClearAllNotification {
+                forceRecentsWelcomeView = true
             }
         }
         .onDisappear {
             // removes the observer when the view is dismissed
-            guard let observerToken = observerToken else { return }
-            NotificationManager.removeRefreshObserver(token: observerToken)
+            if let refreshToken = refreshToken {
+                NotificationManager.removeRefreshObserver(token: refreshToken)
+            }
+            if let clearAllToken = clearAllToken {
+                NotificationManager.removeClearAllObserver(token: clearAllToken)
+            }
+
         }
     }
 }

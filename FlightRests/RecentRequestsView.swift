@@ -58,6 +58,7 @@ struct RecentRequestsView: View {
                         }
                         Button("Delete All", role: .destructive) {
                             clearLog()
+                            NotificationManager.postClearAllNotification()
                         }
                     }
             }
