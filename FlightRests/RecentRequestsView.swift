@@ -15,7 +15,9 @@ struct RecentRequestsView: View {
 
     /// clears the request log
     func clearLog() {
-        requestLog.clearLog()
+        withAnimation {
+            requestLog.clearLog()
+        }
     }
 
     /// triggers the deletion confirmation alert

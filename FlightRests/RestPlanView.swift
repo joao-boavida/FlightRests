@@ -115,7 +115,9 @@ struct RestPlanView: View {
                 forceRecentsWelcomeView = false
             }
             clearAllToken = NotificationManager.observeClearAllNotification {
-                forceRecentsWelcomeView = true
+                withAnimation {
+                    forceRecentsWelcomeView = true
+                }
             }
         }
         .onDisappear {
