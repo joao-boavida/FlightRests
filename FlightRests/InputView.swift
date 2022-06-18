@@ -97,7 +97,8 @@ struct InputView: View {
         }
     }
 
-    var calculateButtonFooterString: String {
+    /// The calculate button footer text
+    var calculateButtonFooterLabel: String {
         switch RestCalculator.validateInputs(from: restRequest) {
         case .valid:
             return ""
@@ -113,6 +114,29 @@ struct InputView: View {
         case .unsupportedCombination:
             return "Please change the combination of number of pilots and number of rest periods as the current one is not supported."
         }
+    }
+
+    /// The break selection control label
+    var breakSelectionLabel: String {
+        if numberOfRestPeriods == 2 {
+            return optimiseBreaks ? "Minimum Break" : "Break"
+        } else {
+            return optimiseBreaks ? "Minimum Breaks" : "Breaks"
+        }
+    }
+
+    /// The footer that describes the optimize breaks option when it is selected on
+    var breaksSectionFooterLabel: String {
+        if optimiseBreaks {
+            return "If possible, breaks will be increased without reducing rest periods."
+        } else {
+            return ""
+        }
+    }
+
+    /// The break optimisation toggle label
+    var optimiseBreaksLabel: String {
+        numberOfRestPeriods == 2 ? "Optimise Break" : "Optimise Breaks"
     }
 
     /// Minimum break duration as a time interval, built from the user's selection
@@ -198,15 +222,6 @@ struct InputView: View {
         }
     }
 
-    /// The footer that describes the optimize breaks option when it is selected on
-    var breaksSectionFooterString: String {
-        if optimiseBreaks {
-            return "If possible, breaks will be increased without reducing rest periods."
-        } else {
-            return ""
-        }
-    }
-
     var body: some View {
         NavigationView {
             Form {
@@ -263,18 +278,18 @@ struct InputView: View {
                         }
                 }
                 // Minimum Break and break optimisation
-                Section(footer: Text(breaksSectionFooterString).fixedSize(horizontal: false, vertical: true).animation(Animation.default, value: optimiseBreaks)) {
-                    Picker("Minimum Break", selection: $minimumBreakSelection) {
+                Section(footer: Text(breaksSectionFooterLabel).fixedSize(horizontal: false, vertical: true).animation(Animation.default, value: optimiseBreaks)) {
+                    Picker(breakSelectionLabel, selection: $minimumBreakSelection) {
                         ForEach(0 ..< breakPickerLabels.count, id: \.self) {
                             Text("\(breakPickerLabels[$0])")
                         }
                     }
                     .accessibility(identifier: "breakDurationPicker")
-                    Toggle("Optimise Breaks", isOn: $optimiseBreaks)
+                    Toggle(optimiseBreaksLabel, isOn: $optimiseBreaks)
                         .accessibilityIdentifier("optimizeBreaksToggle")
                 }
                 // Calculate button, disabled if the inputs are not valid
-                Section(footer: Text(calculateButtonFooterString).animation(.default)) {
+                Section(footer: Text(calculateButtonFooterLabel).animation(.default)) {
                     NavigationButton(destination: RestPlanView(restPlan: computedRestPlan).environment(\.timeZone, timeZone), title: "Calculate Rests") {
 
                         // calculate the rest plan
@@ -324,11 +339,7 @@ struct InputView: View {
 struct InputView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            InputView(requestLog: RequestLog(), crewFunction: .flightCrew, tabSelection: .constant(.cabinCrew))
-            InputView(requestLog: RequestLog(), crewFunction: .flightCrew, tabSelection: .constant(.cabinCrew))
-                .previewDevice("iPad Pro (12.9-inch) (5th generation)")
-                .previewInterfaceOrientation(.landscapeLeft)
-
+            InputView(requestLog: RequestLog(), crewFunction: .flightCrew, tabSelection: .constant(.flightCrew))
         }
     }
 }
