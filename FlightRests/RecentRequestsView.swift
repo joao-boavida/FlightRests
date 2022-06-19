@@ -25,8 +25,10 @@ struct RecentRequestsView: View {
         showingClearAlert = true
     }
 
+    /// Manages the appearance of an alert when the user attempts to clear all entries
     @State private var showingClearAlert = false
 
+    /// The alert text
     let alertString = "Do you wish to delete all entries in this list?"
 
     var body: some View {
@@ -60,6 +62,7 @@ struct RecentRequestsView: View {
                         }
                         Button("Delete All", role: .destructive) {
                             clearLog()
+                            // the clear all notification is sent so that the restplan view, if visible, will clear any results being shown
                             NotificationManager.postClearAllNotification()
                         }
                     }

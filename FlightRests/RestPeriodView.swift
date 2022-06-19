@@ -12,9 +12,13 @@ struct RestPeriodView: View {
     @Environment(\.horizontalSizeClass) var sizeClass
     @Environment(\.timeZone) var environmentTimeZone
 
+    /// The rest period to be displayed
     let restPeriod: AssignedRestPeriod
+
+    /// The colour to be used in the times
     let timeColour: Color
 
+    /// The time zone abbreviation, obtained from the environment
     var timeZoneAbb: String {
         let abbreviation = environmentTimeZone.abbreviation() ?? ""
         return abbreviation.replacingOccurrences(of: "GMT", with: "UTC")

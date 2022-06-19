@@ -12,6 +12,7 @@ struct RestPlanView: View {
     /// The rest plan to be displayed
     var restPlan: [AssignedRestPeriod]
 
+    /// Whether or not the clear button is shown
     var showClearButton = true
 
     /// The role in which the view is being used
@@ -55,12 +56,14 @@ struct RestPlanView: View {
     /// Boolean to detect whether or not the clear button has been pushed; when this occurs the view should force the welcome screen.
     @State private var clearPushed = false
 
+    /// When true the view will force a welcome view of the recent calculations type
     @State private var forceRecentsWelcomeView = false
 
     @Environment(\.timeZone) var environmentTimeZone
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.dismiss) var dismiss
 
+    /// The colors to be used in rendering the rest periods, in the order they will be used.,
     let timeColors = [Color.blue, Color.green, Color.red, Color.purple, Color.orange]
 
     var body: some View {
@@ -114,6 +117,7 @@ struct RestPlanView: View {
                 clearPushed = false
                 forceRecentsWelcomeView = false
             }
+            // adds an observer to detect the pressing of the clear all button, which will trigger a welcomeview in that case.
             clearAllToken = NotificationManager.observeClearAllNotification {
                 withAnimation {
                     forceRecentsWelcomeView = true
@@ -121,7 +125,7 @@ struct RestPlanView: View {
             }
         }
         .onDisappear {
-            // removes the observer when the view is dismissed
+            // removes the observers when the view is dismissed
             if let refreshToken = refreshToken {
                 NotificationManager.removeRefreshObserver(token: refreshToken)
             }

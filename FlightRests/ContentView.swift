@@ -12,6 +12,7 @@ struct ContentView: View {
     /// Initialisation of the requests database
     @StateObject var requestLog = RequestLog()
 
+    /// Variable to enable programmatic tab selections; unused now.
     @State private var tabSelection = CrewFunction.cabinCrew
 
     var body: some View {
