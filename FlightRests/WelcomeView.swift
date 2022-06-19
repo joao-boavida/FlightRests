@@ -18,10 +18,14 @@ struct WelcomeView: View {
     @State private var orientation = UIDevice.current.orientation
     @Environment(\.verticalSizeClass) var verticalSizeClass
 
+    /// The type of welcome view to be rendered
     let viewType: WelcomeViewType
 
+    /// The app icon, grabbed from the assets
     let appIcon = Image("icon-inApp")
 
+    /// Custom initialiser to initiate this view from a crew function
+    /// - Parameter crewFunction: the crew function for which this view will be initialised
     init(crewFunction: CrewFunction) {
         switch crewFunction {
         case .flightCrew:
@@ -31,6 +35,8 @@ struct WelcomeView: View {
         }
     }
 
+    /// Memberwise initialiser
+    /// - Parameter viewType: the welcome view type to be rendered
     init(viewType: WelcomeViewType) {
         self.viewType = viewType
     }
