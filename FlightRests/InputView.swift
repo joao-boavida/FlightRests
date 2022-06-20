@@ -128,7 +128,11 @@ struct InputView: View {
     /// The footer that describes the optimize breaks option when it is selected on
     var breaksSectionFooterLabel: String {
         if optimiseBreaks {
-            return "If possible, breaks will be increased without reducing rest periods."
+            if numberOfRestPeriods == 2 {
+                return "If possible, the break will be increased without reducing rest periods."
+            } else {
+                return "If possible, breaks will be increased without reducing rest periods."
+            }
         } else {
             return ""
         }
@@ -272,7 +276,7 @@ struct InputView: View {
                         }
                         Stepper("**\(serviceLabels[serviceSelection])** for Service", value: $serviceSelection, in: 0 ... serviceLabels.count - 1)
                     }
-                    Stepper("**\(numberOfRestPeriods)** Rest Periods", value: $numberOfRestPeriods, in: 2 ... 5)
+                    Stepper("**\(numberOfRestPeriods)** Rest Periods", value: $numberOfRestPeriods.animation(), in: 2 ... 5)
                         .onChange(of: numberOfRestPeriods) { _ in
                             restPeriodsReadyForAutoUpdate = false
                         }
@@ -285,7 +289,7 @@ struct InputView: View {
                         }
                     }
                     .accessibility(identifier: "breakDurationPicker")
-                    Toggle(optimiseBreaksLabel, isOn: $optimiseBreaks)
+                    Toggle(optimiseBreaksLabel, isOn: $optimiseBreaks.animation())
                         .accessibilityIdentifier("optimizeBreaksToggle")
                 }
                 // Calculate button, disabled if the inputs are not valid
