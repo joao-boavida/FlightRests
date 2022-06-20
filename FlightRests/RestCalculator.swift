@@ -47,7 +47,7 @@ struct RestCalculator {
 
         let totalUnits = Self.calculateTotalUnits(in: roundedRestInterval, unitLength: request.unitLength)
 
-        let distributedUnits = Self.distributeRestPlanUnits(numberOfUsers: request.numberOfUsers, numberOfPeriods: request.numberOfPeriods, minimumBreakUnits: request.minimumBreakUnits, totalUnits: totalUnits)
+        let distributedUnits = Self.distributeRestPlanUnits(numberOfUsers: request.numberOfUsers, numberOfPeriods: request.numberOfPeriods, minimumBreakUnits: request.minimumBreakUnits, totalUnits: totalUnits, optimiseBreaks: request.optimiseBreaks)
 
         // confirm the distributer did not return an empty array
 
@@ -55,7 +55,7 @@ struct RestCalculator {
 
         let dates = Self.createRestPlanDates(restPlanUnits: distributedUnits, roundedRestInterval: roundedRestInterval)
 
-        return Self.assignPilotsRemoveBreaks(restPlanDates: dates, numberOfUsers: request.numberOfUsers)
+        return Self.assignPilotsRemoveBreaks(crewFunction: request.crewFunction, restPlanDates: dates, numberOfUsers: request.numberOfUsers)
     }
 
     /// Splits a given interval into rest units of a given length.
@@ -90,7 +90,7 @@ struct RestCalculator {
     ///   - minimumBreakUnits: minimum length of the break periods in units
     ///   - totalUnits: total units available
     /// - Returns: an array of Ints representing the rest and break periods. index 0 and evens are rest periods, odd indices are break periods
-    static func distributeRestPlanUnits(numberOfUsers: Int, numberOfPeriods: Int, minimumBreakUnits: Int, totalUnits: Int) -> [Int] {
+    static func distributeRestPlanUnits(numberOfUsers: Int, numberOfPeriods: Int, minimumBreakUnits: Int, totalUnits: Int, optimiseBreaks: Bool) -> [Int] {
 
         let numberOfBreaks = numberOfPeriods - 1
 
@@ -99,20 +99,24 @@ struct RestCalculator {
         if numberOfPeriods % numberOfUsers == 0 {
             let finalRestPeriod = maximumRestUnits / numberOfPeriods // number of units per rest period. division of Ints automatically rounds down.
 
-            let remainingUnitsForBreaks = maximumRestUnits % numberOfPeriods // remaining units which can, if possible be allocated to increasing breaks
+            // initialisation of the variable to exist outside the scope of the if/else clause
+            var finalBreakPeriod = 0
 
-            let usableExtraUnitsForBreaks = remainingUnitsForBreaks / numberOfBreaks
+            if optimiseBreaks {
+                // if the optimise option is selected then increase breaks if possible
+                let remainingUnitsForBreaks = maximumRestUnits % numberOfPeriods // remaining units which can, if possible be allocated to increasing breaks
 
-            let finalBreakPeriod = minimumBreakUnits + usableExtraUnitsForBreaks
+                let usableExtraUnitsForBreaks = remainingUnitsForBreaks / numberOfBreaks
+
+                finalBreakPeriod = minimumBreakUnits + usableExtraUnitsForBreaks
+            } else {
+                // otherwise just make the final break equal to the minimum break
+                finalBreakPeriod = minimumBreakUnits
+            }
 
             return (0 ... (numberOfPeriods + numberOfBreaks - 1)).map {
                 $0 % 2 == 0 ? finalRestPeriod : finalBreakPeriod
             }
-
-            /*
-            return Array(repeating: 0, count: numberOfPeriods + numberOfBreaks).enumerated().map { (index, _) in
-                index % 2 == 0 ? finalRestPeriod : finalBreakPeriod
-            }*/
 
         } else {
 
@@ -185,14 +189,14 @@ struct RestCalculator {
     ///   - restPlanDates: an array of date intervals with the rest and break periods
     ///   - numberOfPilots: number of pilots to rest
     /// - Returns: an array of AssignedRestPeriods with the rest periods correctly assigned to the pilots.
-    static func assignPilotsRemoveBreaks(restPlanDates: [DateInterval], numberOfUsers: Int) -> [AssignedRestPeriod] {
+    static func assignPilotsRemoveBreaks(crewFunction: CrewFunction, restPlanDates: [DateInterval], numberOfUsers: Int) -> [AssignedRestPeriod] {
 
         let breaksRemoved = restPlanDates.enumerated().compactMap { (index, element) in
             index % 2 == 0 ? element : nil
         }
 
         return breaksRemoved.enumerated().map { (index, element) in
-            AssignedRestPeriod(owner: index % numberOfUsers + 1, period: element)
+            AssignedRestPeriod(crewFunction: crewFunction, owner: index % numberOfUsers + 1, period: element)
         }
 
     }

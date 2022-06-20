@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0312C7CB283D201700F27DA1 /* DefaultValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0312C7CA283D201700F27DA1 /* DefaultValues.swift */; };
 		03146E6925EE896D00F4C8B3 /* RestRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03146E6825EE896D00F4C8B3 /* RestRequest.swift */; };
 		0329EF5C260F85F800D15BA3 /* Project Notepad.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0329EF5B260F85F800D15BA3 /* Project Notepad.rtf */; };
 		033E666725E9426F00C56F24 /* InputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033E666625E9426F00C56F24 /* InputView.swift */; };
@@ -28,6 +29,9 @@
 		03AE5C9B25FC1B8B00EEBC79 /* RecentRequestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AE5C9A25FC1B8B00EEBC79 /* RecentRequestsView.swift */; };
 		03CB03CA25F6A3FB0037DAE4 /* RestRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CB03C925F6A3FB0037DAE4 /* RestRequestView.swift */; };
 		03CB03D625F9149D0037DAE4 /* NavigationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CB03D525F9149D0037DAE4 /* NavigationButton.swift */; };
+		03D3054928117FAD008071E7 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D3054828117FAD008071E7 /* WelcomeView.swift */; };
+		03D3054B28119E4A008071E7 /* DeviceRotationViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D3054A28119E4A008071E7 /* DeviceRotationViewModifier.swift */; };
+		03F128F428523B18006DCEC8 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F128F328523B18006DCEC8 /* NotificationManager.swift */; };
 		32FBE40E2586499B506E8218 /* Pods_FlightRests_FlightRestsUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FD1492E4E25F34CAE5F8293 /* Pods_FlightRests_FlightRestsUITests.framework */; };
 		3D255A55C48DB2A18DB1F82C /* Pods_FlightRestsTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC1F2861CB79EB2FBF9495CA /* Pods_FlightRestsTests.framework */; };
 		4F036E3EE0C0A0AC6CEDCD36 /* Pods_FlightRests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7799D0F36705B58BD601B59F /* Pods_FlightRests.framework */; };
@@ -51,6 +55,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0312C7CA283D201700F27DA1 /* DefaultValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultValues.swift; sourceTree = "<group>"; };
 		03146E6825EE896D00F4C8B3 /* RestRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestRequest.swift; sourceTree = "<group>"; };
 		0329EF5B260F85F800D15BA3 /* Project Notepad.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = "Project Notepad.rtf"; sourceTree = "<group>"; };
 		033E666625E9426F00C56F24 /* InputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputView.swift; sourceTree = "<group>"; };
@@ -78,6 +83,9 @@
 		03AE5C9A25FC1B8B00EEBC79 /* RecentRequestsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentRequestsView.swift; sourceTree = "<group>"; };
 		03CB03C925F6A3FB0037DAE4 /* RestRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestRequestView.swift; sourceTree = "<group>"; };
 		03CB03D525F9149D0037DAE4 /* NavigationButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationButton.swift; sourceTree = "<group>"; };
+		03D3054828117FAD008071E7 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
+		03D3054A28119E4A008071E7 /* DeviceRotationViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceRotationViewModifier.swift; sourceTree = "<group>"; };
+		03F128F328523B18006DCEC8 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		26377A16B43F715992BCA64E /* Pods-FlightRestsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlightRestsTests.debug.xcconfig"; path = "Target Support Files/Pods-FlightRestsTests/Pods-FlightRestsTests.debug.xcconfig"; sourceTree = "<group>"; };
 		32B05C255557E73880ED2AD8 /* Pods-FlightRests-FlightRestsUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlightRests-FlightRestsUITests.release.xcconfig"; path = "Target Support Files/Pods-FlightRests-FlightRestsUITests/Pods-FlightRests-FlightRestsUITests.release.xcconfig"; sourceTree = "<group>"; };
 		4CBF295E110C2FF4F07D1BF0 /* Pods-FlightRests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlightRests.release.xcconfig"; path = "Target Support Files/Pods-FlightRests/Pods-FlightRests.release.xcconfig"; sourceTree = "<group>"; };
@@ -145,14 +153,18 @@
 				037F794325E6A3F3001A34B9 /* Assets.xcassets */,
 				037F797225E6A45A001A34B9 /* AssignedRestPeriod.swift */,
 				037F794125E6A3EA001A34B9 /* ContentView.swift */,
+				0391D6CB27C004D300802596 /* DateAdjuster.swift */,
 				037F796D25E6A441001A34B9 /* DateExtension.swift */,
+				03D3054A28119E4A008071E7 /* DeviceRotationViewModifier.swift */,
 				03AE5C9525FBC4E600EEBC79 /* FileManagerExtension.swift */,
 				037F793F25E6A3EA001A34B9 /* FlightRestsApp.swift */,
 				037F794825E6A3F3001A34B9 /* Info.plist */,
 				033E666625E9426F00C56F24 /* InputView.swift */,
-				0391D6CB27C004D300802596 /* DateAdjuster.swift */,
+				03F128F328523B18006DCEC8 /* NotificationManager.swift */,
+				0312C7CA283D201700F27DA1 /* DefaultValues.swift */,
 				03CB03D525F9149D0037DAE4 /* NavigationButton.swift */,
 				037F794525E6A3F3001A34B9 /* Preview Content */,
+				0329EF5B260F85F800D15BA3 /* Project Notepad.rtf */,
 				03AE5C9A25FC1B8B00EEBC79 /* RecentRequestsView.swift */,
 				03AE5C8F25FBC07500EEBC79 /* RequestLog.swift */,
 				037F797725E6A481001A34B9 /* RestCalculator.swift */,
@@ -161,7 +173,7 @@
 				03146E6825EE896D00F4C8B3 /* RestRequest.swift */,
 				03CB03C925F6A3FB0037DAE4 /* RestRequestView.swift */,
 				033E667725EA952E00C56F24 /* TimeIntervalExtension.swift */,
-				0329EF5B260F85F800D15BA3 /* Project Notepad.rtf */,
+				03D3054828117FAD008071E7 /* WelcomeView.swift */,
 			);
 			path = FlightRests;
 			sourceTree = "<group>";
@@ -437,9 +449,12 @@
 			files = (
 				03AE5C9B25FC1B8B00EEBC79 /* RecentRequestsView.swift in Sources */,
 				033E666C25E975D300C56F24 /* RestPeriodView.swift in Sources */,
+				03F128F428523B18006DCEC8 /* NotificationManager.swift in Sources */,
 				03146E6925EE896D00F4C8B3 /* RestRequest.swift in Sources */,
 				037F794225E6A3EA001A34B9 /* ContentView.swift in Sources */,
+				03D3054B28119E4A008071E7 /* DeviceRotationViewModifier.swift in Sources */,
 				037F796E25E6A441001A34B9 /* DateExtension.swift in Sources */,
+				03D3054928117FAD008071E7 /* WelcomeView.swift in Sources */,
 				037F797825E6A481001A34B9 /* RestCalculator.swift in Sources */,
 				03CB03D625F9149D0037DAE4 /* NavigationButton.swift in Sources */,
 				033E666725E9426F00C56F24 /* InputView.swift in Sources */,
@@ -450,6 +465,7 @@
 				037F794025E6A3EA001A34B9 /* FlightRestsApp.swift in Sources */,
 				0391D6CC27C004D300802596 /* DateAdjuster.swift in Sources */,
 				03AE5C9025FBC07500EEBC79 /* RequestLog.swift in Sources */,
+				0312C7CB283D201700F27DA1 /* DefaultValues.swift in Sources */,
 				033E667825EA952E00C56F24 /* TimeIntervalExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -609,7 +625,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_ASSET_PATHS = "\"FlightRests/Preview Content\"";
 				DEVELOPMENT_TEAM = NPT8P6J66Z;
 				ENABLE_PREVIEWS = YES;
@@ -623,7 +639,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = Boavida.FlightRests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -634,7 +650,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_ASSET_PATHS = "\"FlightRests/Preview Content\"";
 				DEVELOPMENT_TEAM = NPT8P6J66Z;
 				ENABLE_PREVIEWS = YES;
@@ -648,7 +664,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = Boavida.FlightRests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

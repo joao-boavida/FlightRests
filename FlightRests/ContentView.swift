@@ -12,25 +12,26 @@ struct ContentView: View {
     /// Initialisation of the requests database
     @StateObject var requestLog = RequestLog()
 
+    /// Variable to enable programmatic tab selections; unused now.
     @State private var tabSelection = CrewFunction.cabinCrew
 
     var body: some View {
         TabView(/*selection: $tabSelection*/) {
             InputView(requestLog: requestLog, crewFunction: .flightCrew, tabSelection: $tabSelection)
                 .tabItem {
-                    Image(systemName: "paperplane")
+                    Image(systemName: DefaultValues.flightCrewIcon)
                     Text("Flight Crew")
                 }
                 .tag(CrewFunction.flightCrew)
             InputView(requestLog: requestLog, crewFunction: .cabinCrew, tabSelection: $tabSelection)
                 .tabItem {
-                    Image(systemName: "person.3.fill")
+                    Image(systemName: DefaultValues.cabinCrewIcon)
                     Text("Cabin Crew")
                 }
                 .tag(CrewFunction.cabinCrew)
             RecentRequestsView(requestLog: requestLog)
                 .tabItem {
-                    Image(systemName: "clock")
+                    Image(systemName: DefaultValues.recentsIcon)
                     Text("Recent")
                 }
         }

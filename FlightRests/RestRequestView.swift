@@ -8,15 +8,15 @@
 import SwiftUI
 
 struct RestRequestView: View {
+
+    /// The request to be displayed
     let request: RestRequest
 
-    var crewDesignator: String {
-        switch request.crewFunction {
-        case .flightCrew: return "Pilots"
-        case .cabinCrew: return "Groups"
-        }
-    }
-
+    /// Function to generate the label of the date relative to the present day
+    /// - Parameters:
+    ///   - date: the date to be used
+    ///   - timeZone: timezone in use
+    /// - Returns: The formatted date label, as a string
     func dateLabel(for date: Date, in timeZone: TimeZone = .autoupdatingCurrent) -> String {
         let relativeFormatter = RelativeDateTimeFormatter()
         relativeFormatter.dateTimeStyle = .named
@@ -27,6 +27,11 @@ struct RestRequestView: View {
         }
     }
 
+    /// Function to generate the time to be used
+    /// - Parameters:
+    ///   - date: the date to which the time refers
+    ///   - timeZone: the time zone in use
+    /// - Returns: A string with the time at which rest begins or ends
     private func timeLabel(for date: Date, in timeZone: TimeZone) -> String {
         date.shortFormatTime(in: timeZone).replacingOccurrences(of: " ", with: "\n")
     }
@@ -39,7 +44,7 @@ struct RestRequestView: View {
     }
 
     var body: some View {
-        NavigationLink( destination: RestPlanView(restPlan: RestCalculator.calculateRests(from: request)).environment(\.timeZone, request.timeZone)) {
+        NavigationLink( destination: RestPlanView(restPlan: RestCalculator.calculateRests(from: request), showClearButton: false).environment(\.timeZone, request.timeZone)) {
             HStack {
                 Group {
                     Text(dateLabel(for: request.creationDate, in: TimeZone.autoupdatingCurrent))

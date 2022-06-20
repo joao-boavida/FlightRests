@@ -15,7 +15,9 @@ struct RecentRequestsView: View {
 
     /// clears the request log
     func clearLog() {
-        requestLog.clearLog()
+        withAnimation {
+            requestLog.clearLog()
+        }
     }
 
     /// triggers the deletion confirmation alert
@@ -23,8 +25,10 @@ struct RecentRequestsView: View {
         showingClearAlert = true
     }
 
+    /// Manages the appearance of an alert when the user attempts to clear all entries
     @State private var showingClearAlert = false
 
+    /// The alert text
     let alertString = "Do you wish to delete all entries in this list?"
 
     var body: some View {
@@ -33,7 +37,7 @@ struct RecentRequestsView: View {
                 ZStack {
                     Color.gray
                         .opacity(0.1)
-                    Text("Previous rest calculations will be shown here.")
+                    Text("Recent rest calculations will be shown here.")
                         .font(.title2)
                         .multilineTextAlignment(.center)
                         .padding()
@@ -58,9 +62,12 @@ struct RecentRequestsView: View {
                         }
                         Button("Delete All", role: .destructive) {
                             clearLog()
+                            // the clear all notification is sent so that the restplan view, if visible, will clear any results being shown
+                            NotificationManager.postClearAllNotification()
                         }
                     }
             }
+            WelcomeView(viewType: .recentRequests)
         }
     }
 

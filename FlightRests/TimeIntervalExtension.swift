@@ -8,6 +8,8 @@
 import Foundation
 
 extension TimeInterval {
+
+    /// A computed variable which formats a time interval as an HH:mm string.
     var HHmm: String {
         let seconds = Int(self)
 

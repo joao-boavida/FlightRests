@@ -35,25 +35,28 @@ struct InputView: View {
     @State private var rawLandingDate = Calendar.current.date(byAdding: .hour, value: 6, to: Date())?.round(precision: 300, rule: .up) ?? .distantFuture
 
     /// Selection in the `beforeServiceLabels` array
-    @State private var beforeServiceSelection = 2
+    @State private var beforeServiceSelection = DefaultValues.beforeServiceSelection
 
     /// selectable options for before service interval
     let beforeServiceLabels = ["No time", "5min", "10min", "15min", "20min"]
 
     /// Selection in the `serviceSelection` array
-    @State private var serviceSelection = 4
+    @State private var serviceSelection = DefaultValues.serviceSelection
 
     /// Selectable options for service duration
     let serviceLabels = ["No time", "1h00", "1h15", "1h30", "1h45", "2h00", "2h15", "2h30", "2h45", "3h00"]
 
     /// Number of pilots or groups
-    @State private var numberOfUsers = 2
+    @State private var numberOfUsers = DefaultValues.users
 
     /// Number of rest periods
-    @State private var numberOfRestPeriods = 2
+    @State private var numberOfRestPeriods = DefaultValues.restPeriods
 
     /// Selection in the `breakPickerLabels` array
-    @State private var minimumBreakSelection = 2
+    @State private var minimumBreakSelection = DefaultValues.minimumBreakSelection
+
+    /// Option that, if true, will make the calculator optimise breaks
+    @State private var optimiseBreaks = DefaultValues.optimiseBreaks
 
     /// Selectable durations for breaks
     let breakPickerLabels = ["None", "5 min", "10 min", "15 min", "20 min"]
@@ -83,7 +86,7 @@ struct InputView: View {
 
     /// A computed variable which builds the rest request from the appropriate data; if the view is being used for pilots, the number of users gets set to the number of users parameter, otherwise it is set to the number of periods as the previous parameter is unused.
     var restRequest: RestRequest {
-        RestRequest(beginDate: beginDate, endDate: endDate, numberOfUsers: crewFunction == .flightCrew ? numberOfUsers : numberOfRestPeriods, numberOfPeriods: numberOfRestPeriods, minimumBreakUnits: minimumBreakSelection, crewFunction: crewFunction, timeZone: timeZone)
+        RestRequest(beginDate: beginDate, endDate: endDate, numberOfUsers: crewFunction == .flightCrew ? numberOfUsers : numberOfRestPeriods, numberOfPeriods: numberOfRestPeriods, minimumBreakUnits: minimumBreakSelection, crewFunction: crewFunction, timeZone: timeZone, optimiseBreaks: optimiseBreaks)
     }
 
     /// The navigation bar title, either flight crew or cabin crew.
@@ -94,7 +97,8 @@ struct InputView: View {
         }
     }
 
-    var calculateButtonFooterString: String {
+    /// The calculate button footer text
+    var calculateButtonFooterLabel: String {
         switch RestCalculator.validateInputs(from: restRequest) {
         case .valid:
             return ""
@@ -110,6 +114,33 @@ struct InputView: View {
         case .unsupportedCombination:
             return "Please change the combination of number of pilots and number of rest periods as the current one is not supported."
         }
+    }
+
+    /// The break selection control label
+    var breakSelectionLabel: String {
+        if numberOfRestPeriods == 2 {
+            return optimiseBreaks ? "Minimum Break" : "Break"
+        } else {
+            return optimiseBreaks ? "Minimum Breaks" : "Breaks"
+        }
+    }
+
+    /// The footer that describes the optimize breaks option when it is selected on
+    var breaksSectionFooterLabel: String {
+        if optimiseBreaks {
+            if numberOfRestPeriods == 2 {
+                return "If possible, the break will be increased without reducing rest periods."
+            } else {
+                return "If possible, breaks will be increased without reducing rest periods."
+            }
+        } else {
+            return ""
+        }
+    }
+
+    /// The break optimisation toggle label
+    var optimiseBreaksLabel: String {
+        numberOfRestPeriods == 2 ? "Optimise Break" : "Optimise Breaks"
     }
 
     /// Minimum break duration as a time interval, built from the user's selection
@@ -140,6 +171,29 @@ struct InputView: View {
             tabSelection = requestLog.mostRecentFunction()
         }
     }
+
+    /// A closure that resets the user selectable options to their default values
+    var resetUserSelections: (() -> Void) {
+        return {
+            beforeServiceSelection = DefaultValues.beforeServiceSelection
+            serviceSelection = DefaultValues.serviceSelection
+            numberOfUsers = DefaultValues.users
+            numberOfRestPeriods = DefaultValues.restPeriods
+            minimumBreakSelection = DefaultValues.minimumBreakSelection
+            optimiseBreaks = DefaultValues.optimiseBreaks
+        }
+    }
+
+    /// A boolean that checks if user options have been changed.
+    var areUserOptionsSameAsDefault: Bool {
+        beforeServiceSelection == DefaultValues.beforeServiceSelection &&
+        serviceSelection == DefaultValues.serviceSelection &&
+        numberOfUsers == DefaultValues.users &&
+        numberOfRestPeriods == DefaultValues.restPeriods &&
+        minimumBreakSelection == DefaultValues.minimumBreakSelection &&
+        optimiseBreaks == DefaultValues.optimiseBreaks
+    }
+
     var beginDate: Date {
         DateAdjuster.adjustedBeginDate(rawBeginDate)
     }
@@ -222,42 +276,52 @@ struct InputView: View {
                         }
                         Stepper("**\(serviceLabels[serviceSelection])** for Service", value: $serviceSelection, in: 0 ... serviceLabels.count - 1)
                     }
-                    Stepper("**\(numberOfRestPeriods)** Rest Periods", value: $numberOfRestPeriods, in: 2 ... 5)
+                    Stepper("**\(numberOfRestPeriods)** Rest Periods", value: $numberOfRestPeriods.animation(), in: 2 ... 5)
                         .onChange(of: numberOfRestPeriods) { _ in
                             restPeriodsReadyForAutoUpdate = false
                         }
                 }
-                // Minimum Break
-                Section {
-                    Picker("Minimum Break", selection: $minimumBreakSelection) {
-                        ForEach(0 ..< breakPickerLabels.count) {
+                // Minimum Break and break optimisation
+                Section(footer: Text(breaksSectionFooterLabel).fixedSize(horizontal: false, vertical: true).animation(Animation.default, value: optimiseBreaks)) {
+                    Picker(breakSelectionLabel, selection: $minimumBreakSelection) {
+                        ForEach(0 ..< breakPickerLabels.count, id: \.self) {
                             Text("\(breakPickerLabels[$0])")
                         }
                     }
                     .accessibility(identifier: "breakDurationPicker")
+                    Toggle(optimiseBreaksLabel, isOn: $optimiseBreaks.animation())
+                        .accessibilityIdentifier("optimizeBreaksToggle")
                 }
                 // Calculate button, disabled if the inputs are not valid
-                Section(footer: Text(calculateButtonFooterString).animation(.default)) {
+                Section(footer: Text(calculateButtonFooterLabel).animation(.default)) {
                     NavigationButton(destination: RestPlanView(restPlan: computedRestPlan).environment(\.timeZone, timeZone), title: "Calculate Rests") {
+
+                        // calculate the rest plan
                         computedRestPlan = RestCalculator.calculateRests(from: restRequest)
+
+                        // inform the restplanview, if visible, that it should refresh, to prevent bugs on largescreen ipads
+                        NotificationManager.postRefreshNotification()
+
+                        // add the request to the request log for future reference
                         requestLog.addRequest(restRequest)
                     }.disabled(RestCalculator.validateInputs(from: restRequest) != .valid)
+                    Button("Reset Selections", role: .destructive) {
+                        resetInputView()
+                        resetUserSelections()
+                    }.disabled(areUserOptionsSameAsDefault)
+
                 }
 
                 // Debug Section
                 #if DEBUG
                 Section(header: Text("Debug")) {
-                    Text("rawBeginDate: \(rawBeginDate.debugDescription)")
-                    Text("deltaNow: \(rawBeginDate.timeIntervalSinceNow/3600)")
-                    Text("beginDate: \(beginDate.debugDescription)")
-                    Text("rawEndDate: \(rawEndDate.debugDescription)")
-                    Text("deltaBeginDate: \(rawEndDate.timeIntervalSince(beginDate)/3600)")
-                    Text("endDate: \(endDate.debugDescription)")
-                    Text("rawLandingDate: \(rawLandingDate.debugDescription)")
                     Text("versionNumber: \(versionNumber ?? "nil version")")
                 }
                 #endif
-            }.navigationBarTitle(navBarTitle)
+            }.navigationTitle(navBarTitle)
+            // Default Detail View
+            WelcomeView(crewFunction: crewFunction)
+
         } // if the app was on the background for more than one day then reset the input view
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
             if rawBeginDate < inputResetThreshold {
@@ -279,8 +343,7 @@ struct InputView: View {
 struct InputView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            InputView(requestLog: RequestLog(), crewFunction: .cabinCrew, tabSelection: .constant(.cabinCrew))
-                .previewDevice("iPhone SE (2nd generation)")
+            InputView(requestLog: RequestLog(), crewFunction: .flightCrew, tabSelection: .constant(.flightCrew))
         }
     }
 }
