@@ -28,8 +28,14 @@ struct RecentRequestsView: View {
     /// Manages the appearance of an alert when the user attempts to clear all entries
     @State private var showingClearAlert = false
 
-    /// The alert text
-    let alertString = "Do you wish to delete all entries in this list?"
+    /// constants for the text shown in the UI
+    let alertTitle = "Delete all rest plans?"
+
+    let alertMessage = "All the rest plans stored in this device will be deleted; this action cannot be undone."
+
+    let emptyListMessage = "Your previously calculated rest plans will be shown here."
+
+    let viewTitle = "Recent Rests"
 
     var body: some View {
         NavigationView {
@@ -37,12 +43,18 @@ struct RecentRequestsView: View {
                 ZStack {
                     Color.gray
                         .opacity(0.1)
-                    Text("Recent rest calculations will be shown here.")
-                        .font(.title2)
-                        .multilineTextAlignment(.center)
-                        .padding()
-                        .opacity(0.5)
-                }.navigationBarTitle("Recent Rests", displayMode: .inline)
+                    VStack {
+                        Image(systemName: DefaultValues.recentsIcon)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .padding(.horizontal)
+                            .frame(maxHeight: 100)
+                        Text(emptyListMessage)
+                            .font(.title2)
+                            .multilineTextAlignment(.center)
+                            .padding()
+                    }.foregroundColor(.secondary)
+                }.navigationBarTitle(viewTitle, displayMode: .inline)
             } else {
                 List {
                     ForEach(requestLog.requests.sorted().reversed(), id: \.self) { request in
@@ -50,22 +62,24 @@ struct RecentRequestsView: View {
                     }
                     .onDelete(perform: delete)
                     .transition(.slide)
-                }.navigationBarTitle("Recent Rests", displayMode: .inline)
+                }.navigationBarTitle(viewTitle, displayMode: .inline)
                     .toolbar {
                         Button(action: showAlert) {
                             Image(systemName: "trash")
                         }
                     }
-                    .alert(alertString, isPresented: $showingClearAlert) {
-                        Button("Cancel", role: .cancel) {
-                            showingClearAlert = false
-                        }
+                    .alert(alertTitle, isPresented: $showingClearAlert, actions: {
                         Button("Delete All", role: .destructive) {
                             clearLog()
                             // the clear all notification is sent so that the restplan view, if visible, will clear any results being shown
                             NotificationManager.postClearAllNotification()
                         }
-                    }
+                        Button("Cancel", role: .cancel) {
+                            showingClearAlert = false
+                        }
+                    }, message: {
+                        Text(alertMessage)
+                    })
             }
             WelcomeView(viewType: .recentRequests)
         }
