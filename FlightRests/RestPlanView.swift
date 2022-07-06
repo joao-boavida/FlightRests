@@ -9,18 +9,18 @@ import SwiftUI
 
 struct RestPlanView: View {
 
-    /// The rest plan to be displayed
-    var restPlan: [AssignedRestPeriod]
+    /// The rest plan to be displayed, which includes a default timeZone
+    var restPlan: RestPlan
 
     /// Whether or not the clear button is shown
     var showClearButton = true
 
     /// The role in which the view is being used
     var crewFunction: CrewFunction? {
-        if restPlan.isEmpty {
+        if restPlan.restPeriods.isEmpty {
             return nil
         } else {
-            return restPlan.first!.crewFunction
+            return restPlan.restPeriods.first!.crewFunction
         }
     }
 
@@ -48,7 +48,26 @@ struct RestPlanView: View {
         }
     }
 
-    /// Variable to store the token from the observer so that it can later be dismissed
+    /// The TimeZone which is propagated to the RestPeriodView instances
+    var computedTimeZone: TimeZone {
+        if timeZoneOverride {
+            if restPlan.defaultTimeZone.secondsFromGMT() == 0 {
+                // override the default time zone to local
+                return environmentTimeZone
+            } else {
+                // override the default time zone to UTC
+                return TimeZone(abbreviation: "GMT")!
+            }
+        } else {
+            // use the default time zone of the rest plan
+            return restPlan.defaultTimeZone
+        }
+    }
+
+    /// A boolean to track the state of the time zone override button presses by the user
+    @State private var timeZoneOverride = false
+
+    /// Variables to store the tokens from the observers so that it can later be dismissed
     @State private var refreshToken: NSObjectProtocol?
 
     @State private var clearAllToken: NSObjectProtocol?
@@ -71,7 +90,7 @@ struct RestPlanView: View {
             if forceRecentsWelcomeView {
                 WelcomeView(viewType: .recentRequests)
             } else {
-                if restPlan.isEmpty || clearPushed {
+                if restPlan.restPeriods.isEmpty || clearPushed {
                     if let crewFunction = crewFunction {
                         WelcomeView(crewFunction: crewFunction)
                     } else {
@@ -89,8 +108,9 @@ struct RestPlanView: View {
                             Spacer()
                                 .frame(maxHeight: 20)
                             // ternary operator added here as a safeguard to prevent crash due to index out of range; the color black should never be used.
-                            ForEach(restPlan) { period in
-                                RestPeriodView(restPeriod: period, timeColour: period.owner <= timeColors.count ? timeColors[period.owner - 1] : Color.black).environment(\.timeZone, environmentTimeZone)
+                            ForEach(restPlan.restPeriods) { period in
+                                RestPeriodView(restPeriod: period, timeColour: period.owner <= timeColors.count ? timeColors[period.owner - 1] : Color.black)
+                                    .environment(\.timeZone, computedTimeZone)
                             }.padding(.vertical)
                             Text("🛩 🌙 🛩")
                                 .font(.largeTitle)
@@ -98,7 +118,6 @@ struct RestPlanView: View {
                             if horizontalSizeClass == .regular && showClearButton {
                                 Button("Clear Results", role: .destructive) {
                                     dismiss()
-
                                     // if due to the strange behaviour on ipad landscape the view does not dismiss this boolean will force the welcome view to be shown
                                     withAnimation {
                                         clearPushed = true
@@ -133,6 +152,16 @@ struct RestPlanView: View {
                 NotificationManager.removeClearAllObserver(token: clearAllToken)
             }
 
+        }.toolbar {
+            if !clearPushed {
+                Button {
+                    withAnimation(.spring()) {
+                        timeZoneOverride.toggle()
+                    }
+                } label: {
+                    Image(systemName: "clock.arrow.2.circlepath")
+                }
+            }
         }
     }
 }
@@ -141,16 +170,16 @@ struct RestPlanView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             NavigationView {
-                RestPlanView(restPlan: [])
-                RestPlanView(restPlan: [])
+                RestPlanView(restPlan: RestPlan.exampleEmpty)
+                RestPlanView(restPlan: RestPlan.exampleEmpty)
             }
             NavigationView {
-                RestPlanView(restPlan: [.example1, .example2, .example1, .example2])
-                RestPlanView(restPlan: [.example1, .example2, .example1, .example2])
+                RestPlanView(restPlan: RestPlan.example1)
+                RestPlanView(restPlan: RestPlan.example1)
             }
             NavigationView {
-                RestPlanView(restPlan: [.example1, .example2, .example1, .example2])
-                RestPlanView(restPlan: [.example1, .example2])
+                RestPlanView(restPlan: RestPlan.example2)
+                RestPlanView(restPlan: RestPlan.example2)
             }
 
         }
