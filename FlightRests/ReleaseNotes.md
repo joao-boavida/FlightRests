@@ -2,6 +2,7 @@
 
 ## v1.2
 - Recent Requests View: minor copy and layout changes.
+- Rest Plan View: button to toggle displayed time zone between UTC and the local time
 
 _ released versions _ 
 
