@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct AssignedRestPeriod: Identifiable {
+struct AssignedRestPeriod: Identifiable, Equatable {
     let crewFunction: CrewFunction
     let id = UUID()
     let owner: Int
