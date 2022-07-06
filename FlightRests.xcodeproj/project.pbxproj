@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0303CA41286DABF200836111 /* RestPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0303CA40286DABF200836111 /* RestPlan.swift */; };
 		0312C7CB283D201700F27DA1 /* DefaultValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0312C7CA283D201700F27DA1 /* DefaultValues.swift */; };
 		03146E6925EE896D00F4C8B3 /* RestRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03146E6825EE896D00F4C8B3 /* RestRequest.swift */; };
-		0329EF5C260F85F800D15BA3 /* Project Notepad.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0329EF5B260F85F800D15BA3 /* Project Notepad.rtf */; };
 		033E666725E9426F00C56F24 /* InputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033E666625E9426F00C56F24 /* InputView.swift */; };
 		033E666C25E975D300C56F24 /* RestPeriodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033E666B25E975D300C56F24 /* RestPeriodView.swift */; };
 		033E667825EA952E00C56F24 /* TimeIntervalExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033E667725EA952E00C56F24 /* TimeIntervalExtension.swift */; };
@@ -55,13 +55,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0303CA40286DABF200836111 /* RestPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestPlan.swift; sourceTree = "<group>"; };
 		0312C7CA283D201700F27DA1 /* DefaultValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultValues.swift; sourceTree = "<group>"; };
 		03146E6825EE896D00F4C8B3 /* RestRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestRequest.swift; sourceTree = "<group>"; };
-		0329EF5B260F85F800D15BA3 /* Project Notepad.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = "Project Notepad.rtf"; sourceTree = "<group>"; };
 		033E666625E9426F00C56F24 /* InputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputView.swift; sourceTree = "<group>"; };
 		033E666B25E975D300C56F24 /* RestPeriodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestPeriodView.swift; sourceTree = "<group>"; };
 		033E667725EA952E00C56F24 /* TimeIntervalExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeIntervalExtension.swift; sourceTree = "<group>"; };
 		033E667C25EA976900C56F24 /* RestPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestPlanView.swift; sourceTree = "<group>"; };
+		034BBF81286CF2FC009E0185 /* ReleaseNotes.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ReleaseNotes.md; sourceTree = "<group>"; };
 		037F793C25E6A3EA001A34B9 /* FlightRests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlightRests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		037F793F25E6A3EA001A34B9 /* FlightRestsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightRestsApp.swift; sourceTree = "<group>"; };
 		037F794125E6A3EA001A34B9 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -164,12 +165,13 @@
 				0312C7CA283D201700F27DA1 /* DefaultValues.swift */,
 				03CB03D525F9149D0037DAE4 /* NavigationButton.swift */,
 				037F794525E6A3F3001A34B9 /* Preview Content */,
-				0329EF5B260F85F800D15BA3 /* Project Notepad.rtf */,
 				03AE5C9A25FC1B8B00EEBC79 /* RecentRequestsView.swift */,
+				034BBF81286CF2FC009E0185 /* ReleaseNotes.md */,
 				03AE5C8F25FBC07500EEBC79 /* RequestLog.swift */,
 				037F797725E6A481001A34B9 /* RestCalculator.swift */,
 				033E666B25E975D300C56F24 /* RestPeriodView.swift */,
 				033E667C25EA976900C56F24 /* RestPlanView.swift */,
+				0303CA40286DABF200836111 /* RestPlan.swift */,
 				03146E6825EE896D00F4C8B3 /* RestRequest.swift */,
 				03CB03C925F6A3FB0037DAE4 /* RestRequestView.swift */,
 				033E667725EA952E00C56F24 /* TimeIntervalExtension.swift */,
@@ -334,7 +336,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0329EF5C260F85F800D15BA3 /* Project Notepad.rtf in Resources */,
 				037F794725E6A3F3001A34B9 /* Preview Assets.xcassets in Resources */,
 				037F794425E6A3F3001A34B9 /* Assets.xcassets in Resources */,
 			);
@@ -455,6 +456,7 @@
 				03D3054B28119E4A008071E7 /* DeviceRotationViewModifier.swift in Sources */,
 				037F796E25E6A441001A34B9 /* DateExtension.swift in Sources */,
 				03D3054928117FAD008071E7 /* WelcomeView.swift in Sources */,
+				0303CA41286DABF200836111 /* RestPlan.swift in Sources */,
 				037F797825E6A481001A34B9 /* RestCalculator.swift in Sources */,
 				03CB03D625F9149D0037DAE4 /* NavigationButton.swift in Sources */,
 				033E666725E9426F00C56F24 /* InputView.swift in Sources */,
