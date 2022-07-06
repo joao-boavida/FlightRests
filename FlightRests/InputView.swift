@@ -74,7 +74,7 @@ struct InputView: View {
     let inOneDay = Calendar.current.date(byAdding: .hour, value: 24, to: Date()) ?? .distantFuture
 
     /// The computed rest plan which will be sent to the viewer, as an array of assigned rest periods
-    @State private var computedRestPlan: [AssignedRestPeriod] = []
+    @State private var computedRestPeriods: [AssignedRestPeriod] = []
 
     /// The number of rest periods will be updated automatically only the first time the number of users is increased before touching the number of rest periods; this variable controls that behaviour.
     @State private var restPeriodsReadyForAutoUpdate = true
@@ -294,10 +294,10 @@ struct InputView: View {
                 }
                 // Calculate button, disabled if the inputs are not valid
                 Section(footer: Text(calculateButtonFooterLabel).animation(.default)) {
-                    NavigationButton(destination: RestPlanView(restPlan: computedRestPlan).environment(\.timeZone, timeZone), title: "Calculate Rests") {
+                    NavigationButton(destination: RestPlanView(restPlan: RestPlan(timeZone: timeZone, restPeriods: computedRestPeriods)), title: "Calculate Rests") {
 
                         // calculate the rest plan
-                        computedRestPlan = RestCalculator.calculateRests(from: restRequest)
+                        computedRestPeriods = RestCalculator.calculateRests(from: restRequest)
 
                         // inform the restplanview, if visible, that it should refresh, to prevent bugs on largescreen ipads
                         NotificationManager.postRefreshNotification()
