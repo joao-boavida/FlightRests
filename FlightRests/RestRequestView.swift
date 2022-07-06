@@ -44,7 +44,7 @@ struct RestRequestView: View {
     }
 
     var body: some View {
-        NavigationLink( destination: RestPlanView(restPlan: RestCalculator.calculateRests(from: request), showClearButton: false).environment(\.timeZone, request.timeZone)) {
+        NavigationLink( destination: RestPlanView(restPlan: RestPlan(timeZone: request.timeZone, restPeriods: RestCalculator.calculateRests(from: request)), showClearButton: false)) {
             HStack {
                 Group {
                     Text(dateLabel(for: request.creationDate, in: TimeZone.autoupdatingCurrent))
@@ -59,7 +59,7 @@ struct RestRequestView: View {
                             Text(timeLabel(for: request.endDate, in: request.timeZone))
                                 .lineLimit(timeLineLimit(request.endDate.shortFormatTime(in: request.timeZone)))
                         }
-                        Text(request.timeZone.abbreviation() ?? "?").font(.callout)
+                        Text(request.timeZone.abbreviation()?.replacingOccurrences(of: "GMT", with: "UTC") ?? "?").font(.callout)
                     }.padding(.horizontal)
 
                 }.multilineTextAlignment(.center)
