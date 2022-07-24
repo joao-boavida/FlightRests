@@ -312,13 +312,6 @@ struct InputView: View {
                     }.disabled(areUserOptionsSameAsDefault)
 
                 }
-
-                // Debug Section
-                #if DEBUG
-                Section(header: Text("Debug")) {
-                    Text("versionNumber: \(versionNumber ?? "nil version")")
-                }
-                #endif
             }.navigationTitle(navBarTitle)
             // Default Detail View
             WelcomeView(crewFunction: crewFunction)
