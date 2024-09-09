@@ -38,6 +38,7 @@ struct RecentRequestsView: View {
     let viewTitle = "Recent Rests"
 
     var body: some View {
+        // TODO: refactor to navigation split view
         NavigationView {
             if requestLog.requests.isEmpty {
                 ZStack {

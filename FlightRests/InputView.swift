@@ -227,6 +227,7 @@ struct InputView: View {
     }
 
     var body: some View {
+        // TODO: refactor to navigation split view
         NavigationView {
             Form {
                 // Current time and Local Time Option
