@@ -44,7 +44,7 @@ struct RestRequestView: View {
     }
 
     var body: some View {
-        NavigationLink( destination: RestPlanView(restPlan: RestPlan(timeZone: request.timeZone, restPeriods: RestCalculator.calculateRests(from: request)), showClearButton: false)) {
+        NavigationLink(destination: RestPlanView(restRequest: request, showClearButton: false, requestLog: RequestLog(emptyLog: true))) {
             HStack {
                 Group {
                     Text(dateLabel(for: request.creationDate, in: TimeZone.autoupdatingCurrent))

@@ -61,9 +61,6 @@ struct InputView: View {
     /// Selectable durations for breaks
     let breakPickerLabels = ["None", "5 min", "10 min", "15 min", "20 min"]
 
-    /// Option to use local time; when false, UTC is used
-    @State private var useLocalTime = false
-
     /// A cached value of the present date, used for the on screen clock
     @State private var currentDate = Date()
 
@@ -203,9 +200,9 @@ struct InputView: View {
         DateAdjuster.adjustedEndDate(beginDate, rawEndDate, rawLandingDate, serviceTimeSeconds, crewFunction)
     }
 
-    /// the timezone to be used, which will be either UTC or the environment time zone according to user selection
+    /// the timezone to be used, which is always UTC; local time handled in the report view
     var timeZone: TimeZone {
-        useLocalTime ? environmentTimeZone : TimeZone(secondsFromGMT: 0)!
+        TimeZone.gmt
     }
 
     /// The timer used to update the running clock in the main interface
@@ -213,30 +210,21 @@ struct InputView: View {
 
     /// The string which will be displayed witht the current time, formatted according to the user's selected timezone preferences
     var currentTimeString: String {
-        if timeZone.secondsFromGMT() == 0 {
-            // utc time, fixed format and no label
-            let dateFormatter = DateFormatter()
-            dateFormatter.timeZone = timeZone
-            dateFormatter.locale = .autoupdatingCurrent
-            dateFormatter.dateFormat = "HH:mm:ss"
-            return dateFormatter.string(from: currentDate)
-        } else {
-            let longTime = currentDate.longFormatTime(in: timeZone)
-            return longTime.replacingOccurrences(of: "GMT", with: "UTC")
-        }
+        let longTime = currentDate.longFormatTime(in: timeZone)
+        return longTime.replacingOccurrences(of: "GMT", with: "UTC")
     }
 
     var body: some View {
-        // TODO: refactor to navigation split view
         NavigationView {
             Form {
                 // Current time and Local Time Option
                 Section {
-                    VStack {
+                    HStack {
+                        Spacer()
                         Text(currentTimeString)
                             .font(.largeTitle)
                             .padding()
-                        Toggle("Use Local Time", isOn: $useLocalTime)
+                        Spacer()
                     }
                 }
                 // Beginning and End Times
@@ -295,17 +283,11 @@ struct InputView: View {
                 }
                 // Calculate button, disabled if the inputs are not valid
                 Section(footer: Text(calculateButtonFooterLabel).animation(.default)) {
-                    NavigationButton(destination: RestPlanView(restPlan: computedRestPlan), title: "Calculate Rests") {
-
-                        // calculate the rest plan
-                        computedRestPlan.restPeriods = RestCalculator.calculateRests(from: restRequest)
-                        computedRestPlan.defaultTimeZone = timeZone
-
-                        // inform the restplanview, if visible, that it should refresh, to prevent bugs on largescreen ipads
-                        NotificationManager.postRefreshNotification()
-
-                        // add the request to the request log for future reference
-                        requestLog.addRequest(restRequest)
+                    NavigationLink {
+                        RestPlanView(restRequest: restRequest, requestLog: requestLog)
+                    } label: {
+                        Text("Calculate Rests")
+                            .foregroundStyle(Color.blue)
                     }.disabled(RestCalculator.validateInputs(from: restRequest) != .valid)
                     Button("Reset Selections", role: .destructive) {
                         resetInputView()

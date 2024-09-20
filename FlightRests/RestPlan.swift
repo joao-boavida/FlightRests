@@ -15,13 +15,8 @@ struct RestPlan: Equatable {
     /// the rest periods in the rest plan
     var restPeriods: [AssignedRestPeriod]
 
-    init(timeZone: TimeZone, restPeriods: [AssignedRestPeriod]) {
+    init(timeZone: TimeZone = .gmt, restPeriods: [AssignedRestPeriod] = []) {
         self.defaultTimeZone = timeZone
-        self.restPeriods = restPeriods
-    }
-
-    init(restPeriods: [AssignedRestPeriod]) {
-        self.defaultTimeZone = TimeZone.current
         self.restPeriods = restPeriods
     }
 

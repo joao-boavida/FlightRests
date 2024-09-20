@@ -102,7 +102,7 @@ class FlightRestsTests: XCTestCase {
 
     func testRequestLogCleanUP() {
 
-        let requestLog = RequestLog(testLog: true)
+        let requestLog = RequestLog(emptyLog: true)
 
         // testing the removal of old entries
 
@@ -125,7 +125,7 @@ class FlightRestsTests: XCTestCase {
 
     func testLogClearing() {
 
-        let requestLog = RequestLog(testLog: true)
+        let requestLog = RequestLog(emptyLog: true)
         // testing the size trimming function
         for _ in 0 ... 10 {
             let advance = Double(Int.random(in: -1000 ... 1000))

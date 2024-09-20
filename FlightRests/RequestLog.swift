@@ -14,9 +14,11 @@ final class RequestLog: ObservableObject {
     let maxEntries = 50
     var mockSaves = false
 
-    init(testLog: Bool = false) {
+    /// Initialiser for the class
+    /// - Parameter emptyLog: when emptylog is true the class is initialised with an empty log and doesn't save its data.
+    init(emptyLog: Bool = false) {
 
-        if testLog == true {
+        if emptyLog {
             self.requests = []
             self.mockSaves = true
             return
