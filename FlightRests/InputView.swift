@@ -86,6 +86,9 @@ struct InputView: View {
         RestRequest(beginDate: beginDate, endDate: endDate, numberOfUsers: crewFunction == .flightCrew ? numberOfUsers : numberOfRestPeriods, numberOfPeriods: numberOfRestPeriods, minimumBreakUnits: minimumBreakSelection, crewFunction: crewFunction, timeZone: timeZone, optimiseBreaks: optimiseBreaks)
     }
 
+    /// Rest request tied to a navigation destination modifier
+    @State private var restRequestDestination: RestRequest?
+
     /// The navigation bar title, either flight crew or cabin crew.
     var navBarTitle: String {
         switch crewFunction {
@@ -215,14 +218,17 @@ struct InputView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationSplitView {
             Form {
                 // Current time and Local Time Option
                 Section {
                     HStack {
                         Spacer()
                         Text(currentTimeString)
+                            .monospaced()
                             .font(.largeTitle)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
                             .padding()
                         Spacer()
                     }
@@ -293,13 +299,14 @@ struct InputView: View {
                         resetInputView()
                         resetUserSelections()
                     }.disabled(areUserOptionsSameAsDefault)
-
                 }
             }.navigationTitle(navBarTitle)
+
+        } detail: {
             // Default Detail View
             WelcomeView(crewFunction: crewFunction)
-
-        } // if the app was on the background for more than one day then reset the input view
+        }
+        // if the app was on the background for more than one day then reset the input view
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
             if rawBeginDate < inputResetThreshold {
                 resetInputView()
@@ -314,6 +321,7 @@ struct InputView: View {
                 firstAppear = false
             }
         }
+
     }
 }
 

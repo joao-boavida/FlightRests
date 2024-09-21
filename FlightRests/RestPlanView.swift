@@ -80,8 +80,11 @@ struct RestPlanView: View {
 
     @State private var clearAllToken: NSObjectProtocol?
 
-    /// Boolean to detect whether or not the clear button has been pushed; when this occurs the view should force the welcome screen.
-    @State private var clearPushed = false
+    /// Boolean to detect whether or not the clear button has been tapped; when this occurs the view should force the welcome screen.
+    @State private var clearTapped = false
+
+    /// Boolean to control whether the save button is shown on screen if the horiz size class is regular
+    @State private var showSaveButton = false
 
     /// When true the view will force a welcome view of the recent calculations type
     @State private var forceRecentsWelcomeView = false
@@ -101,32 +104,36 @@ struct RestPlanView: View {
         forcedRestPlan == nil && displayedRestPlan == nil
     }
 
+    func refreshCalculationResults(specificRequest: RestRequest? = nil) {
+        if let forcedRestPlan {
+            // show previously calculated rest plan
+            displayedRestPlan = forcedRestPlan
+        } else {
+            // in this case check that a rest request exists
+
+            let requestToUse = specificRequest ?? restRequest
+            guard let requestToUse else { return }
+
+            // if so calculate a rest plan
+            var computedRestPlan = RestPlan()
+            computedRestPlan.restPeriods = RestCalculator.calculateRests(from: requestToUse)
+
+            withAnimation {
+                displayedRestPlan = computedRestPlan
+            }
+        }
+    }
+
     /// The empty state that triggers the calculation
     var emptyState: some View {
         ZStack {
             Color(UIColor.systemBackground)
             Text("...")
         }.task {
-            if let forcedRestPlan {
-                // show previously calculated rest plan
-                displayedRestPlan = forcedRestPlan
-            } else {
-                // in this case check that a rest request exists
-                guard let restRequest else { return }
-
-                // if so calculate a rest plan
-                var computedRestPlan = RestPlan()
-                computedRestPlan.restPeriods = RestCalculator.calculateRests(from: restRequest)
-
-                // inform the restplanview, if visible, that it should refresh, to prevent bugs on largescreen ipads
-                NotificationManager.postRefreshNotification()
-
-                // add the request to the request log for future reference
+            refreshCalculationResults()
+            // add the request to the request log for future reference
+            if let restRequest {
                 requestLog.addRequest(restRequest)
-
-                withAnimation {
-                    displayedRestPlan = computedRestPlan
-                }
             }
         }
     }
@@ -134,82 +141,65 @@ struct RestPlanView: View {
     var body: some View {
         if let displayedRestPlan {
             Group {
-                if forceRecentsWelcomeView {
-                    WelcomeView(viewType: .recentRequests)
-                } else {
-                    if displayedRestPlan.restPeriods.isEmpty || clearPushed {
-                        if let crewFunction = crewFunction {
-                            WelcomeView(crewFunction: crewFunction)
-                        } else {
-                            WelcomeView(viewType: .unknown)
-                        }
-                    } else {
-                        ScrollView(.vertical, showsIndicators: false) {
-                            VStack {
-                                Text(titleString)
-                                    .font(.largeTitle)
-                                    .padding()
-                                crewIcon?
-                                    .scaleEffect(1.5)
-                                    .padding()
-                                Spacer()
-                                    .frame(maxHeight: 20)
-                                // ternary operator added here as a safeguard to prevent crash due to index out of range; the color black should never be used.
-                                ForEach(displayedRestPlan.restPeriods) { period in
-                                    RestPeriodView(restPeriod: period, timeColour: period.owner <= timeColors.count ? timeColors[period.owner - 1] : Color.black)
-                                        .environment(\.timeZone, computedTimeZone)
-                                }.padding(.vertical)
-                                Text("🛩 🌙 🛩")
-                                    .font(.largeTitle)
-                                    .padding()
-                                if horizontalSizeClass == .regular && showClearButton {
-                                    Button("Clear Results", role: .destructive) {
-                                        dismiss()
-                                        // if due to the strange behaviour on ipad landscape the view does not dismiss this boolean will force the welcome view to be shown
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack {
+                        Text(titleString)
+                            .font(.largeTitle)
+                            .padding()
+                        crewIcon?
+                            .scaleEffect(1.5)
+                            .padding()
+                        Spacer()
+                            .frame(maxHeight: 20)
+                        // ternary operator added here as a safeguard to prevent crash due to index out of range; the color black should never be used.
+                        ForEach(displayedRestPlan.restPeriods) { period in
+                            RestPeriodView(restPeriod: period, timeColour: period.owner <= timeColors.count ? timeColors[period.owner - 1] : Color.black)
+                                .environment(\.timeZone, computedTimeZone)
+                        }.padding(.vertical)
+                        Text("🛩 🌙 🛩")
+                            .font(.largeTitle)
+                            .padding()
+                        if horizontalSizeClass == .regular {
+                            if showSaveButton {
+                                Button("Save Results") {
+                                    if let restRequest {
+                                        requestLog.addRequest(restRequest)
                                         withAnimation {
-                                            clearPushed = true
+                                            showSaveButton = false
                                         }
-                                    }.font(.title2)
-                                        .padding()
+                                    }
                                 }
-
+                            }
+                            if showClearButton {
+                                Button("Clear Results", role: .destructive) {
+                                    withAnimation {
+                                        dismiss()
+                                    }
+                                }.font(.title2)
+                                .padding()
                             }
                         }
                     }
                 }
-            }.onAppear {
-                // adds an observer so that when this notification is received the view should prepare for updating
-                refreshToken = NotificationManager.observeRefreshNotification {
-                    clearPushed = false
-                    forceRecentsWelcomeView = false
-                }
-                // adds an observer to detect the pressing of the clear all button, which will trigger a welcomeview in that case.
-                clearAllToken = NotificationManager.observeClearAllNotification {
+            }
+            .onChange(of: restRequest) { newValue in
+                guard let newValue else { return }
+                if newValue.updateKey != restRequest?.updateKey {
+                    refreshCalculationResults(specificRequest: newValue)
                     withAnimation {
-                        forceRecentsWelcomeView = true
+                        showSaveButton = true
                     }
                 }
             }
-            .onDisappear {
-                // removes the observers when the view is dismissed
-                if let refreshToken = refreshToken {
-                    NotificationManager.removeRefreshObserver(token: refreshToken)
-                }
-                if let clearAllToken = clearAllToken {
-                    NotificationManager.removeClearAllObserver(token: clearAllToken)
-                }
-
-            }.toolbar {
-                if !clearPushed {
-                    Button {
-                        withAnimation(.spring()) {
-                            timeZoneOverride.toggle()
-                        }
-                    } label: {
-                        Image(systemName: "clock.arrow.2.circlepath")
-                    }
-                }
-            }
+           .toolbar {
+               Button {
+                   withAnimation(.spring()) {
+                       timeZoneOverride.toggle()
+                   }
+               } label: {
+                   Image(systemName: "clock.arrow.2.circlepath")
+               }
+           }
         } else {
             emptyState
         }

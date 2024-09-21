@@ -7,13 +7,22 @@
 
 import Foundation
 
-struct RestRequest: Codable, Hashable, Comparable {
+struct RestRequest: Codable, Hashable, Comparable, CustomDebugStringConvertible {
     static func < (lhs: RestRequest, rhs: RestRequest) -> Bool {
         lhs.creationDate < rhs.creationDate
     }
 
-    func isTrueDuplicateOf (_ element: RestRequest) -> Bool {
-        self.beginDate == element.beginDate && self.endDate == element.endDate && self.unitLength == element.unitLength && self.numberOfUsers == element.numberOfUsers && self.numberOfPeriods == element.numberOfPeriods && self.minimumBreakUnits == element.minimumBreakUnits && self.midFlightServiceUnits == element.midFlightServiceUnits && self.beforeLandingServiceUnits == element.beforeLandingServiceUnits && self.crewFunction == element.crewFunction && self.timeZone == element.timeZone
+    // Checks if this request is a true duplicate, excluding the creationDate
+    func isTrueDuplicateOf(_ element: RestRequest) -> Bool {
+        return self.updateKey == element.updateKey
+    }
+
+    // Unique key that represents the state of the request, excluding creationDate
+    var updateKey: String {
+        let beginDateString = ISO8601DateFormatter().string(from: beginDate)
+        let endDateString = ISO8601DateFormatter().string(from: endDate)
+        let timeZoneIdentifier = timeZone.identifier
+        return "\(beginDateString)-\(endDateString)-\(unitLength)-\(numberOfUsers)-\(numberOfPeriods)-\(minimumBreakUnits)-\(midFlightServiceUnits)-\(beforeLandingServiceUnits)-\(crewFunction.rawValue)-\(timeZoneIdentifier)-\(optimiseBreaks)"
     }
 
     var creationDate: Date = Date()
@@ -28,6 +37,24 @@ struct RestRequest: Codable, Hashable, Comparable {
     let crewFunction: CrewFunction
     let timeZone: TimeZone
     let optimiseBreaks: Bool
+
+    // Computed property for the debug description
+    var debugDescription: String {
+        """
+        RestRequest:
+        - Begin Date: \(beginDate)
+        - End Date: \(endDate)
+        - Unit Length: \(unitLength) seconds
+        - Number of Users: \(numberOfUsers)
+        - Number of Periods: \(numberOfPeriods)
+        - Minimum Break Units: \(minimumBreakUnits)
+        - Mid-Flight Service Units: \(midFlightServiceUnits)
+        - Before Landing Service Units: \(beforeLandingServiceUnits)
+        - Crew Function: \(crewFunction)
+        - Time Zone: \(timeZone.identifier)
+        - Optimise Breaks: \(optimiseBreaks)
+        """
+    }
 
     static let exampleFc1 = RestRequest(beginDate: DateComponents(calendar: .autoupdatingCurrent, timeZone: .autoupdatingCurrent, year: 2021, month: 2, day: 19, hour: 15).date!, endDate: DateComponents(calendar: .autoupdatingCurrent, timeZone: .autoupdatingCurrent, year: 2021, month: 2, day: 19, hour: 18).date!, numberOfUsers: 3, numberOfPeriods: 3, minimumBreakUnits: 2, crewFunction: .flightCrew, timeZone: .autoupdatingCurrent, optimiseBreaks: true)
 
