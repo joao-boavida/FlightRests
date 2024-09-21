@@ -168,15 +168,15 @@ struct RestPlanView: View {
                                             showSaveButton = false
                                         }
                                     }
-                                }
+                                }.font(.title2)
                             }
                             if showClearButton {
                                 Button("Clear Results", role: .destructive) {
                                     withAnimation {
                                         dismiss()
                                     }
-                                }.font(.title2)
-                                .padding()
+                                }.font(.title3)
+                                    .padding()
                             }
                         }
                     }
