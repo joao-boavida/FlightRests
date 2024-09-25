@@ -305,7 +305,7 @@ struct InputView: View {
         } detail: {
             // Default Detail View
             WelcomeView(crewFunction: crewFunction)
-        }
+        }.navigationSplitViewStyle(.balanced)
         // if the app was on the background for more than one day then reset the input view
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
             if rawBeginDate < inputResetThreshold {

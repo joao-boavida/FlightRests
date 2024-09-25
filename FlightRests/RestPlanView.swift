@@ -9,6 +9,11 @@ import SwiftUI
 
 struct RestPlanView: View {
 
+    /// An enum to control the copy of the save button
+    enum SavingStatus: String {
+        case saving, notSaving
+    }
+
     /// The rest plan to be displayed, which includes a default timeZone
     @State private var displayedRestPlan: RestPlan?
 
@@ -89,6 +94,9 @@ struct RestPlanView: View {
     /// When true the view will force a welcome view of the recent calculations type
     @State private var forceRecentsWelcomeView = false
 
+    /// Saving status which only influences the copy of the save button
+    @State private var savingStatus = SavingStatus.notSaving
+
     @Environment(\.timeZone) var environmentTimeZone
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.dismiss) var dismiss
@@ -102,6 +110,14 @@ struct RestPlanView: View {
     /// True if there is no input data; this should not occur in runtime
     var noInputData: Bool {
         forcedRestPlan == nil && displayedRestPlan == nil
+    }
+
+    /// The copy of the save button
+    var saveButtonCopy: String {
+        switch savingStatus {
+        case .notSaving: return "Save Results"
+        case .saving: return "😀 Saved!"
+        }
     }
 
     func refreshCalculationResults(specificRequest: RestRequest? = nil) {
@@ -161,17 +177,23 @@ struct RestPlanView: View {
                             .padding()
                         if horizontalSizeClass == .regular {
                             if showSaveButton {
-                                Button("Save Results") {
-                                    if let restRequest {
-                                        requestLog.addRequest(restRequest)
-                                        withAnimation {
-                                            showSaveButton = false
+                                Button(saveButtonCopy) {
+                                    Task {
+                                        if let restRequest {
+                                            savingStatus = .saving
+                                            requestLog.addRequest(restRequest)
+                                            // if possible add a small delay so the user notices save was tapped
+                                            try? await Task.sleep(nanoseconds: 500_000_000)
+                                            withAnimation {
+                                                showSaveButton = false
+                                            }
+                                            savingStatus = .notSaving
                                         }
                                     }
                                 }.font(.title2)
                             }
                             if showClearButton {
-                                Button("Clear Results", role: .destructive) {
+                                Button("Clear", role: .destructive) {
                                     withAnimation {
                                         dismiss()
                                     }
