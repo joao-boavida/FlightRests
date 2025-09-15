@@ -16,7 +16,7 @@ struct ContentView: View {
     @State private var tabSelection = CrewFunction.cabinCrew
 
     var body: some View {
-        TabView(/*selection: $tabSelection*/) {
+        TabView {
             InputView(requestLog: requestLog, crewFunction: .flightCrew, tabSelection: $tabSelection)
                 .tabItem {
                     Image(systemName: DefaultValues.flightCrewIcon)

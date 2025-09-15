@@ -3,13 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0303CA41286DABF200836111 /* RestPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0303CA40286DABF200836111 /* RestPlan.swift */; };
 		0312C7CB283D201700F27DA1 /* DefaultValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0312C7CA283D201700F27DA1 /* DefaultValues.swift */; };
 		03146E6925EE896D00F4C8B3 /* RestRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03146E6825EE896D00F4C8B3 /* RestRequest.swift */; };
-		0329EF5C260F85F800D15BA3 /* Project Notepad.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0329EF5B260F85F800D15BA3 /* Project Notepad.rtf */; };
 		033E666725E9426F00C56F24 /* InputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033E666625E9426F00C56F24 /* InputView.swift */; };
 		033E666C25E975D300C56F24 /* RestPeriodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033E666B25E975D300C56F24 /* RestPeriodView.swift */; };
 		033E667825EA952E00C56F24 /* TimeIntervalExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033E667725EA952E00C56F24 /* TimeIntervalExtension.swift */; };
@@ -28,7 +28,6 @@
 		03AE5C9625FBC4E600EEBC79 /* FileManagerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AE5C9525FBC4E600EEBC79 /* FileManagerExtension.swift */; };
 		03AE5C9B25FC1B8B00EEBC79 /* RecentRequestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AE5C9A25FC1B8B00EEBC79 /* RecentRequestsView.swift */; };
 		03CB03CA25F6A3FB0037DAE4 /* RestRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CB03C925F6A3FB0037DAE4 /* RestRequestView.swift */; };
-		03CB03D625F9149D0037DAE4 /* NavigationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CB03D525F9149D0037DAE4 /* NavigationButton.swift */; };
 		03D3054928117FAD008071E7 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D3054828117FAD008071E7 /* WelcomeView.swift */; };
 		03D3054B28119E4A008071E7 /* DeviceRotationViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D3054A28119E4A008071E7 /* DeviceRotationViewModifier.swift */; };
 		03F128F428523B18006DCEC8 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F128F328523B18006DCEC8 /* NotificationManager.swift */; };
@@ -55,13 +54,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0303CA40286DABF200836111 /* RestPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestPlan.swift; sourceTree = "<group>"; };
 		0312C7CA283D201700F27DA1 /* DefaultValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultValues.swift; sourceTree = "<group>"; };
 		03146E6825EE896D00F4C8B3 /* RestRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestRequest.swift; sourceTree = "<group>"; };
-		0329EF5B260F85F800D15BA3 /* Project Notepad.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = "Project Notepad.rtf"; sourceTree = "<group>"; };
 		033E666625E9426F00C56F24 /* InputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputView.swift; sourceTree = "<group>"; };
 		033E666B25E975D300C56F24 /* RestPeriodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestPeriodView.swift; sourceTree = "<group>"; };
 		033E667725EA952E00C56F24 /* TimeIntervalExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeIntervalExtension.swift; sourceTree = "<group>"; };
 		033E667C25EA976900C56F24 /* RestPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestPlanView.swift; sourceTree = "<group>"; };
+		034BBF81286CF2FC009E0185 /* ReleaseNotes.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ReleaseNotes.md; sourceTree = "<group>"; };
 		037F793C25E6A3EA001A34B9 /* FlightRests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlightRests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		037F793F25E6A3EA001A34B9 /* FlightRestsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightRestsApp.swift; sourceTree = "<group>"; };
 		037F794125E6A3EA001A34B9 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -82,7 +82,6 @@
 		03AE5C9525FBC4E600EEBC79 /* FileManagerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerExtension.swift; sourceTree = "<group>"; };
 		03AE5C9A25FC1B8B00EEBC79 /* RecentRequestsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentRequestsView.swift; sourceTree = "<group>"; };
 		03CB03C925F6A3FB0037DAE4 /* RestRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestRequestView.swift; sourceTree = "<group>"; };
-		03CB03D525F9149D0037DAE4 /* NavigationButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationButton.swift; sourceTree = "<group>"; };
 		03D3054828117FAD008071E7 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		03D3054A28119E4A008071E7 /* DeviceRotationViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceRotationViewModifier.swift; sourceTree = "<group>"; };
 		03F128F328523B18006DCEC8 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
@@ -162,14 +161,14 @@
 				033E666625E9426F00C56F24 /* InputView.swift */,
 				03F128F328523B18006DCEC8 /* NotificationManager.swift */,
 				0312C7CA283D201700F27DA1 /* DefaultValues.swift */,
-				03CB03D525F9149D0037DAE4 /* NavigationButton.swift */,
 				037F794525E6A3F3001A34B9 /* Preview Content */,
-				0329EF5B260F85F800D15BA3 /* Project Notepad.rtf */,
 				03AE5C9A25FC1B8B00EEBC79 /* RecentRequestsView.swift */,
+				034BBF81286CF2FC009E0185 /* ReleaseNotes.md */,
 				03AE5C8F25FBC07500EEBC79 /* RequestLog.swift */,
 				037F797725E6A481001A34B9 /* RestCalculator.swift */,
 				033E666B25E975D300C56F24 /* RestPeriodView.swift */,
 				033E667C25EA976900C56F24 /* RestPlanView.swift */,
+				0303CA40286DABF200836111 /* RestPlan.swift */,
 				03146E6825EE896D00F4C8B3 /* RestRequest.swift */,
 				03CB03C925F6A3FB0037DAE4 /* RestRequestView.swift */,
 				033E667725EA952E00C56F24 /* TimeIntervalExtension.swift */,
@@ -293,8 +292,9 @@
 		037F793425E6A3E9001A34B9 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1220;
-				LastUpgradeCheck = 1220;
+				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					037F793B25E6A3EA001A34B9 = {
 						CreatedOnToolsVersion = 12.2;
@@ -334,7 +334,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0329EF5C260F85F800D15BA3 /* Project Notepad.rtf in Resources */,
 				037F794725E6A3F3001A34B9 /* Preview Assets.xcassets in Resources */,
 				037F794425E6A3F3001A34B9 /* Assets.xcassets in Resources */,
 			);
@@ -359,6 +358,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		03BC94A425E908E0009A3924 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -455,8 +455,8 @@
 				03D3054B28119E4A008071E7 /* DeviceRotationViewModifier.swift in Sources */,
 				037F796E25E6A441001A34B9 /* DateExtension.swift in Sources */,
 				03D3054928117FAD008071E7 /* WelcomeView.swift in Sources */,
+				0303CA41286DABF200836111 /* RestPlan.swift in Sources */,
 				037F797825E6A481001A34B9 /* RestCalculator.swift in Sources */,
-				03CB03D625F9149D0037DAE4 /* NavigationButton.swift in Sources */,
 				033E666725E9426F00C56F24 /* InputView.swift in Sources */,
 				037F797325E6A45A001A34B9 /* AssignedRestPeriod.swift in Sources */,
 				033E667D25EA976900C56F24 /* RestPlanView.swift in Sources */,
@@ -506,6 +506,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -539,6 +540,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -567,6 +569,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -600,6 +603,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -625,17 +629,18 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"FlightRests/Preview Content\"";
 				DEVELOPMENT_TEAM = NPT8P6J66Z;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = FlightRests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = Boavida.FlightRests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -650,17 +655,18 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"FlightRests/Preview Content\"";
 				DEVELOPMENT_TEAM = NPT8P6J66Z;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = FlightRests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = Boavida.FlightRests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -672,12 +678,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 26377A16B43F715992BCA64E /* Pods-FlightRestsTests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = NPT8P6J66Z;
 				INFOPLIST_FILE = FlightRestsTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -695,12 +700,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = EBCC1560A6FABC03F6C5E45A /* Pods-FlightRestsTests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = NPT8P6J66Z;
 				INFOPLIST_FILE = FlightRestsTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -718,10 +722,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 57A33033B643B97DDCCDC282 /* Pods-FlightRests-FlightRestsUITests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = NPT8P6J66Z;
 				INFOPLIST_FILE = FlightRestsUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -739,10 +743,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 32B05C255557E73880ED2AD8 /* Pods-FlightRests-FlightRestsUITests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = NPT8P6J66Z;
 				INFOPLIST_FILE = FlightRestsUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

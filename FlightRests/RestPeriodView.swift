@@ -24,10 +24,22 @@ struct RestPeriodView: View {
         return abbreviation.replacingOccurrences(of: "GMT", with: "UTC")
     }
 
+    var beginTimeLabel: String {
+        restPeriod.period.start.shortFormatTime(in: environmentTimeZone)
+    }
+
+    var durationLabel: String {
+        restPeriod.period.duration.HHmm
+    }
+
+    var endTimeLabel: String {
+        restPeriod.period.end.shortFormatTime(in: environmentTimeZone)
+    }
+
     var body: some View {
         HStack {
             VStack {
-                Text(restPeriod.period.start.shortFormatTime(in: environmentTimeZone))
+                Text(beginTimeLabel)
                     .font(.title)
                     .foregroundColor(timeColour)
                 Text(timeZoneAbb)
@@ -35,13 +47,13 @@ struct RestPeriodView: View {
             }
             Spacer()
             VStack {
-                Text(restPeriod.period.duration.HHmm)
+                Text(durationLabel)
                     .font(.title3)
                     .foregroundColor(.secondary)
             }
             Spacer()
             VStack {
-                Text(restPeriod.period.end.shortFormatTime(in: environmentTimeZone))
+                Text(endTimeLabel)
                     .font(.title)
                     .foregroundColor(timeColour)
                 Text(timeZoneAbb)
@@ -55,6 +67,7 @@ struct RestPeriodView: View {
         )
         .padding(.horizontal)
         .frame(maxWidth: 500)
+
     }
 }
 

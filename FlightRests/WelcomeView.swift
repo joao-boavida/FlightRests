@@ -57,11 +57,11 @@ struct WelcomeView: View {
                 }
             }
             if viewType == .recentRequests {
-                Text("Recent Rest Plans")
+                Text("Previous Rest Plans")
                     .font(.largeTitle)
                     .padding()
             } else {
-                Text("Welcome to FlightRests!")
+                Text("Welcome to FlightRests")
                     .font(.largeTitle)
                     .padding()
             }
@@ -94,14 +94,14 @@ struct WelcomeView: View {
                     Group {
                         Text("Make your selections using the controls on the left;")
                             .padding()
-                        Text("Calculation results will be shown here.")
+                        Text("Your rest plan will be shown here.")
                             .padding()
                     }.font(.title2)
                 case .recentRequests:
                     Group {
-                        Text("Previous rest calculations will be shown on the left.")
+                        Text("Older rest calculations will be shown on the left.")
                             .padding()
-                        Text("Select one and its results will be shown here.")
+                        Text("Select one and it will be shown here.")
                             .padding()
                     }.font(.title3)
                 }
@@ -109,7 +109,7 @@ struct WelcomeView: View {
                     VStack {
                         Text("💡 Swipe from the left to reveal the controls. 💡")
 
-                        Text("🔄 Try rotating your iPad to landscape mode for a different experience! 🔄")
+                        Text("🔄 Try rotating your iPad to landscape mode for a different experience. 🔄")
 
                     }.font(.title2)
                     .foregroundColor(.secondary)

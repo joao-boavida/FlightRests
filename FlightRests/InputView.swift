@@ -61,9 +61,6 @@ struct InputView: View {
     /// Selectable durations for breaks
     let breakPickerLabels = ["None", "5 min", "10 min", "15 min", "20 min"]
 
-    /// Option to use local time; when false, UTC is used
-    @State private var useLocalTime = false
-
     /// A cached value of the present date, used for the on screen clock
     @State private var currentDate = Date()
 
@@ -74,7 +71,7 @@ struct InputView: View {
     let inOneDay = Calendar.current.date(byAdding: .hour, value: 24, to: Date()) ?? .distantFuture
 
     /// The computed rest plan which will be sent to the viewer, as an array of assigned rest periods
-    @State private var computedRestPlan: [AssignedRestPeriod] = []
+    @State private var computedRestPlan = RestPlan(restPeriods: [])
 
     /// The number of rest periods will be updated automatically only the first time the number of users is increased before touching the number of rest periods; this variable controls that behaviour.
     @State private var restPeriodsReadyForAutoUpdate = true
@@ -88,6 +85,9 @@ struct InputView: View {
     var restRequest: RestRequest {
         RestRequest(beginDate: beginDate, endDate: endDate, numberOfUsers: crewFunction == .flightCrew ? numberOfUsers : numberOfRestPeriods, numberOfPeriods: numberOfRestPeriods, minimumBreakUnits: minimumBreakSelection, crewFunction: crewFunction, timeZone: timeZone, optimiseBreaks: optimiseBreaks)
     }
+
+    /// Rest request tied to a navigation destination modifier
+    @State private var restRequestDestination: RestRequest?
 
     /// The navigation bar title, either flight crew or cabin crew.
     var navBarTitle: String {
@@ -203,9 +203,9 @@ struct InputView: View {
         DateAdjuster.adjustedEndDate(beginDate, rawEndDate, rawLandingDate, serviceTimeSeconds, crewFunction)
     }
 
-    /// the timezone to be used, which will be either UTC or the environment time zone according to user selection
+    /// the timezone to be used, which is always UTC; local time handled in the report view
     var timeZone: TimeZone {
-        useLocalTime ? environmentTimeZone : TimeZone(secondsFromGMT: 0)!
+        TimeZone.gmt
     }
 
     /// The timer used to update the running clock in the main interface
@@ -213,29 +213,24 @@ struct InputView: View {
 
     /// The string which will be displayed witht the current time, formatted according to the user's selected timezone preferences
     var currentTimeString: String {
-        if timeZone.secondsFromGMT() == 0 {
-            // utc time, fixed format and no label
-            let dateFormatter = DateFormatter()
-            dateFormatter.timeZone = timeZone
-            dateFormatter.locale = .autoupdatingCurrent
-            dateFormatter.dateFormat = "HH:mm:ss"
-            return dateFormatter.string(from: currentDate)
-        } else {
-            let longTime = currentDate.longFormatTime(in: timeZone)
-            return longTime.replacingOccurrences(of: "GMT", with: "UTC")
-        }
+        let longTime = currentDate.longFormatTime(in: timeZone)
+        return longTime.replacingOccurrences(of: "GMT", with: "UTC")
     }
 
     var body: some View {
-        NavigationView {
+        NavigationSplitView {
             Form {
                 // Current time and Local Time Option
                 Section {
-                    VStack {
+                    HStack {
+                        Spacer()
                         Text(currentTimeString)
+                            .monospaced()
                             .font(.largeTitle)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
                             .padding()
-                        Toggle("Use Local Time", isOn: $useLocalTime)
+                        Spacer()
                     }
                 }
                 // Beginning and End Times
@@ -294,35 +289,24 @@ struct InputView: View {
                 }
                 // Calculate button, disabled if the inputs are not valid
                 Section(footer: Text(calculateButtonFooterLabel).animation(.default)) {
-                    NavigationButton(destination: RestPlanView(restPlan: computedRestPlan).environment(\.timeZone, timeZone), title: "Calculate Rests") {
-
-                        // calculate the rest plan
-                        computedRestPlan = RestCalculator.calculateRests(from: restRequest)
-
-                        // inform the restplanview, if visible, that it should refresh, to prevent bugs on largescreen ipads
-                        NotificationManager.postRefreshNotification()
-
-                        // add the request to the request log for future reference
-                        requestLog.addRequest(restRequest)
+                    NavigationLink {
+                        RestPlanView(restRequest: restRequest, requestLog: requestLog)
+                    } label: {
+                        Text("Calculate Rests")
+                            .foregroundStyle(Color.blue)
                     }.disabled(RestCalculator.validateInputs(from: restRequest) != .valid)
                     Button("Reset Selections", role: .destructive) {
                         resetInputView()
                         resetUserSelections()
                     }.disabled(areUserOptionsSameAsDefault)
-
                 }
-
-                // Debug Section
-                #if DEBUG
-                Section(header: Text("Debug")) {
-                    Text("versionNumber: \(versionNumber ?? "nil version")")
-                }
-                #endif
             }.navigationTitle(navBarTitle)
+
+        } detail: {
             // Default Detail View
             WelcomeView(crewFunction: crewFunction)
-
-        } // if the app was on the background for more than one day then reset the input view
+        }.navigationSplitViewStyle(.balanced)
+        // if the app was on the background for more than one day then reset the input view
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
             if rawBeginDate < inputResetThreshold {
                 resetInputView()
@@ -337,6 +321,7 @@ struct InputView: View {
                 firstAppear = false
             }
         }
+
     }
 }
 
